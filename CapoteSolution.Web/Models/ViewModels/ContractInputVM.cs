@@ -11,7 +11,7 @@ namespace CapoteSolution.Web.Models.ViewModels
 
         [Required]
         [Display(Name = "Impresora")]
-        public Guid CopierId { get; set; }
+        public string CopierId { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

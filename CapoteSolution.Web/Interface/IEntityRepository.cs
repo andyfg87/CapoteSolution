@@ -17,6 +17,7 @@ namespace CapoteSolution.Web.Interface
         Expression<Func<TEntity, bool>> filter = null,
         Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
         List<Expression<Func<TEntity, object>>> includes = null);
+        public Task<IQueryable<TEntity>> GetAllWithNestedInclude(params string[] includeProperties);
         public Task SaveChangesAsync();
     }
 }

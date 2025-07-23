@@ -30,8 +30,12 @@ namespace CapoteSolution.Models.Entities
 
         // Relación 1:1 con Copier
         [ForeignKey("Copier")]
-        public Guid CopierId { get; set; }  // Cambiado de MachineID
-        public Copier Copier { get; set; }
+        public string CopierId { get; set; }  // Cambiado de MachineID
+        public virtual Copier Copier { get; set; }
+        //Relación 1:1 con Customer
+        [ForeignKey(nameof(Customer))]
+        public Guid CustomerId { get; set; }
+        public virtual Customer Customer { get; set; }
         public ICollection<Service> Services { get; set; }
     }
 

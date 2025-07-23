@@ -17,6 +17,7 @@ namespace CapoteSolution.Models.EF
         public DbSet<Copier> Copiers { get; set; }
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceReason> ServiceReasons { get; set; }
+        public DbSet<Customer> Customers { get; set; }
 
         // Configuración de la conexión (LocalDB)
         /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -78,7 +79,15 @@ namespace CapoteSolution.Models.EF
                 .HasOne(c => c.Copier)
                 .WithOne(c => c.Contract)
                 .HasForeignKey<Contract>(c => c.CopierId)
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete(DeleteBehavior.ClientNoAction);
+
+            // Contract (1:1 con Customer)
+            modelBuilder.Entity<Contract>()
+               .HasOne(c => c.Customer)
+               .WithOne(c => c.Contract)
+               .HasForeignKey<Contract>(c => c.CustomerId)
+               .OnDelete(DeleteBehavior.ClientNoAction);
+          
 
             // Service
             modelBuilder.Entity<Service>()

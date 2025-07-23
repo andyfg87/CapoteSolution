@@ -117,6 +117,36 @@ namespace CapoteSolution.Web.Controllers
            
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+
+        public virtual async Task<IActionResult> Edit(TKey key, TInputViewModel inputModel)
+        {
+            if (!ModelState.IsValid)
+                return View(inputModel);
+
+            try
+            {
+
+                var entity = await _repository.GetByIdAsync(key);
+                inputModel.Import(entity);
+                await _repository.UpdateAsync(entity);
+                await _repository.SaveChangesAsync();
+
+                return RedirectToAction(nameof(Index));
+
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error al actualizar entidad");
+                ModelState.AddModelError("", _localizer["ErrorUpdateMessage"]);
+                return View(inputModel);
+            }
+
+
+        }
+
         public virtual async Task<IActionResult> Delete(TKey key)
         {
             var entity = await _repository.GetByIdAsync(key);

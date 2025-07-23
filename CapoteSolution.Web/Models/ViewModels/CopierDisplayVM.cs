@@ -4,9 +4,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CapoteSolution.Web.Models.ViewModels
 {
-    public class CopierDisplayVM : IEntityDisplayModel<Copier, Guid>
+    public class CopierDisplayVM : IEntityDisplayModel<Copier, string>
     {
-        public Guid Id { get; set; }
+        public string Id { get; set; }
 
         [Display(Name = "Número de Serie")]
         public string SerialNumber { get; set; }

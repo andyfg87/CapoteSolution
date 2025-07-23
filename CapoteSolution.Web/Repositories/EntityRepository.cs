@@ -84,5 +84,17 @@ namespace CapoteSolution.Web.Repositories
         {
             _context.SaveChanges();
         }
+
+        public async Task<IQueryable<TEntity>> GetAllWithNestedInclude(params string[] includeProperties)
+        {
+            IQueryable<TEntity> query = _dbSet.AsNoTracking();
+
+            foreach (var includeProperty in includeProperties)
+            {
+                query = query.Include(includeProperty);
+            }
+
+            return query;
+        }
     }
 }

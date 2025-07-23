@@ -23,7 +23,7 @@ builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddScoped<IEntityRepository<Toner, Guid>, EntityRepository<Toner, Guid>>();
 builder.Services.AddScoped<IEntityRepository<Brand, Guid>, EntityRepository<Brand, Guid>>();
 builder.Services.AddScoped<IEntityRepository<MachineModel, Guid>, EntityRepository<MachineModel, Guid>>();
-builder.Services.AddScoped<IEntityRepository<Copier, Guid>, EntityRepository<Copier, Guid>>();
+builder.Services.AddScoped<IEntityRepository<Copier, string>, EntityRepository<Copier, string>>();
 builder.Services.AddScoped<IEntityRepository<Contract, Guid>, EntityRepository<Contract, Guid>>();
 builder.Services.AddScoped<IEntityRepository<Service, Guid>, EntityRepository<Service, Guid>>();
 builder.Services.AddScoped<IEntityRepository<ServiceReason, byte>, EntityRepository<ServiceReason, byte>>();
@@ -61,6 +61,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Toners}/{action=Index}/{id?}");
 
 app.Run();

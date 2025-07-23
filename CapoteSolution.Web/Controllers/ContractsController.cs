@@ -10,9 +10,9 @@ namespace CapoteSolution.Web.Controllers
 {
     public class ContractsController : AbstractEntityManagementController<Contract, Guid, ContractInputVM, ContractDisplayVM>
     {
-        private readonly IEntityRepository<Copier, Guid> _copierRepo;
+        private readonly IEntityRepository<Copier, string> _copierRepo;
 
-        public ContractsController(IEntityRepository<Contract, Guid> repository, IEntityRepository<Copier, Guid> copierRepo, IStringLocalizer<ContractsController> localizer, ILogger<ContractsController> logger) : base(repository, localizer, logger)
+        public ContractsController(IEntityRepository<Contract, Guid> repository, IEntityRepository<Copier, string> copierRepo, IStringLocalizer<ContractsController> localizer, ILogger<ContractsController> logger) : base(repository, localizer, logger)
         {
             this._copierRepo = copierRepo;
         }

@@ -21,10 +21,8 @@ namespace CapoteSolution.Models.Entities
         [Required]
         public string CustomerName { get; set; }
 
-        [ForeignKey(nameof(Copier))]
-        public System.Guid Copier_FK { get; set; }
-
+        
         // Relación inversa
-        public Copier Copier { get; set; }// Relacion 1 * Copier
+        public virtual Contract Contract { get; set; }// Relacion 1 * Contract
     }
 }

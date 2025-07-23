@@ -10,6 +10,9 @@
     <h4>¿Está seguro que desea eliminar esta impresora?</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-3">ID Impresora:</dt>
+        <dd class="col-sm-9">@Model.Id</dd>
+
         <dt class="col-sm-3">N° Serie:</dt>
         <dd class="col-sm-9">@Model.SerialNumber</dd>
 
@@ -18,6 +21,12 @@
 
         <dt class="col-sm-3">IP:</dt>
         <dd class="col-sm-9">@Model.IPAddress</dd>
+
+        <dt class="col-sm-3">Correo:</dt>
+        <dd class="col-sm-9">@Model.MachineEmail</dd>
+
+        <dt class="col-sm-3">Contrato:</dt>
+        <dd class="col-sm-9">@Model.ContractStatus</dd>
     </dl>
 
     <form asp-action="Delete">

@@ -5,9 +5,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CapoteSolution.Web.Models.ViewModels
 {
-    public class CopierInputVM : IEntityInputModel<Copier, Guid>
+    public class CopierInputVM : IEntityInputModel<Copier, string>
     {
-        public Guid Id { get; set; }
+        [Required]
+        [StringLength(50)]
+        [Display(Name = "ID de Impresora")]
+        public string Id { get; set; }
 
         [Required]
         [StringLength(50)]
@@ -31,7 +34,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         public string Comments { get; set; }
 
         // Para dropdown
-        public SelectList AvailableMachineModels { get; set; }
+        public SelectList? AvailableMachineModels { get; set; }
 
         public Copier Export()
         {

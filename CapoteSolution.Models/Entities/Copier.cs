@@ -9,16 +9,11 @@ using CapoteSolution.Models.Interface;
 
 namespace CapoteSolution.Models.Entities
 {
-    public class Copier: IEntity<System.Guid>
-    {
-
-        public Copier() 
-        {
-            Id = Guid.NewGuid();
-        }
+    public class Copier: IEntity<string>
+    {       
 
         [Key]       
-        public System.Guid Id { get; set; }
+        public string Id { get; set; }
 
         [StringLength(50)]
         public string SerialNumber { get; set; }       
@@ -39,6 +34,6 @@ namespace CapoteSolution.Models.Entities
 
         // Relaciones       
         public MachineModel MachineModel { get; set; }        
-        public Contract Contract { get; set; }
+        public virtual Contract Contract { get; set; }
     }
 }
