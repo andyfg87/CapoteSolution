@@ -1,0 +1,30 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.MachineModelDisplayVM
+
+@{
+    ViewData["Title"] = "Eliminar Modelo de Maquina";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-warning">
+    <h4>¿Está seguro que desea eliminar este toner?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Nombre:</dt>
+        <dd class="col-sm-9">@Model.Name</dd>
+
+        <dt class="col-sm-4">Modelos de marca:</dt>
+        <dd class="col-sm-8">@Model.BrandName</dd>
+
+        <dt class="col-sm-4">Modelos de Toner:</dt>
+        <dd class="col-sm-8">@Model.TonerModel</dd>
+
+
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

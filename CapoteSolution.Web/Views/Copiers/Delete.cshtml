@@ -1,0 +1,28 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.CopierDisplayVM
+
+@{
+    ViewData["Title"] = "Eliminar Impresora";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-warning">
+    <h4>¿Está seguro que desea eliminar esta impresora?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">N° Serie:</dt>
+        <dd class="col-sm-9">@Model.SerialNumber</dd>
+
+        <dt class="col-sm-3">Modelo:</dt>
+        <dd class="col-sm-9">@Model.MachineModelInfo</dd>
+
+        <dt class="col-sm-3">IP:</dt>
+        <dd class="col-sm-9">@Model.IPAddress</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

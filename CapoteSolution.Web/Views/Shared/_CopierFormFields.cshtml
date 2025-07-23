@@ -1,0 +1,41 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.CopierInputVM
+
+<div class="form-group mb-3">
+    <label asp-for="SerialNumber" class="control-label"></label>
+    <input asp-for="SerialNumber" class="form-control" />
+    <span asp-validation-for="SerialNumber" class="text-danger"></span>
+</div>
+
+<div class="form-group mb-3">
+    <label asp-for="IPAddress" class="control-label"></label>
+    <input asp-for="IPAddress" class="form-control" />
+    <span asp-validation-for="IPAddress" class="text-danger"></span>
+</div>
+
+<div class="form-group mb-3">
+    <label asp-for="MachineEmail" class="control-label"></label>
+    <input asp-for="MachineEmail" class="form-control" />
+    <span asp-validation-for="MachineEmail" class="text-danger"></span>
+</div>
+
+<div class="form-group mb-3">
+    <label asp-for="MachineEmail" class="control-label"></label>
+    <input asp-for="MachineEmail" class="form-control" />
+    <span asp-validation-for="MachineEmail" class="text-danger"></span>
+</div>
+
+<div class="form-group mb-3">
+    <label asp-for="MachineModelId" class="control-label"></label>
+    <select asp-for="MachineModelId" asp-items="Model.AvailableMachineModels" class="form-select">
+        <option value="">Seleccione un modelo</option>
+    </select>
+    <span asp-validation-for="MachineModelId" class="text-danger"></span>
+</div>
+
+<div class="form-group mb-3">
+    <label asp-for="Comments" class="control-label"></label>
+    <textarea asp-for="Comments" class="form-control" rows="3"></textarea>
+    <span asp-validation-for="Comments" class="text-danger"></span>
+</div>
+
+<!-- Repetir para los demás campos (IPAddress, MachineEmail, etc.) -->

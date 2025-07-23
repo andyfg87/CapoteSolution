@@ -1,0 +1,35 @@
+﻿@model CapoteSolution.Models.Entities.Contract
+
+@{
+    ViewData["Title"] = "Detalles de Contrato";
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@ViewData["Title"] - @Model.Copier.SerialNumber</h3>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Estado:</dt>
+            <dd class="col-sm-8">
+                <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active ? "bg-success" : "bg-warning")">
+                    @Model.Status
+                </span>
+            </dd>
+
+            <dt class="col-sm-4">Fecha Inicio:</dt>
+            <dd class="col-sm-8">@Model.StartDate.ToShortDateString()</dd>
+
+            <dt class="col-sm-4">Plan B/N:</dt>
+            <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+
+            <dt class="col-sm-4">Plan Color:</dt>
+            <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+
+            <dt class="col-sm-4">Precio Extra B/N:</dt>
+            <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
+        </dl>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Volver al Listado</a>

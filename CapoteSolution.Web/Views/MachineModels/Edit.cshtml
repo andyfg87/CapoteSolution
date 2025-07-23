@@ -1,0 +1,50 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.MachineModelInputVM
+
+@{
+    ViewData["Title"] = "Editar Modelo de Maquina";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Name" class="control-label"></label>
+                <input asp-for="@Model.Name" class="form-control" />
+                <span asp-validation-for="@Model.Name" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="BrandId" class="control-label"></label>
+                <select asp-for="@Model.BrandId" asp-items="Model.Brands" class="form-select">
+                    <option value="">Seleccione una marca</option>
+                </select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.TonerId" class="control-label"></label>
+                <select asp-for="@Model.TonerId" asp-items="Model.Toners" class="form-select">
+                    <option value="">Seleccione Toner</option>
+                </select>
+                <span asp-validation-for="TonerId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Guardar</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

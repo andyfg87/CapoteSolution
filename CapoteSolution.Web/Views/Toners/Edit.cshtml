@@ -1,0 +1,34 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.TonerInputVM
+
+@{
+    ViewData["Title"] = "Editar Toner";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <input type="hidden" asp-for="@Model.Id" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>            
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Model" class="control-label"></label>
+                <input asp-for="@Model.Model" class="form-control" />
+                <span asp-validation-for="@Model.Model" class="text-danger"></span>
+            </div>
+           
+
+            <div class="form-group mb-3">
+                <label asp-for="@Model.Yield" class="control-label"></label>
+                <input asp-for="@Model.Yield" class="form-control" type="number" />
+                <span asp-validation-for="@Model.Yield" class="text-danger"></span>
+            </div>           
+
+            <div class="form-group mt-4">
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+            </div>
+        </form>
+    </div>
+</div>
