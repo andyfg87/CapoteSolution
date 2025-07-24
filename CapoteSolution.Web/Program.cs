@@ -28,6 +28,7 @@ builder.Services.AddScoped<IEntityRepository<Contract, Guid>, EntityRepository<C
 builder.Services.AddScoped<IEntityRepository<Service, Guid>, EntityRepository<Service, Guid>>();
 builder.Services.AddScoped<IEntityRepository<ServiceReason, byte>, EntityRepository<ServiceReason, byte>>();
 builder.Services.AddScoped<IEntityRepository<User, Guid>, EntityRepository<User, Guid>>();
+builder.Services.AddScoped<IEntityRepository<Customer, Guid>, EntityRepository<Customer, Guid>>();
 
 // Configuración de AutoMapper
 //builder.Services.AddAutoMapper(typeof(Program));

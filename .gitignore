@@ -1,0 +1,16 @@
+﻿################################################################################
+# Este archivo .gitignore ha sido creado automáticamente por Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs
+/CapoteSolution.Models/bin/Debug/net8.0
+/CapoteSolution.Models/obj
+/CapoteSolution.Web/bin/Debug/net8.0
+/CapoteSolution.Web/obj
+/CapoteSolution.Web/Properties
+/obj
+/Properties
+/CapoteSolution.Web/wwwroot/lib/bootstrap/LICENSE
+/CapoteSolution.Web/wwwroot/lib/jquery/LICENSE.txt
+/CapoteSolution.Web/wwwroot/lib/jquery-validation/LICENSE.md
+/CapoteSolution.Web/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt

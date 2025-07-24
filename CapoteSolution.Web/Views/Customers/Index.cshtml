@@ -1,20 +1,21 @@
 ﻿@using CapoteSolution.Web.Paginations
-@model PaginatedList<CapoteSolution.Web.Models.ViewModels.BrandDisplayVM>
+@model PaginatedList<CapoteSolution.Web.Models.ViewModels.CustomerDisplayVM>
 
 @{
-    ViewData["Title"] = "Gestión de Marcas";
+    ViewData["Title"] = "Gestión de Clientes";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h1>@ViewData["Title"]</h1>
-    <a asp-action="Create" class="btn btn-success">Nueva Marca</a>
+    <a asp-action="Create" class="btn btn-success">Nuevo</a>
 </div>
 
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
-                <th>Nombre</th>               
+                <th>Nombre</th>
+                <th>Contrato</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -22,7 +23,8 @@
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Name</td>                    
+                    <td>@item.CustomerName</td>
+                    <td>@item.HasContract</td>
                     <td>
                         <div class="btn-group" role="group">
                             <a asp-action="Edit" asp-route-key="@item.Id" class="btn btn-sm btn-primary">Editar</a>

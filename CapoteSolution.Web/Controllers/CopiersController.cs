@@ -79,7 +79,7 @@ namespace CapoteSolution.Web.Controllers
         }
 
         [HttpPost]
-        public override Task<IActionResult> Edit(string id,CopierInputVM inputModel)
+        public override Task<IActionResult> EditWithKeyAndModel(string id,CopierInputVM inputModel)
         {
             return base.Edit(inputModel);
         }        

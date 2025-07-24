@@ -26,7 +26,6 @@
   <ItemGroup>
     <Folder Include="Mappers\" />
     <Folder Include="Views\NewFolder1\" />
-    <Folder Include="Views\Contracts\" />
   </ItemGroup>
 
 </Project>

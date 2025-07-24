@@ -120,7 +120,7 @@ namespace CapoteSolution.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
 
-        public virtual async Task<IActionResult> Edit(TKey key, TInputViewModel inputModel)
+        public virtual async Task<IActionResult> EditWithKeyAndModel(TKey key, TInputViewModel inputModel)
         {
             if (!ModelState.IsValid)
                 return View(inputModel);

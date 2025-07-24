@@ -11,10 +11,14 @@ namespace CapoteSolution.Web.Models.ViewModels
 
         [Required]
         [Display(Name = "Impresora")]
-        public string CopierId { get; set; }
+        public string CopierId { get; set; } 
+        [Required]
+        [Display(Name = "Cliente")]        
+        public Guid CustomerId { get; set; } 
 
         [Required]
         [DataType(DataType.Date)]
+        [Display(Name = "Fecha de Inicio")]
         public DateTime StartDate { get; set; } = DateTime.Today;
 
         [Required]
@@ -26,11 +30,11 @@ namespace CapoteSolution.Web.Models.ViewModels
         public int PlanColor { get; set; }
 
         [Required]
-        [Range(0.01, 1.00)]
+        [Range(0.01, 10000.00)]
         public decimal ExtraBW { get; set; }
 
         [Required]
-        [Range(0.01, 1.00)]
+        [Range(0.01, 100000.00)]
         public decimal ExtraColor { get; set; }
 
         [Required]
@@ -44,8 +48,11 @@ namespace CapoteSolution.Web.Models.ViewModels
         public bool ChargeExtras { get; set; }
         public string Comments { get; set; }
         public ContractStatus Status { get; set; }
+        [Display(Name = "Estado de Contraco (Activo/Inactivo)")]
+        public bool SelectStatus { get; set; }
 
-        public SelectList AvailableCopiers { get; set; } // Seleccionar las Impresara disponible (Que CopierID sea null)
+        public SelectList? AvailableCopiers { get; set; } // Seleccionar las Impresara disponible (Que CopierID sea null)
+        public SelectList? AvailableCustomers { get; set; } // Seleccionar las Clientes disponible (Que ContractID sea null)
 
         public Contract Export()
         {
@@ -60,6 +67,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         {
             Id = entity.Id;
             CopierId = entity.CopierId;
+            CustomerId = entity.CustomerId;
             StartDate = entity.StartDate;
             PlanBW = entity.PlanBW;
             PlanColor = entity.PlanColor;
@@ -69,12 +77,14 @@ namespace CapoteSolution.Web.Models.ViewModels
             MonthlyPrice =entity.MonthlyPrice;
             ChargeExtras = entity.ChargeExtras;
             Comments = entity.Comments;
-            Status = Status;
+            Status = entity.Status;
+            SelectStatus = entity.Status == ContractStatus.Active ;
         }
 
         public void Merge(Contract entity)
         {
             entity.CopierId = CopierId;
+            entity.CustomerId = CustomerId;
             entity.StartDate = StartDate;
             entity.PlanBW = PlanBW;
             entity.PlanColor = PlanColor;
@@ -84,7 +94,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             entity.MonthlyPrice = MonthlyPrice;
             entity.ChargeExtras = ChargeExtras;
             entity.Comments = Comments;
-            entity.Status = Status;
+            entity.Status = SelectStatus ? ContractStatus.Active : ContractStatus.Inactive; ;
         }       
     }
 }
