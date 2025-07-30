@@ -30,11 +30,16 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Display(Name = "Modelo")]
         public Guid MachineModelId { get; set; }
 
+        [Required]
+        [Display(Name = "Marca")]
+        public Guid BrandId { get; set; }
+
         [Display(Name = "Comentarios")]
         public string Comments { get; set; }
 
         // Para dropdown
         public SelectList? AvailableMachineModels { get; set; }
+        public SelectList? AvailableBrands { get; set; }
 
         public Copier Export()
         {
@@ -52,7 +57,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             IPAddress = entity.IPAddress;
             MachineEmail = entity.MachineEmail;
             MachineModelId = entity.MachineModelId;
-            Comments = entity.Comments;
+            Comments = entity.Comments;            
         }
 
         public void Merge(Copier entity)

@@ -10,7 +10,7 @@ using System.Linq.Expressions;
 
 namespace CapoteSolution.Web.Controllers
 {
-    //[Authorize(Roles = "Admin,Manager")]
+    [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Technician)}")]
     public class MachineModelsController : AbstractEntityManagementController<MachineModel, Guid, MachineModelInputVM, MachineModelDisplayVM>
     {
         private readonly IEntityRepository<Brand, Guid> _brandRepo;

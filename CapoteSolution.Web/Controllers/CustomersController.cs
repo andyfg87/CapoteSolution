@@ -1,11 +1,13 @@
 ﻿using CapoteSolution.Models.Entities;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Localization;
 
 namespace CapoteSolution.Web.Controllers
 {
+    [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Technician)}")]
     public class CustomersController : AbstractEntityManagementController<Customer, System.Guid, CustomerInputVM, CustomerDisplayVM>
     {
         public CustomersController(IEntityRepository<Customer, Guid> repository, IStringLocalizer<CustomersController> localizer, ILogger<CustomersController> logger) : base(repository, localizer, logger)

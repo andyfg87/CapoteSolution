@@ -1,0 +1,27 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.ServiceDisplayVM
+
+@{
+    ViewData["Title"] = "Eliminar Servicio";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<div class="alert alert-warning">
+    <h4>¿Está seguro que desea eliminar este Servico?</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-3">Contrato:</dt>
+        <dd class="col-sm-9">@Model.ContractInfo</dd>
+
+        <dt class="col-sm-4">Razón :</dt>
+        <dd class="col-sm-4">@Model.ServiceReason</dd>
+
+
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Confirmar Eliminación</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </form>
+</div>

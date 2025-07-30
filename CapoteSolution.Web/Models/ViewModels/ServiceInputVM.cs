@@ -25,6 +25,9 @@ namespace CapoteSolution.Web.Models.ViewModels
         [RequiredIf(nameof(ServiceReasonId), ServiceReason.Reasons.TonerChange)]
         public int? BlackTonerQty { get; set; }
 
+        [Display(Name = "Número de Ticket")]
+        public string TicketNumber { get; set; }
+
         [Required]
         [Display(Name = "Contrato")]
         public Guid ContractId { get; set; }
@@ -38,9 +41,9 @@ namespace CapoteSolution.Web.Models.ViewModels
         public Guid TechnicianId { get; set; }
 
         // Listas para dropdowns
-        public SelectList AvailableContracts { get; set; }
-        public SelectList AvailableTechnicians { get; set; }
-        public SelectList ServiceReasons { get; set; }
+        public SelectList? AvailableContracts { get; set; }
+        public SelectList? AvailableTechnicians { get; set; }
+        public SelectList? ServiceReasons { get; set; }
 
         public Service Export()
         {
@@ -61,6 +64,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             ContractId = entity.ContractId;
             ServiceReasonId = entity.ServiceReasonId;
             TechnicianId = entity.TechnicianId;
+            TicketNumber = entity.TicketNumber;
         }
 
         public void Merge(Service entity)
@@ -72,6 +76,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             entity.ContractId = ContractId;
             entity.ServiceReasonId = ServiceReasonId;
             entity.TechnicianId = TechnicianId;
+            entity.TicketNumber = TicketNumber;
         }
     }
 }

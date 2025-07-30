@@ -1,0 +1,48 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.ServiceDisplayVM
+
+@{
+    ViewData["Title"] = "Detalles del Servicio";
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Fecha:</dt>
+            <dd class="col-sm-8">@Model.ServiceDate.ToShortDateString()</dd>
+
+            <dt class="col-sm-4">Contrato:</dt>
+            <dd class="col-sm-8">@Model.ContractInfo</dd>
+
+            <dt class="col-sm-4">Motivo:</dt>
+            <dd class="col-sm-8">@Model.ServiceReason</dd>
+
+            <dt class="col-sm-4">Técnico:</dt>
+            <dd class="col-sm-8">@Model.TechnicianName</dd>
+
+            @if (Model.BlackCounter > 0)
+            {
+                <dt class="col-sm-4">Contador B/N:</dt>
+                <dd class="col-sm-8">@Model.BlackCounter</dd>
+            }
+
+            @if (Model.ColorCounter > 0)
+            {
+                <dt class="col-sm-4">Contador Color:</dt>
+                <dd class="col-sm-8">@Model.ColorCounter</dd>
+            }
+
+            @if (Model.BlackTonerQty.HasValue)
+            {
+                <dt class="col-sm-4">Toners usados:</dt>
+                <dd class="col-sm-8">@Model.BlackTonerQty</dd>
+            }
+        </dl>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
+    </div>
+</div>

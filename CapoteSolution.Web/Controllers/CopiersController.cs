@@ -11,22 +11,25 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CapoteSolution.Web.Controllers
 {
-    //[Authorize(Roles = "Admin,Manager,Technician")]
+    [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Technician)}")]
     public class CopiersController : AbstractEntityManagementController<Copier, string, CopierInputVM, CopierDisplayVM>
     {
         private readonly IEntityRepository<MachineModel, Guid> _machineModelRepo;
         private readonly IEntityRepository<Contract, Guid> _contractRepo;
+        private readonly IEntityRepository<Brand, Guid> _brandRepo;
 
         public CopiersController(
             IEntityRepository<Copier, string> repository,
             IEntityRepository<MachineModel, Guid> machineModelRepo,
             IEntityRepository<Contract, Guid> contractRepo,
+            IEntityRepository<Brand, Guid> brandRepo,
             IStringLocalizer<CopiersController> localizer,
             ILogger<CopiersController> logger)
             : base(repository, localizer, logger)
         {
             _machineModelRepo = machineModelRepo;
             _contractRepo = contractRepo;
+            _brandRepo = brandRepo;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
@@ -42,7 +45,11 @@ namespace CapoteSolution.Web.Controllers
         {
             var model = new CopierInputVM
             {
-                AvailableMachineModels = await GetMachineModels()
+                AvailableBrands = await GetBrands(),
+                AvailableMachineModels = new SelectList(new List<SelectListItem>
+                {
+                    new SelectListItem { Value = "", Text = "Seleccione una marca primero" }
+                }, "Value", "Text")
             };
             return View(model);
         }
@@ -70,9 +77,9 @@ namespace CapoteSolution.Web.Controllers
             }
         }
 
-        public override async Task<IActionResult> Edit(string id)
+        public override async Task<IActionResult> Edit(string key)
         {
-            var model = await base.Edit(id) as ViewResult;
+            var model = await base.Edit(key) as ViewResult;
             var copierInputVM = model.Model as CopierInputVM;
             copierInputVM.AvailableMachineModels = await GetMachineModels();
             return View(copierInputVM);
@@ -114,10 +121,56 @@ namespace CapoteSolution.Web.Controllers
             return View(viewModel);
         }
 
-        private async Task<SelectList> GetMachineModels()
+        [HttpGet]
+        public async Task<IActionResult> GetMachineModelsByBrand(Guid brandId)
         {
+            if (brandId == Guid.Empty)
+            {
+                return Json(new List<SelectListItem>
+        {
+            new SelectListItem { Value = "", Text = "Seleccione una marca válida" }
+        });
+            }
+
             var machineModels = await _machineModelRepo.GetAll().Result
                 .Include(mm => mm.Brand)
+                .Where(mm => mm.BrandId == brandId)
+                .Select(mm => new SelectListItem
+                {
+                    Value = mm.Id.ToString(),
+                    Text = $"{mm.Brand.Name} - {mm.Name}"
+                })
+                .ToListAsync();
+
+            if (!machineModels.Any())
+            {
+                machineModels = new List<SelectListItem>
+        {
+            new SelectListItem { Value = "", Text = "No hay modelos para esta marca" }
+        };
+            }
+
+            return Json(machineModels);
+        }
+
+        public async Task<SelectList> GetBrands()
+        {
+            var brands = await _brandRepo.GetAll().Result
+                .Select( b => new SelectListItem
+                {
+                    Value = b.Id.ToString(),
+                    Text = b.Name
+                }).ToListAsync();
+
+            var selectListBrands = new SelectList(brands, "Value", "Text");
+            return selectListBrands;
+        }
+
+        private async Task<SelectList> GetMachineModels(string IdBrand = "")
+        {            
+            var machineModels = await _machineModelRepo.GetAll().Result
+                .Include(mm => mm.Brand)
+                .Where(mm => mm.BrandId.ToString() == IdBrand)
                 .Select(mm => new {
                     mm.Id,
                     DisplayText = $"{mm.Brand.Name} - {mm.Name}"

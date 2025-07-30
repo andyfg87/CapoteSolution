@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Mappers\" />
-    <Folder Include="Views\NewFolder1\" />
   </ItemGroup>
 
 </Project>

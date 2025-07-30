@@ -1,8 +1,15 @@
 ﻿@model CapoteSolution.Web.Models.ViewModels.CopierInputVM
 
+<div style="display: none;">
+    <p>AvailableBrands: @(Model.AvailableBrands?.Count() ?? 0) items</p>
+    <p>AvailableMachineModels: @(Model.AvailableMachineModels?.Count() ?? 0) items</p>
+</div>
+
 @{
     ViewData["Title"] = "Registrar Nueva Impresora";
 }
+
+
 
 <h1>@ViewData["Title"]</h1>
 
@@ -37,9 +44,18 @@
             </div>
 
             <div class="form-group mb-3">
+                <label asp-for="BrandId" class="control-label"></label>
+                <select asp-for="BrandId" asp-items="Model.AvailableBrands" class="form-select"
+                        onchange="loadMachineModels(this.value)">
+                    <option value="">Seleccione una marca</option>
+                </select>
+                <span asp-validation-for="BrandId" class="text-danger"></span>
+            </div>
+
+            <div class="form-group mb-3">
                 <label asp-for="MachineModelId" class="control-label"></label>
-                <select asp-for="MachineModelId" asp-items="Model.AvailableMachineModels" class="form-select">
-                    <option value="">Seleccione un modelo</option>
+                <select asp-for="MachineModelId" class="form-select" id="machineModelSelect" required>
+                    <option value="">@Model.AvailableMachineModels?.FirstOrDefault()?.Text</option>
                 </select>
                 <span asp-validation-for="MachineModelId" class="text-danger"></span>
             </div>
@@ -62,4 +78,60 @@
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
+
+    <script>
+        $(document).ready(function () {
+            // Deshabilitar el select de modelos inicialmente
+            $('#machineModelSelect').prop('disabled', true);
+
+            // Si hay una marca seleccionada (en caso de error de validación)
+            var initialBrandId = $('#BrandId').val();
+            if (initialBrandId) {
+                loadMachineModels(initialBrandId);
+            }
+        });
+
+        function loadMachineModels(brandId) {
+            var machineModelSelect = $('#machineModelSelect');
+            machineModelSelect.prop('disabled', true);
+
+            if (!brandId) {
+                machineModelSelect.html('<option value="">Seleccione una marca primero</option>');
+                return;
+            }
+
+            // Mostrar carga
+            machineModelSelect.html('<option value="">Cargando modelos...</option>');
+
+            $.ajax({
+                url: '/Copiers/GetMachineModelsByBrand',
+                type: 'GET',
+                data: { brandId: brandId },
+                success: function (data) {
+                    var options = '<option value="">Seleccione un modelo</option>';
+
+                    $.each(data, function (i, item) {
+                        options += `<option value="${item.value}">${item.text}</option>`;
+                    });
+
+                    machineModelSelect.html(options).prop('disabled', false);
+                },
+                error: function () {
+                    machineModelSelect.html('<option value="">Error al cargar modelos</option>');
+                }
+            });
+        }
+
+        // Validación personalizada
+        $(document).ready(function () {
+            $('form').submit(function (e) {
+                if ($('#machineModelSelect').val() === "") {
+                    e.preventDefault();
+                    alert('Por favor seleccione un modelo válido');
+                    return false;
+                }
+                return true;
+            });
+        });
+    </script>
 }

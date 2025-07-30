@@ -1,51 +1,239 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@using System.Security.Claims
+@using CapoteSolution.Web.MenuInfo
+
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - CapoteSolution.Web</title>
+    <title>@ViewData["Title"] - CapoteSolution</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/CapoteSolution.Web.styles.css" asp-append-version="true" />
+    <!-- Iconos de Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
+    <style>
+        body {
+            display: flex;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .main-container {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #dee2e6;
+            padding: 20px 0;
+        }
+
+        .content {
+            flex: 1;
+            padding: 20px;
+            background-color: #fff;
+        }
+
+        .top-navbar {
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+            z-index: 1030;
+        }
+
+        .sidebar .nav-link {
+            border-radius: 0;
+            color: #495057;
+            padding: 10px 20px;
+            margin: 2px 0;
+        }
+
+            .sidebar .nav-link:hover {
+                background-color: #e9ecef;
+            }
+
+            .sidebar .nav-link.active {
+                background-color: #0d6efd;
+                color: white;
+            }
+
+        .user-info {
+            padding: 10px 15px;
+            border-bottom: 1px solid #dee2e6;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .logout-btn {
+            border: none;
+            background: none;
+            color: #dc3545;
+            padding: 8px 12px;
+        }
+
+            .logout-btn:hover {
+                background-color: #f8d7da;
+                border-radius: 4px;
+            }
+    </style>
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+    <!-- Barra superior -->
+    <header class="top-navbar">
+        <nav class="navbar navbar-expand navbar-light border-bottom">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CapoteSolution.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
+                <div class="navbar-brand">CapoteSolution</div>
+
+                <div class="navbar-collapse justify-content-end">
+                    @if (Context.User.Identity.IsAuthenticated)
+                    {
+                        <div class="d-flex align-items-center">
+                            <span class="me-3">@Context.User.FindFirst("FullName")?.Value</span>
+                            <form asp-controller="Account" asp-action="Logout" method="post">
+                                <button type="submit" class="logout-btn">
+                                    <i class="bi bi-box-arrow-right"></i> Salir
+                                </button>
+                            </form>
+                        </div>
+                    }
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
+
+    <div class="main-container">
+        <!-- Menú lateral -->
+        <div class="sidebar">
+            @if (Context.User.Identity.IsAuthenticated)
+            {
+                <div class="user-info">
+                    <div class="fw-bold">@Context.User.FindFirst("FullName")?.Value</div>
+                    <small class="text-muted">@Context.User.FindFirst(ClaimTypes.Role)?.Value</small>
+                </div>
+            }
+
+            <ul class="nav flex-column">
+                <!-- Grupo Principal -->
+                <li class="nav-item mt-2">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")"
+                       asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house-door me-2"></i>Inicio
+                    </a>
+                </li>
+                
+
+                <!-- Grupo: Administración -->
+                @if (Context.User.Identity.IsAuthenticated && Context.User.FindFirst(ClaimTypes.Role)?.Value == "Admin")
+                {                    
+                    <li class="nav-item mt-3">
+                        <small class="text-muted ps-3">ADMINISTRACIÓN</small>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" ? "active" : "")"
+                           asp-controller="Users" asp-action="Index">
+                            <i class="bi bi-people me-2"></i>Usuarios
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Brands" ? "active" : "")"
+                           asp-controller="Brands" asp-action="Index">
+                            <i class="bi bi-tags me-2"></i>Marcas
+                        </a>
+                    </li>
+                }
+
+                <!-- Grupo: Equipos -->
+                <li class="nav-item mt-3">
+                    <small class="text-muted ps-3">EQUIPOS</small>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Copiers" ? "active" : "")"
+                       asp-controller="Copiers" asp-action="Index">
+                        <i class="bi bi-printer me-2"></i>Copiadoras
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "MachineModels" ? "active" : "")"
+                       asp-controller="MachineModels" asp-action="Index">
+                        <i class="bi bi-pc-display me-2"></i>Modelos
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Toners" ? "active" : "")"
+                       asp-controller="Toners" asp-action="Index">
+                        <i class="bi bi-ink me-2"></i>Tóners
+                    </a>
+                </li>
+
+                <!-- Grupo: Servicios -->
+                <li class="nav-item mt-3">
+                    <small class="text-muted ps-3">SERVICIOS</small>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Services" ? "active" : "")"
+                       asp-controller="Services" asp-action="Index">
+                        <i class="bi bi-tools me-2"></i>Servicios
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ServiceReasons" ? "active" : "")"
+                       asp-controller="ServiceReasons" asp-action="Index">
+                        <i class="bi bi-clipboard-check me-2"></i>Motivos de Servicio
+                    </a>
+                </li>
+
+                <!-- Grupo: Clientes y Contratos -->
+                <li class="nav-item mt-3">
+                    <small class="text-muted ps-3">CLIENTES</small>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")"
+                       asp-controller="Customers" asp-action="Index">
+                        <i class="bi bi-building me-2"></i>Clientes
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Contracts" ? "active" : "")"
+                       asp-controller="Contracts" asp-action="Index">
+                        <i class="bi bi-file-earmark-text"></i>Contratos
+                        @if (ViewData["MenuCounts"] is MenuCounts counts && counts.ActiveContracts > 0)
+                        {
+                            <span class="badge bg-success float-end">@counts.ActiveContracts</span>
+                        }
+                    </a>
+                </li>                
+
+            </ul>
+        </div>
+
+        <!-- Contenido principal -->
+        <div class="content">
+            <main role="main" class="pb-3">
+                @RenderBody()
+            </main>
+        </div>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2025 - CapoteSolution.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            &copy; @DateTime.Now.Year - CapoteSolution
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

@@ -1,6 +1,7 @@
 ﻿using CapoteSolution.Models.Entities;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -8,6 +9,7 @@ using Microsoft.Extensions.Localization;
 
 namespace CapoteSolution.Web.Controllers
 {
+    [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Technician)}")]
     public class ServicesController : AbstractEntityManagementController<Service, Guid, ServiceInputVM, ServiceDisplayVM>
     {
         private readonly IEntityRepository<Contract, Guid> _contractRepo;
@@ -20,10 +22,18 @@ namespace CapoteSolution.Web.Controllers
             _userRepo = userRepo;
         }
 
-        public IActionResult Index()
+        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
-            return View();
+            var services = _repository.GetAllWithNestedInclude(
+                "Technician",
+                nameof(ServiceReason),
+                nameof(Contract));
+
+            var paginatedData = await GetPaginatedData(services.Result, pageNumber, pageSize);
+            return View(paginatedData);
         }
+
+
 
         public override async Task<IActionResult> Create()
         {
@@ -50,7 +60,7 @@ namespace CapoteSolution.Web.Controllers
         private async Task<SelectList> GetTechnicians()
         {
             var technicians = await _userRepo.GetAll().Result
-                .Where(u => u.Role == UserRole.Technician)
+                //.Where(u => u.Role == UserRole.Technician)
                 .Select(u => new { u.Id, DisplayText = $"{u.FirstName} - {u.LastName}" })
                 .ToListAsync();
 

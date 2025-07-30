@@ -1,13 +1,17 @@
 ﻿using CapoteSolution.Models.Entities;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace CapoteSolution.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class UsersController :Controller
     {
         private readonly IEntityRepository<User, Guid> _userRepo;
@@ -27,16 +31,18 @@ namespace CapoteSolution.Web.Controllers
                 .Select(u => new UserDisplayVM
                 {
                     Id = u.Id,
-                    Username = u.Username,
+                    UserName = u.Username,
                     FullName = $"{u.FirstName} {u.LastName}",
                     Role = u.Role.ToString()
                 })
                 .ToListAsync();
+            
 
             return View(users);
         }
 
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var model = new UserInputVM
@@ -57,7 +63,7 @@ namespace CapoteSolution.Web.Controllers
 
             var user = new User
             {
-                Username = model.Username,
+                Username = model.UserName,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Role = model.Role
@@ -68,6 +74,33 @@ namespace CapoteSolution.Web.Controllers
             await _userRepo.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(UserInputVM model)
+        {
+            var user = await _userRepo.GetAll().Result.FirstAsync(u => u.Username == model.UserName);
+                                       
+
+            if (user == null || _passwordHasher.VerifyHashedPassword(user, user.PasswordHash, model.Password) == PasswordVerificationResult.Failed)
+            {
+                ModelState.AddModelError("", "Usuario o contraseña incorrectos");
+                return View(model);
+            }
+
+            // Crear cookie de autenticación manual (ejemplo simplificado)
+            var claims = new List<Claim>
+    {
+        new Claim(ClaimTypes.Name, user.Username),
+        new Claim("Role", user.Role.ToString())  // Usa tu enum
+    };
+
+            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("MyCookieAuth", principal);
+
+            return RedirectToAction("Index", "Home");
         }
 
         private SelectList GetRoles()

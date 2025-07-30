@@ -13,10 +13,6 @@ namespace CapoteSolution.Web.Controllers
         public ServiceReasonsController(IEntityRepository<ServiceReason, byte> repository, IStringLocalizer<ServiceReasonsController> localizer, ILogger<ServiceReasonsController> logger) : base(repository, localizer, logger)
         {
         }
-
-        public IActionResult Index()
-        {
-            return View();
-        }
+        
     }
 }

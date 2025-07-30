@@ -3,6 +3,7 @@ using CapoteSolution.Models.Entities;
 using CapoteSolution.Web.Controllers;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -29,6 +30,7 @@ builder.Services.AddScoped<IEntityRepository<Service, Guid>, EntityRepository<Se
 builder.Services.AddScoped<IEntityRepository<ServiceReason, byte>, EntityRepository<ServiceReason, byte>>();
 builder.Services.AddScoped<IEntityRepository<User, Guid>, EntityRepository<User, Guid>>();
 builder.Services.AddScoped<IEntityRepository<Customer, Guid>, EntityRepository<Customer, Guid>>();
+builder.Services.AddScoped<ContractRepository>();
 
 // Configuración de AutoMapper
 //builder.Services.AddAutoMapper(typeof(Program));
@@ -43,7 +45,29 @@ builder.Services.AddScoped<ServicesController>();
 builder.Services.AddScoped<ServiceReasonsController>();
 builder.Services.AddScoped<UsersController>();
 
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.AccessDeniedPath = "/Account/AccessDenied";
+        options.ExpireTimeSpan = TimeSpan.FromDays(7);
+        options.SlidingExpiration = true;
+    });
+
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("AdminOnly", policy =>
+        policy.RequireClaim("Role", UserRole.Admin.ToString()));
+
+    options.AddPolicy("Technician", policy =>
+        policy.RequireClaim("Role", UserRole.Technician.ToString()));
+});
+
 var app = builder.Build();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -62,6 +86,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Toners}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.Run();
