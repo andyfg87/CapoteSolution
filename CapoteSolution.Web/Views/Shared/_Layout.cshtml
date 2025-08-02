@@ -1,7 +1,6 @@
 ﻿@using System.Security.Claims
 @using CapoteSolution.Web.MenuInfo
 
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -10,219 +9,366 @@
     <title>@ViewData["Title"] - CapoteSolution</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/css/navbar.components.css" asp-append-version="true" />
     <!-- Iconos de Bootstrap -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css">
     <style>
+        /* Estructura principal */
         body {
+            margin: 0;
+            padding: 0;
             display: flex;
-            min-height: 100vh;
             flex-direction: column;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            position: relative;
         }
 
-        .main-container {
-            display: flex;
-            flex: 1;
-        }
-
-        .sidebar {
-            width: 250px;
-            background-color: #f8f9fa;
-            border-right: 1px solid #dee2e6;
-            padding: 20px 0;
-        }
-
-        .content {
-            flex: 1;
-            padding: 20px;
-            background-color: #fff;
-        }
-
+        /* Barra superior fija */
         .top-navbar {
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-            z-index: 1030;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1050;
+            background-color: #f8f9fa;
+            border-bottom: 1px solid #dee2e6;
+            height: 56px;
+            display: flex;
+            align-items: center;
         }
 
-        .sidebar .nav-link {
-            border-radius: 0;
-            color: #495057;
-            padding: 10px 20px;
-            margin: 2px 0;
+        .navbar {
+            padding: 0.5rem 1rem;
+            width: 100%;
         }
 
-            .sidebar .nav-link:hover {
-                background-color: #e9ecef;
-            }
-
-            .sidebar .nav-link.active {
-                background-color: #0d6efd;
-                color: white;
-            }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.25rem;
+            color: #212529;
+        }
 
         .user-info {
-            padding: 10px 15px;
-            border-bottom: 1px solid #dee2e6;
-            margin-bottom: 10px;
-            text-align: center;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
         }
 
         .logout-btn {
-            border: none;
             background: none;
-            color: #dc3545;
-            padding: 8px 12px;
+            border: none;
+            color: #6c757d;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
         }
 
             .logout-btn:hover {
-                background-color: #f8d7da;
-                border-radius: 4px;
+                background-color: #e9ecef;
             }
+
+        /* Menú horizontal fijo */
+        .horizontal-navbar {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            z-index: 1049;
+            background-color: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0 1rem;
+            height: 50px;
+            overflow: visible;
+        }
+
+        .horizontal-nav {
+            display: flex;
+            gap: 1.5rem;
+            height: 100%;
+            align-items: center;
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            overflow: visible;
+        }
+
+        /* Grupos del menú */
+        .nav-group {
+            position: relative;
+            height: 100%;
+            display: flex;
+            align-items: center;
+        }
+
+        .group-title {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            padding: 0 1rem;
+            color: #495057;
+            cursor: pointer;
+            transition: all 0.2s;
+            height: 100%;
+            white-space: nowrap;
+        }
+
+            .group-title:hover {
+                background-color: #f1f1f1;
+                color: #0d6efd;
+            }
+
+        /* Menú desplegable */
+        .nav-group .nav {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            min-width: 220px;
+            background-color: white;
+            border: 1px solid #dee2e6;
+            border-radius: 0 0 4px 4px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 1051;
+            padding: 0.5rem 0;
+            margin: 0;
+            list-style: none;
+        }
+
+        .nav-group:hover .nav {
+            display: block;
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        .nav-item {
+            width: 100%;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: #212529;
+            text-decoration: none;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+            .nav-link:hover {
+                background-color: #f8f9fa;
+            }
+
+            .nav-link.active {
+                font-weight: bold;
+                color: #0d6efd;
+                background-color: #e7f1ff;
+            }
+
+        /* Contenido principal */
+        .main-content {
+            margin-top: 106px; /* 56px (top-navbar) + 50px (horizontal-navbar) */
+            padding: 1.5rem;
+            flex: 1;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #f8f9fa;
+            padding: 1rem 0;
+            margin-top: auto;
+            border-top: 1px solid #dee2e6;
+            text-align: center;
+        }
+
+        /* Animación */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Estilo para el botón de login */
+        .login-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #495057;
+            text-decoration: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+        }
+
+            .login-link:hover {
+                background-color: #e9ecef;
+                color: #0d6efd;
+            }
+
+        /* Estilos responsivos */
+        @@media (max-width: 768px) {
+            .horizontal-nav {
+                gap: 0.5rem;
+                padding: 0 0.5rem;
+            }
+
+            .group-title {
+                padding: 0 0.5rem;
+                font-size: 0.9rem;
+            }
+
+            .main-content {
+                margin-top: 96px; /* Ajuste para móviles */
+                padding: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
     <!-- Barra superior -->
     <header class="top-navbar">
-        <nav class="navbar navbar-expand navbar-light border-bottom">
+        <nav class="navbar navbar-expand navbar-light">
             <div class="container-fluid">
                 <div class="navbar-brand">CapoteSolution</div>
 
                 <div class="navbar-collapse justify-content-end">
                     @if (Context.User.Identity.IsAuthenticated)
                     {
-                        <div class="d-flex align-items-center">
-                            <span class="me-3">@Context.User.FindFirst("FullName")?.Value</span>
+                        <div class="user-info">
+                            <span class="me-2">@Context.User.FindFirst("FullName")?.Value</span>
+                            <span class="badge bg-secondary me-2">@Context.User.FindFirst(ClaimTypes.Role)?.Value</span>
                             <form asp-controller="Account" asp-action="Logout" method="post">
                                 <button type="submit" class="logout-btn">
-                                    <i class="bi bi-box-arrow-right"></i> Salir
+                                    <i class="bi bi-box-arrow-right"></i>
                                 </button>
                             </form>
                         </div>
+                    }
+                    else
+                    {
+                        <a class="login-link" asp-controller="Account" asp-action="Login">
+                            <i class="bi bi-box-arrow-in-right"></i> Iniciar sesión
+                        </a>
                     }
                 </div>
             </div>
         </nav>
     </header>
 
-    <div class="main-container">
-        <!-- Menú lateral -->
-        <div class="sidebar">
-            @if (Context.User.Identity.IsAuthenticated)
-            {
-                <div class="user-info">
-                    <div class="fw-bold">@Context.User.FindFirst("FullName")?.Value</div>
-                    <small class="text-muted">@Context.User.FindFirst(ClaimTypes.Role)?.Value</small>
-                </div>
-            }
-
-            <ul class="nav flex-column">
+    @if (Context.User.Identity.IsAuthenticated)
+    {
+        <!-- Menú horizontal con grupos desplegables -->
+        <div class="horizontal-navbar">
+            <ul class="horizontal-nav">
                 <!-- Grupo Principal -->
-                <li class="nav-item mt-2">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Home" ? "active" : "")"
-                       asp-controller="Home" asp-action="Index">
-                        <i class="bi bi-house-door me-2"></i>Inicio
+                <li class="nav-group">
+                    <a class="group-title" asp-controller="Home" asp-action="Index">
+                        <i class="bi bi-house-door"></i> Inicio
                     </a>
                 </li>
-                
 
                 <!-- Grupo: Administración -->
                 @if (Context.User.Identity.IsAuthenticated && Context.User.FindFirst(ClaimTypes.Role)?.Value == "Admin")
-                {                    
-                    <li class="nav-item mt-3">
-                        <small class="text-muted ps-3">ADMINISTRACIÓN</small>
-                    </li>
+                {
+                    <li class="nav-group">
+                        <span class="group-title">
+                            <i class="bi bi-gear"></i> Administración
+                        </span>
+                        <ul class="nav">
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" ? "active" : "")"
+                                   asp-controller="Users" asp-action="Index">
+                                    <i class="bi bi-people"></i> Usuarios
+                                </a>
+                            </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" ? "active" : "")"
-                           asp-controller="Users" asp-action="Index">
-                            <i class="bi bi-people me-2"></i>Usuarios
-                        </a>
-                    </li>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Brands" ? "active" : "")"
+                                   asp-controller="Brands" asp-action="Index">
+                                    <i class="bi bi-tags"></i> Marcas
+                                </a>
+                            </li>
 
-                    <li class="nav-item">
-                        <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Brands" ? "active" : "")"
-                           asp-controller="Brands" asp-action="Index">
-                            <i class="bi bi-tags me-2"></i>Marcas
-                        </a>
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "MachineModels" ? "active" : "")"
+                                   asp-controller="MachineModels" asp-action="Index">
+                                    <i class="bi bi-pc-display"></i> Modelos
+                                </a>
+                            </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Toners" ? "active" : "")"
+                                   asp-controller="Toners" asp-action="Index">
+                                    <i class="bi bi-ink"></i> Tóners
+                                </a>
+                            </li>
+                        </ul>
                     </li>
                 }
 
                 <!-- Grupo: Equipos -->
-                <li class="nav-item mt-3">
-                    <small class="text-muted ps-3">EQUIPOS</small>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Copiers" ? "active" : "")"
-                       asp-controller="Copiers" asp-action="Index">
-                        <i class="bi bi-printer me-2"></i>Copiadoras
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "MachineModels" ? "active" : "")"
-                       asp-controller="MachineModels" asp-action="Index">
-                        <i class="bi bi-pc-display me-2"></i>Modelos
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Toners" ? "active" : "")"
-                       asp-controller="Toners" asp-action="Index">
-                        <i class="bi bi-ink me-2"></i>Tóners
-                    </a>
+                <li class="nav-group">
+                    <span class="group-title">
+                        <i class="bi bi-printer"></i> Equipos
+                    </span>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Copiers" ? "active" : "")"
+                               asp-controller="Copiers" asp-action="Index">
+                                <i class="bi bi-printer"></i> Copiadoras
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
                 <!-- Grupo: Servicios -->
-                <li class="nav-item mt-3">
-                    <small class="text-muted ps-3">SERVICIOS</small>
+                <li class="nav-group">
+                    <span class="group-title">
+                        <i class="bi bi-tools"></i> Servicios
+                    </span>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Services" ? "active" : "")"
+                               asp-controller="Services" asp-action="Index">
+                                <i class="bi bi-tools"></i> Servicios
+                            </a>
+                        </li>
+                    </ul>
                 </li>
 
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Services" ? "active" : "")"
-                       asp-controller="Services" asp-action="Index">
-                        <i class="bi bi-tools me-2"></i>Servicios
-                    </a>
+                <!-- Grupo: Clientes -->
+                <li class="nav-group">
+                    <span class="group-title">
+                        <i class="bi bi-building"></i> Clientes
+                    </span>
+                    <ul class="nav">
+                        <li class="nav-item">
+                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")"
+                               asp-controller="Customers" asp-action="Index">
+                                <i class="bi bi-building"></i> Clientes
+                            </a>
+                        </li>
+                    </ul>
                 </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "ServiceReasons" ? "active" : "")"
-                       asp-controller="ServiceReasons" asp-action="Index">
-                        <i class="bi bi-clipboard-check me-2"></i>Motivos de Servicio
-                    </a>
-                </li>
-
-                <!-- Grupo: Clientes y Contratos -->
-                <li class="nav-item mt-3">
-                    <small class="text-muted ps-3">CLIENTES</small>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Customers" ? "active" : "")"
-                       asp-controller="Customers" asp-action="Index">
-                        <i class="bi bi-building me-2"></i>Clientes
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Contracts" ? "active" : "")"
-                       asp-controller="Contracts" asp-action="Index">
-                        <i class="bi bi-file-earmark-text"></i>Contratos
-                        @if (ViewData["MenuCounts"] is MenuCounts counts && counts.ActiveContracts > 0)
-                        {
-                            <span class="badge bg-success float-end">@counts.ActiveContracts</span>
-                        }
-                    </a>
-                </li>                
-
             </ul>
         </div>
+    }
 
-        <!-- Contenido principal -->
-        <div class="content">
-            <main role="main" class="pb-3">
-                @RenderBody()
-            </main>
-        </div>
+    <!-- Contenido principal -->
+    <div class="main-content">
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>
     </div>
 
     <footer class="border-top footer text-muted">

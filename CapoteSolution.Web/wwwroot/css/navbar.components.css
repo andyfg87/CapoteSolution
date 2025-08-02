@@ -1,0 +1,54 @@
+﻿/* Contenedor principal del menú horizontal */
+.horizontal-navbar {
+    overflow-x: auto; /* Scroll horizontal si hay muchos grupos */
+    white-space: nowrap;
+    background-color: #f8f9fa;
+    padding: 0.5rem 1rem;
+}
+
+/* Lista principal (flex horizontal) */
+.horizontal-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 1.5rem; /* Espacio entre grupos */
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+}
+
+/* Cada grupo de navegación */
+.nav-group {
+    display: inline-block; /* Mantiene los grupos en línea */
+}
+
+/* Títulos de grupo */
+.group-title {
+    display: block;
+    font-weight: bold;
+    padding: 0.5rem 0;
+    color: #6c757d; /* Color secundario de Bootstrap */
+    border-bottom: 1px solid #dee2e6; /* Línea divisoria opcional */
+    margin-bottom: 0.5rem;
+}
+
+/* Subgrupo vertical (nav-items) */
+.nav-group .nav {
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+/* Estilo para los nav-link (opcional) */
+.nav-link {
+    padding: 0.5rem 1rem;
+    border-radius: 0.25rem;
+}
+
+    .nav-link:hover {
+        background-color: #e9ecef;
+    }
+
+    .nav-link.active {
+        font-weight: bold;
+        background-color: #e7f1ff;
+        color: #0d6efd;
+    }
