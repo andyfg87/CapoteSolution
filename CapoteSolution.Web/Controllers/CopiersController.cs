@@ -20,7 +20,7 @@ namespace CapoteSolution.Web.Controllers
 
         public CopiersController(
             IEntityRepository<Copier, string> repository,
-            IEntityRepository<MachineModel, Guid> machineModelRepo,            
+            IEntityRepository<MachineModel, Guid> machineModelRepo,
             IEntityRepository<Brand, Guid> brandRepo,
             IEntityRepository<Customer, Guid> customerRepo,
             IStringLocalizer<CopiersController> localizer,
@@ -37,8 +37,8 @@ namespace CapoteSolution.Web.Controllers
             var query = await _repository.GetAllWithNestedInclude(
                 nameof(MachineModel),
                 nameof(Customer),
-                nameof(MachineModel)+"."+nameof(Toner),
-                nameof(MachineModel)+"."+nameof(Brand));
+                nameof(MachineModel) + "." + nameof(Toner),
+                nameof(MachineModel) + "." + nameof(Brand));
 
             var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
             return View(paginatedData);
@@ -66,7 +66,7 @@ namespace CapoteSolution.Web.Controllers
             try
             {
                 var entity = inputViewModel.Export();
-               entity.Id = inputViewModel.Id;
+                entity.Id = inputViewModel.Id;
                 await _repository.AddAsync(entity);
                 await _repository.SaveChangesAsync();
 
@@ -83,24 +83,38 @@ namespace CapoteSolution.Web.Controllers
 
         public override async Task<IActionResult> Edit(string key)
         {
-            var model = await base.Edit(key) as ViewResult;
-            var copierInputVM = model.Model as CopierInputVM;
-            copierInputVM.AvailableMachineModels = await GetMachineModels();
-            copierInputVM.AvailableBrands = await GetBrands();
-            copierInputVM.AvailableCustomers = await GetCustomers();
-            return View(copierInputVM);
+            var entity = await _repository.GetAllWithNestedInclude(
+                nameof(MachineModel),
+                nameof(Customer),
+                nameof(MachineModel) + "." + nameof(Toner),
+                nameof(MachineModel) + "." + nameof(Brand))
+                .Result.FirstAsync(c => c.Id == key);
+
+            if (entity != null)
+            {
+
+                var copierInputVM = new CopierInputVM();
+                copierInputVM.Import(entity);
+                copierInputVM.AvailableMachineModels = await GetMachineModels();
+                copierInputVM.AvailableBrands = await GetBrands();
+                copierInputVM.AvailableCustomers = await GetCustomers();
+                return View(copierInputVM);
+            }
+
+            return NotFound();
+
         }
 
         [HttpPost]
-        public override Task<IActionResult> EditWithKeyAndModel(string id,CopierInputVM inputModel)
+        public override Task<IActionResult> EditWithKeyAndModel(string id, CopierInputVM inputModel)
         {
             return base.Edit(inputModel);
-        }        
+        }
 
         [HttpGet]
         public async Task<IActionResult> ContractDetails(string id)
         {
-            var contract = await _repository.GetAll().Result                
+            var contract = await _repository.GetAll().Result
                 .FirstOrDefaultAsync(c => c.Id == id);
 
             if (contract == null)
@@ -111,13 +125,13 @@ namespace CapoteSolution.Web.Controllers
             return View(contract);
         }
 
-        
+
         public override async Task<IActionResult> Delete(string key)
         {
-            var result =await _repository.GetAllWithNestedInclude(nameof(MachineModel));
+            var result = await _repository.GetAllWithNestedInclude(nameof(MachineModel));
             var entity = result.FirstAsync(c => c.Id == key).Result;
 
-            if(entity == null)
+            if (entity == null)
                 return NotFound();
 
             var viewModel = new CopierDisplayVM();
@@ -127,7 +141,7 @@ namespace CapoteSolution.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetMachineModelsByBrand(Guid brandId)
+        public async Task<IActionResult> GetMachineModelsByBrand(Guid brandId, Guid machineModelId)
         {
             if (brandId == Guid.Empty)
             {
@@ -143,7 +157,8 @@ namespace CapoteSolution.Web.Controllers
                 .Select(mm => new SelectListItem
                 {
                     Value = mm.Id.ToString(),
-                    Text = $"{mm.Brand.Name} - {mm.Name}"
+                    Text = $"{mm.Brand.Name} - {mm.Name}",
+                    Selected = mm.Id == machineModelId
                 })
                 .ToListAsync();
 
@@ -161,7 +176,7 @@ namespace CapoteSolution.Web.Controllers
         public async Task<SelectList> GetBrands()
         {
             var brands = await _brandRepo.GetAll().Result
-                .Select( b => new SelectListItem
+                .Select(b => new SelectListItem
                 {
                     Value = b.Id.ToString(),
                     Text = b.Name
@@ -172,11 +187,12 @@ namespace CapoteSolution.Web.Controllers
         }
 
         private async Task<SelectList> GetMachineModels(string IdBrand = "")
-        {            
+        {
             var machineModels = await _machineModelRepo.GetAll().Result
                 .Include(mm => mm.Brand)
                 .Where(mm => mm.BrandId.ToString() == IdBrand)
-                .Select(mm => new {
+                .Select(mm => new
+                {
                     mm.Id,
                     DisplayText = $"{mm.Brand.Name} - {mm.Name}"
                 })
@@ -188,7 +204,7 @@ namespace CapoteSolution.Web.Controllers
         private async Task<SelectList> GetCustomers()
         {
             var customers = await _customerRepo.GetAll().Result
-                .Select(c => new { c.Id, DisplayText = c.CustomerName})
+                .Select(c => new { c.Id, DisplayText = c.CustomerName })
                 .ToListAsync();
 
             return new SelectList(customers, "Id", "DisplayText");

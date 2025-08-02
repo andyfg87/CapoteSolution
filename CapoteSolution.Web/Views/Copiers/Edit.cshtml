@@ -47,7 +47,8 @@
 
                             <div class="form-group mb-3">
                                 <label asp-for="BrandId" class="control-label"></label>
-                                <select asp-for="BrandId" asp-items="Model.AvailableBrands" class="form-select"
+                                <select asp-for="BrandId" asp-items="Model.AvailableBrands" class="form-select" 
+                                        onload="loadMachineModels(this.value, @Model.MachineModelId)"
                                         onchange="loadMachineModels(this.value)">
                                     <option value="">Seleccione una marca</option>
                                 </select>
@@ -191,12 +192,14 @@
 
             // Si hay una marca seleccionada (en caso de error de validación)
             var initialBrandId = $('#BrandId').val();
+            //var initialmachineModelId = $('#BrandId').val();
+             
             if (initialBrandId) {
                 loadMachineModels(initialBrandId);
             }
         });
 
-        function loadMachineModels(brandId) {
+        function loadMachineModels(brandId, machineModelId) {
             var machineModelSelect = $('#machineModelSelect');
             machineModelSelect.prop('disabled', true);
 
@@ -211,12 +214,16 @@
             $.ajax({
                 url: '/Copiers/GetMachineModelsByBrand',
                 type: 'GET',
-                data: { brandId: brandId },
+                data: 
+                {
+                    brandId: brandId,
+                    machineModelId: machineModelId
+                },
                 success: function (data) {
                     var options = '<option value="">Seleccione un modelo</option>';
 
                     $.each(data, function (i, item) {
-                        options += `<option value="${item.value}">${item.text}</option>`;
+                        options += `<option selected="${item.selected}" value="${item.value}">${item.text}</option>`;
                     });
 
                     machineModelSelect.html(options).prop('disabled', false);
