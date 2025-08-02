@@ -31,7 +31,7 @@ namespace CapoteSolution.Web.Controllers
             return View(paginatedData);
         }
 
-        public override async  Task<IActionResult> Create()
+        /*public override async  Task<IActionResult> Create()
         {
             var model = new ContractInputVM
             {
@@ -39,9 +39,9 @@ namespace CapoteSolution.Web.Controllers
                 AvailableCustomers = await GetAvailableCustomers()
             };
             return View(model);
-        }
+        }*/
 
-        public override async Task<IActionResult> Edit(Guid key)
+       /* public override async Task<IActionResult> Edit(Guid key)
         {
             var entity = _repository.GetByIdAsync(key).Result;
             if (entity == null)
@@ -52,7 +52,7 @@ namespace CapoteSolution.Web.Controllers
             model.Import(entity);
 
             return View(model);
-        }
+        }*/
 
         [HttpGet]
         public IActionResult Details(Guid key)
@@ -80,7 +80,7 @@ namespace CapoteSolution.Web.Controllers
         }
 
 
-        private async Task<SelectList> GetAvailableCopiers()
+       /* private async Task<SelectList> GetAvailableCopiers()
         {
             var copiers = await _copierRepo.GetAll().Result
                 .Where(c => c.Contract == null) //Solo las impersoras sin contrato
@@ -88,9 +88,9 @@ namespace CapoteSolution.Web.Controllers
                 .ToListAsync();
 
             return new SelectList(copiers, "Id", "DisplayText");
-        }
+        }*/
 
-        private async Task<SelectList> GetAvailableCustomers()
+        /*private async Task<SelectList> GetAvailableCustomers()
         {
             var customers = await _customerRepo.GetAll().Result
                 .Where(c => c.Contract == null) //Solo las impersoras sin contrato
@@ -116,6 +116,6 @@ namespace CapoteSolution.Web.Controllers
                 .ToListAsync();
 
             return new SelectList(customers, "Id", "DisplayText");
-        }
+        }*/
     }
 }

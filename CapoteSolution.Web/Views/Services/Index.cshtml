@@ -14,7 +14,7 @@
     <thead class="table-dark">
         <tr>
             <th>Fecha</th>
-            <th>Contrato</th>
+            <th>Impresora</th>
             <th>Motivo</th>
             <th>Técnico</th>
             <th>Acciones</th>
@@ -25,13 +25,13 @@
         {
             <tr>
                 <td>@item.ServiceDate.ToShortDateString()</td>
-                <td>@item.ContractInfo</td>
+                <td>@item.CopierInfo</td>
                 <td>@item.ServiceReason</td>
                 <td>@item.TechnicianName</td>
                 <td>
                     <div class="btn-group" role="group">
-                        <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info">Detalles</a>
-                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-primary">Editar</a>
+                        <a asp-action="Details" asp-route-key="@item.Id" class="btn btn-sm btn-info">Detalles</a>
+                        <a asp-action="Edit" asp-route-key="@item.Id" class="btn btn-sm btn-primary">Editar</a>
                     </div>
                 </td>
             </tr>

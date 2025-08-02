@@ -29,8 +29,8 @@ namespace CapoteSolution.Web.Models.ViewModels
         public string TicketNumber { get; set; }
 
         [Required]
-        [Display(Name = "Contrato")]
-        public Guid ContractId { get; set; }
+        [Display(Name = "Impresora")]
+        public string CopierId { get; set; }
 
         [Required]
         [Display(Name = "Motivo")]
@@ -41,7 +41,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         public Guid TechnicianId { get; set; }
 
         // Listas para dropdowns
-        public SelectList? AvailableContracts { get; set; }
+        public SelectList? AvailableCopiers { get; set; }
         public SelectList? AvailableTechnicians { get; set; }
         public SelectList? ServiceReasons { get; set; }
 
@@ -61,7 +61,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             BlackCounter = entity.BlackCounter;
             ColorCounter = entity.ColorCounter;            
             BlackTonerQty = entity.BlackTonerQty;
-            ContractId = entity.ContractId;
+            CopierId = entity.CopierId;
             ServiceReasonId = entity.ServiceReasonId;
             TechnicianId = entity.TechnicianId;
             TicketNumber = entity.TicketNumber;
@@ -73,7 +73,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             entity.BlackCounter = BlackCounter ?? entity.BlackCounter;
             entity.ColorCounter = ColorCounter ?? entity.ColorCounter;
             entity.BlackTonerQty = BlackTonerQty;
-            entity.ContractId = ContractId;
+            entity.CopierId = CopierId;
             entity.ServiceReasonId = ServiceReasonId;
             entity.TechnicianId = TechnicianId;
             entity.TicketNumber = TicketNumber;

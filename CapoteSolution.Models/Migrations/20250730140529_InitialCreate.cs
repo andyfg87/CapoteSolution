@@ -113,24 +113,6 @@ namespace CapoteSolution.Models.Migrations
                     MachineEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IPAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Comments = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MachineModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Copiers", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Copiers_MachineModels_MachineModelId",
-                        column: x => x.MachineModelId,
-                        principalTable: "MachineModels",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Contract",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     PlanBW = table.Column<int>(type: "int", nullable: false),
                     PlanColor = table.Column<int>(type: "int", nullable: false),
@@ -139,24 +121,24 @@ namespace CapoteSolution.Models.Migrations
                     InvoiceDay = table.Column<int>(type: "int", nullable: false),
                     MonthlyPrice = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ChargeExtras = table.Column<bool>(type: "bit", nullable: false),
-                    Comments = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
-                    CopierId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    MachineModelId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CustomerId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Contract", x => x.Id);
+                    table.PrimaryKey("PK_Copiers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Contract_Copiers_CopierId",
-                        column: x => x.CopierId,
-                        principalTable: "Copiers",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Contract_Customers_CustomerId",
+                        name: "FK_Copiers_Customers_CustomerId",
                         column: x => x.CustomerId,
                         principalTable: "Customers",
                         principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Copiers_MachineModels_MachineModelId",
+                        column: x => x.MachineModelId,
+                        principalTable: "MachineModels",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -174,16 +156,16 @@ namespace CapoteSolution.Models.Migrations
                     TicketNumber = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     BlackTonerQty = table.Column<int>(type: "int", nullable: true),
                     ServiceReasonId = table.Column<byte>(type: "tinyint", nullable: false),
-                    ContractId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CopierId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     TechnicianId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Services", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Services_Contract_ContractId",
-                        column: x => x.ContractId,
-                        principalTable: "Contract",
+                        name: "FK_Services_Copiers_CopierId",
+                        column: x => x.CopierId,
+                        principalTable: "Copiers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
@@ -217,14 +199,8 @@ namespace CapoteSolution.Models.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Contract_CopierId",
-                table: "Contract",
-                column: "CopierId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Contract_CustomerId",
-                table: "Contract",
+                name: "IX_Copiers_CustomerId",
+                table: "Copiers",
                 column: "CustomerId",
                 unique: true);
 
@@ -250,9 +226,9 @@ namespace CapoteSolution.Models.Migrations
                 column: "TonerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Services_ContractId",
+                name: "IX_Services_CopierId",
                 table: "Services",
-                column: "ContractId");
+                column: "CopierId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Services_ServiceReasonId",
@@ -284,16 +260,13 @@ namespace CapoteSolution.Models.Migrations
                 name: "Services");
 
             migrationBuilder.DropTable(
-                name: "Contract");
+                name: "Copiers");
 
             migrationBuilder.DropTable(
                 name: "ServiceReasons");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Copiers");
 
             migrationBuilder.DropTable(
                 name: "Customers");

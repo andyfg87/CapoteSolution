@@ -24,7 +24,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         // Toner (solo aplica para ServiceReason.TonerChange)
         public int? BlackTonerQty { get; set; }  // Cantidad de toners cambiados        OK
         public string ServiceReason { get; set; }
-        public string ContractInfo { get; set; }        
+        public string CopierInfo { get; set; }        
        
         public string TechnicianName { get; set; } //OK
 
@@ -38,7 +38,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             TicketNumber = entity.TicketNumber;
             BlackTonerQty = entity.BlackTonerQty;
             ServiceReason = entity.ServiceReason.Name;
-            ContractInfo = entity.Contract.Comments;
+            CopierInfo = $"{entity.Copier?.Customer?.CustomerName} {entity.Copier?.MachineEmail}";
             TechnicianName = $"{entity.Technician?.FirstName} {entity.Technician?.LastName}";
         }
     }

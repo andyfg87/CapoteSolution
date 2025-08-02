@@ -15,9 +15,9 @@
         <thead class="table-dark">
             <tr>
                 <th>ID Impresora</th>
-                <th>N° Serie</th>
-                <th>Modelo</th>
-                <th>IP</th>
+                <th>Cliente</th>
+                <th>Fecha de Facturación</th>
+                <th>Correo</th>               
                 <th>Contrato</th>
                 <th>Acciones</th>
             </tr>
@@ -27,9 +27,9 @@
             {
                 <tr>
                     <td>@item.Id</td>
-                    <td>@item.SerialNumber</td>
-                    <td>@item.MachineModelInfo</td>
-                    <td>@item.IPAddress</td>
+                    <td>@item.CustomerName</td>
+                    <td>@item.InvoiceDay</td>
+                    <td>@item.MachineEmail</td>>                    
                     <td>
                         <span class="badge @(item.ContractStatus == "Active" ? "bg-success" : "bg-warning")">
                             @item.ContractStatus
@@ -43,8 +43,9 @@
                         </div>
                     </td>
                 </tr>
-            }
-            @await Html.PartialAsync("_Pagination", Model)
+            }           
         </tbody>
     </table>
 </div>
+
+@await Html.PartialAsync("_Pagination", Model)

@@ -20,8 +20,28 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Display(Name = "Modelo")]
         public string MachineModelInfo { get; set; }
 
-        [Display(Name = "Contrato")]
+        [Display(Name = "Plan B/N")]
+        public int PlanBW { get; set; }
+
+        [Display(Name = "Plan Color")]
+        public int PlanColor { get; set; }
+
+        [Display(Name = "Precio Mensual")]
+        public decimal MonthlyPrice { get; set; }
+
+        [Display(Name = "Estado Contrato")]
         public string ContractStatus { get; set; }
+
+        [Display(Name = "Cliente")]
+        public string CustomerName { get; set; }
+
+        [Display(Name = "Toner")]
+        public string TonerName { get; set; }
+
+        [Display(Name = "Marca")]
+        public string BrandName { get; set; }
+        [Display(Name = "Día de Facturación")]
+        public int InvoiceDay { get; set; }
 
         public void Import(Copier entity)
         {
@@ -30,7 +50,14 @@ namespace CapoteSolution.Web.Models.ViewModels
             IPAddress = entity.IPAddress;
             MachineEmail = entity.MachineEmail;
             MachineModelInfo = $"{entity.MachineModel?.Brand?.Name} {entity.MachineModel?.Name}";
-            ContractStatus = entity.Contract?.Status.ToString() ?? "Sin Contrato";
+            PlanBW = entity.PlanBW;
+            PlanColor = entity.PlanColor;
+            MonthlyPrice = entity.MonthlyPrice;
+            ContractStatus = entity.Status.ToString();
+            InvoiceDay = entity.InvoiceDay;
+            CustomerName = entity.Customer?.CustomerName;
+            TonerName = entity.MachineModel?.Toner.Model;
+            BrandName = entity.MachineModel?.Brand?.Name;
         }
     }
 }

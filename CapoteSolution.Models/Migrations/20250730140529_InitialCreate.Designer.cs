@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapoteSolution.Models.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250723152702_InitialCreate")]
+    [Migration("20250730140529_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -44,11 +44,10 @@ namespace CapoteSolution.Models.Migrations
                     b.ToTable("Brands");
                 });
 
-            modelBuilder.Entity("CapoteSolution.Models.Entities.Contract", b =>
+            modelBuilder.Entity("CapoteSolution.Models.Entities.Copier", b =>
                 {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<bool>("ChargeExtras")
                         .HasColumnType("bit");
@@ -56,10 +55,6 @@ namespace CapoteSolution.Models.Migrations
                     b.Property<string>("Comments")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("CopierId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
 
                     b.Property<Guid>("CustomerId")
                         .HasColumnType("uniqueidentifier");
@@ -70,8 +65,19 @@ namespace CapoteSolution.Models.Migrations
                     b.Property<decimal>("ExtraColor")
                         .HasColumnType("decimal(18,2)");
 
+                    b.Property<string>("IPAddress")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("InvoiceDay")
                         .HasColumnType("int");
+
+                    b.Property<string>("MachineEmail")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("MachineModelId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<decimal>("MonthlyPrice")
                         .HasColumnType("decimal(18,2)");
@@ -82,6 +88,11 @@ namespace CapoteSolution.Models.Migrations
                     b.Property<int>("PlanColor")
                         .HasColumnType("int");
 
+                    b.Property<string>("SerialNumber")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
 
@@ -90,41 +101,8 @@ namespace CapoteSolution.Models.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CopierId")
-                        .IsUnique();
-
                     b.HasIndex("CustomerId")
                         .IsUnique();
-
-                    b.ToTable("Contract");
-                });
-
-            modelBuilder.Entity("CapoteSolution.Models.Entities.Copier", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IPAddress")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("MachineEmail")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("MachineModelId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("SerialNumber")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)");
-
-                    b.HasKey("Id");
 
                     b.HasIndex("MachineModelId");
 
@@ -196,8 +174,9 @@ namespace CapoteSolution.Models.Migrations
                     b.Property<int?>("ColorDiff")
                         .HasColumnType("int");
 
-                    b.Property<Guid>("ContractId")
-                        .HasColumnType("uniqueidentifier");
+                    b.Property<string>("CopierId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<DateTime>("Date")
                         .HasColumnType("datetime2");
@@ -221,7 +200,7 @@ namespace CapoteSolution.Models.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ContractId");
+                    b.HasIndex("CopierId");
 
                     b.HasIndex("ServiceReasonId");
 
@@ -321,32 +300,21 @@ namespace CapoteSolution.Models.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("CapoteSolution.Models.Entities.Contract", b =>
-                {
-                    b.HasOne("CapoteSolution.Models.Entities.Copier", "Copier")
-                        .WithOne("Contract")
-                        .HasForeignKey("CapoteSolution.Models.Entities.Contract", "CopierId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
-
-                    b.HasOne("CapoteSolution.Models.Entities.Customer", "Customer")
-                        .WithOne("Contract")
-                        .HasForeignKey("CapoteSolution.Models.Entities.Contract", "CustomerId")
-                        .OnDelete(DeleteBehavior.ClientNoAction)
-                        .IsRequired();
-
-                    b.Navigation("Copier");
-
-                    b.Navigation("Customer");
-                });
-
             modelBuilder.Entity("CapoteSolution.Models.Entities.Copier", b =>
                 {
+                    b.HasOne("CapoteSolution.Models.Entities.Customer", "Customer")
+                        .WithOne("Copier")
+                        .HasForeignKey("CapoteSolution.Models.Entities.Copier", "CustomerId")
+                        .OnDelete(DeleteBehavior.ClientNoAction)
+                        .IsRequired();
+
                     b.HasOne("CapoteSolution.Models.Entities.MachineModel", "MachineModel")
                         .WithMany("Copiers")
                         .HasForeignKey("MachineModelId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
+
+                    b.Navigation("Customer");
 
                     b.Navigation("MachineModel");
                 });
@@ -372,9 +340,9 @@ namespace CapoteSolution.Models.Migrations
 
             modelBuilder.Entity("CapoteSolution.Models.Entities.Service", b =>
                 {
-                    b.HasOne("CapoteSolution.Models.Entities.Contract", "Contract")
+                    b.HasOne("CapoteSolution.Models.Entities.Copier", "Copier")
                         .WithMany("Services")
-                        .HasForeignKey("ContractId")
+                        .HasForeignKey("CopierId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
@@ -390,7 +358,7 @@ namespace CapoteSolution.Models.Migrations
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.Navigation("Contract");
+                    b.Navigation("Copier");
 
                     b.Navigation("ServiceReason");
 
@@ -402,20 +370,14 @@ namespace CapoteSolution.Models.Migrations
                     b.Navigation("MachineModels");
                 });
 
-            modelBuilder.Entity("CapoteSolution.Models.Entities.Contract", b =>
+            modelBuilder.Entity("CapoteSolution.Models.Entities.Copier", b =>
                 {
                     b.Navigation("Services");
                 });
 
-            modelBuilder.Entity("CapoteSolution.Models.Entities.Copier", b =>
-                {
-                    b.Navigation("Contract")
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("CapoteSolution.Models.Entities.Customer", b =>
                 {
-                    b.Navigation("Contract")
+                    b.Navigation("Copier")
                         .IsRequired();
                 });
 

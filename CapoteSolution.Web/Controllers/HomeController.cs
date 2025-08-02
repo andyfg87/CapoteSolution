@@ -33,7 +33,7 @@ namespace CapoteSolution.Web.Controllers
         {
             var counts = new  MenuCounts
             {
-                ActiveContracts = _contractRepository.ActiveContracts()
+                //ActiveContracts = _contractRepository.ActiveContracts()
             };
 
             ViewData["MenuCounts"] = counts;

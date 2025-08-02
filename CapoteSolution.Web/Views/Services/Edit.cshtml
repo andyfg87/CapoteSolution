@@ -1,7 +1,7 @@
 ﻿@model CapoteSolution.Web.Models.ViewModels.ServiceInputVM
 
 @{
-    ViewData["Title"] = "Registrar Nuevo Servicio";
+    ViewData["Title"] = "Editar Servicio";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,9 +9,9 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create">
+        <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
+            <input type="hidden" asp-for="Id" />
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
@@ -85,10 +85,10 @@
                         <span asp-validation-for="TicketNumber" class="text-danger"></span>
                     </div>
                 </div>
-            </div>           
+            </div>
 
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Registrar Servicio</button>
+                <button type="submit" class="btn btn-primary">Modificar Servicio</button>
                 <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
             </div>
         </form>
@@ -120,3 +120,4 @@
         });
     </script>
 }
+

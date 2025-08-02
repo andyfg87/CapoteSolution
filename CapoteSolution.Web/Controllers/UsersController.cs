@@ -11,7 +11,7 @@ using System.Security.Claims;
 
 namespace CapoteSolution.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class UsersController :Controller
     {
         private readonly IEntityRepository<User, Guid> _userRepo;

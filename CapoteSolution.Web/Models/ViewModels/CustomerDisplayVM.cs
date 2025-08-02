@@ -16,7 +16,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         {
             Id = entity.Id;
             CustomerName = entity.CustomerName;
-            HasContract = entity.Contract?.Status == ContractStatus.Active ? "Contratado": "Sin Contrato";
+            HasContract = entity.Copier?.Status == ContractStatus.Active ? "Contratado": "Sin Contrato";
         }
     }
 }

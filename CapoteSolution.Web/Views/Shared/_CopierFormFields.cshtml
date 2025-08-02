@@ -1,4 +1,5 @@
-﻿@model CapoteSolution.Web.Models.ViewModels.CopierInputVM
+﻿@using CapoteSolution.Models.Entities
+@model CapoteSolution.Web.Models.ViewModels.CopierInputVM
 
 <div class="form-group mb-3">
     <label asp-for="Id" class="control-label"></label>
@@ -31,6 +32,15 @@
 </div>
 
 <div class="form-group mb-3">
+    <label asp-for="BrandId" class="control-label"></label>
+    <select asp-for="BrandId" asp-items="Model.AvailableBrands" class="form-select"
+            onchange="loadMachineModels(this.value)">
+        <option value="">Seleccione una marca</option>
+    </select>
+    <span asp-validation-for="BrandId" class="text-danger"></span>
+</div>
+
+<div class="form-group mb-3">
     <label asp-for="MachineModelId" class="control-label"></label>
     <select asp-for="MachineModelId" asp-items="Model.AvailableMachineModels" class="form-select">
         <option value="">Seleccione un modelo</option>
@@ -44,4 +54,92 @@
     <span asp-validation-for="Comments" class="text-danger"></span>
 </div>
 
+<!-- Sección de Contrato -->
+<div class="card mt-4">
+    <div class="card-header bg-primary text-white">
+        <h5>Información de Contrato</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="StartDate" class="control-label"></label>
+                    <input asp-for="StartDate" class="form-control" type="date" />
+                    <span asp-validation-for="StartDate" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="Status" class="control-label"></label>
+                    <select asp-for="Status" class="form-select"
+                            asp-items="Html.GetEnumSelectList<ContractStatus>()">
+                    </select>
+                    <span asp-validation-for="Status" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group mb-3">
+                    <label asp-for="CustomerId" class="control-label"></label>
+                    <select asp-for="CustomerId" class="form-select"
+                            asp-items="Model.AvailableCustomers">
+                    </select>
+                    <span asp-validation-for="CustomerId" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label asp-for="PlanBW" class="control-label"></label>
+                    <input asp-for="PlanBW" class="form-control" />
+                    <span asp-validation-for="PlanBW" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label asp-for="PlanColor" class="control-label"></label>
+                    <input asp-for="PlanColor" class="form-control" />
+                    <span asp-validation-for="PlanColor" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label asp-for="InvoiceDay" class="control-label"></label>
+                    <input asp-for="InvoiceDay" class="form-control" min="1" max="28" />
+                    <span asp-validation-for="InvoiceDay" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label asp-for="ExtraBWPrice" class="control-label"></label>
+                    <input asp-for="ExtraBWPrice" class="form-control" />
+                    <span asp-validation-for="ExtraBWPrice" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label asp-for="ExtraColorPrice" class="control-label"></label>
+                    <input asp-for="ExtraColorPrice" class="form-control" />
+                    <span asp-validation-for="ExtraColorPrice" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group mb-3">
+                    <label asp-for="MonthlyPrice" class="control-label"></label>
+                    <input asp-for="MonthlyPrice" class="form-control" />
+                    <span asp-validation-for="MonthlyPrice" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group form-check mb-3">
+            <input asp-for="ChargeExtras" class="form-check-input" />
+            <label asp-for="ChargeExtras" class="form-check-label"></label>
+        </div>
+    </div>
+</div>
 <!-- Repetir para los demás campos (IPAddress, MachineEmail, etc.) -->

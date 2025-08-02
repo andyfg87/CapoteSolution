@@ -16,14 +16,14 @@ namespace CapoteSolution.Web.Models.ViewModels
 
         public void Import(Contract entity)
         {
-            Id = entity.Id;
+            /*Id = entity.Id;
             CopierInfo = $"{entity.Copier?.SerialNumber} ({entity.Copier?.MachineModel?.Name})";
             CustomerName = $"{entity.Customer?.CustomerName ?? string.Empty}";
             StartDate = entity.StartDate;
             Status = entity.Status.ToString();
             ChargeExtras = entity.ChargeExtras;
             MonthlyPrice = entity.MonthlyPrice;
-            InvoiceDay = entity.InvoiceDay;
+            InvoiceDay = entity.InvoiceDay;*/
         }
     }
 }

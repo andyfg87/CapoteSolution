@@ -65,7 +65,7 @@ namespace CapoteSolution.Web.Models.ViewModels
 
         public void Import(Contract entity)
         {
-            Id = entity.Id;
+            /*Id = entity.Id;
             CopierId = entity.CopierId;
             CustomerId = entity.CustomerId;
             StartDate = entity.StartDate;
@@ -78,12 +78,12 @@ namespace CapoteSolution.Web.Models.ViewModels
             ChargeExtras = entity.ChargeExtras;
             Comments = entity.Comments;
             Status = entity.Status;
-            SelectStatus = entity.Status == ContractStatus.Active ;
+            SelectStatus = entity.Status == ContractStatus.Active ;*/
         }
 
         public void Merge(Contract entity)
         {
-            entity.CopierId = CopierId;
+            /*entity.CopierId = CopierId;
             entity.CustomerId = CustomerId;
             entity.StartDate = StartDate;
             entity.PlanBW = PlanBW;
@@ -94,7 +94,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             entity.MonthlyPrice = MonthlyPrice;
             entity.ChargeExtras = ChargeExtras;
             entity.Comments = Comments;
-            entity.Status = SelectStatus ? ContractStatus.Active : ContractStatus.Inactive; ;
+            entity.Status = SelectStatus ? ContractStatus.Active : ContractStatus.Inactive; ;*/
         }       
     }
 }
