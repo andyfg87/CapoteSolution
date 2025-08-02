@@ -15,9 +15,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-// Registra el PasswordHasher
 builder.Services.AddScoped<IPasswordHasher<User>, PasswordHasher<User>>();
 
 // Configuración de repositorios
@@ -31,9 +29,6 @@ builder.Services.AddScoped<IEntityRepository<ServiceReason, byte>, EntityReposit
 builder.Services.AddScoped<IEntityRepository<User, Guid>, EntityRepository<User, Guid>>();
 builder.Services.AddScoped<IEntityRepository<Customer, Guid>, EntityRepository<Customer, Guid>>();
 builder.Services.AddScoped<ContractRepository>();
-
-// Configuración de AutoMapper
-//builder.Services.AddAutoMapper(typeof(Program));
 
 // Configuración de controladores
 builder.Services.AddScoped<TonersController>();
@@ -54,7 +49,6 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.SlidingExpiration = true;
     });
 
-
 builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("AdminOnly", policy =>
@@ -73,7 +67,6 @@ app.UseAuthorization();
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
 
@@ -84,8 +77,24 @@ app.UseRouting();
 
 app.UseAuthorization();
 
+// Configuración de ruta por defecto con redirección condicional
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+// Middleware para redirigir usuarios no autenticados
+app.Use(async (context, next) =>
+{
+    if (!context.User.Identity.IsAuthenticated &&
+        !context.Request.Path.StartsWithSegments("/Account") &&
+        !context.Request.Path.StartsWithSegments("/Home") &&
+        context.Request.Path == "/")
+    {
+        context.Response.Redirect("/Account/Login");
+        return;
+    }
+
+    await next();
+});
 
 app.Run();
