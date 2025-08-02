@@ -16,7 +16,7 @@ namespace CapoteSolution.Web.Controllers
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
-            var customers = _repository.GetAllWithNestedInclude(nameof(Contract));
+            var customers = _repository.GetAllWithNestedInclude(nameof(Copier));
 
             var paginatedData = await GetPaginatedData(customers.Result, pageNumber, pageSize);
 

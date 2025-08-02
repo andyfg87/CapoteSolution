@@ -23,6 +23,6 @@ namespace CapoteSolution.Models.Entities
 
         
         // Relación inversa
-        public virtual Contract Contract { get; set; }// Relacion 1 * Contract
+        public virtual Copier Copier { get; set; }// Relacion 1 * Contract
     }
 }

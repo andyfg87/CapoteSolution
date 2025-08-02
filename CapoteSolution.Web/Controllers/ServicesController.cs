@@ -12,13 +12,13 @@ namespace CapoteSolution.Web.Controllers
     [Authorize(Roles = $"{nameof(UserRole.Admin)},{nameof(UserRole.Technician)}")]
     public class ServicesController : AbstractEntityManagementController<Service, Guid, ServiceInputVM, ServiceDisplayVM>
     {
-        private readonly IEntityRepository<Contract, Guid> _contractRepo;
+        private readonly IEntityRepository<Copier, string> _copierRepo;
         private readonly IEntityRepository<User, Guid> _userRepo;
 
-        public ServicesController(IEntityRepository<Service, Guid> repository, IEntityRepository<Contract, Guid> contractRepo,
+        public ServicesController(IEntityRepository<Service, Guid> repository, IEntityRepository<Copier, string> copierRepo,
         IEntityRepository<User, Guid> userRepo, IStringLocalizer<ServicesController> localizer, ILogger<ServicesController> logger) : base(repository, localizer, logger)
         {
-            _contractRepo = contractRepo;
+            _copierRepo = copierRepo;
             _userRepo = userRepo;
         }
 
@@ -27,7 +27,8 @@ namespace CapoteSolution.Web.Controllers
             var services = _repository.GetAllWithNestedInclude(
                 "Technician",
                 nameof(ServiceReason),
-                nameof(Contract));
+                nameof(Copier),
+                nameof(Copier)+"."+nameof(Customer));
 
             var paginatedData = await GetPaginatedData(services.Result, pageNumber, pageSize);
             return View(paginatedData);
@@ -40,18 +41,48 @@ namespace CapoteSolution.Web.Controllers
             var model = new ServiceInputVM
             {
                 ServiceDate = DateTime.Now,
-                AvailableContracts = await GetActiveContracts(),
+                AvailableCopiers = await GetActiveContracts(),
                 AvailableTechnicians = await GetTechnicians(),
                 ServiceReasons = GetServiceReasons()// TODO Enumerable con 3 motivos
             };
             return View(model);
         }
 
+        public override async Task<IActionResult> Edit(Guid key)
+        {
+            var entity = _repository.GetByIdAsync(key).Result;
+            var model = new ServiceInputVM
+            {
+                ServiceDate = DateTime.Now,
+                AvailableCopiers = await GetActiveContracts(),
+                AvailableTechnicians = await GetTechnicians(),
+                ServiceReasons = GetServiceReasons()// TODO Enumerable con 3 motivos
+            };
+
+            model.Import(entity);
+
+            return View(model);
+        }
+
+        public override async Task<IActionResult> Details(Guid key)
+        {
+            var entity = await _repository.GetAllWithNestedInclude("Technician",
+                nameof(ServiceReason),
+                nameof(Copier),
+                nameof(Copier) + "." + nameof(Customer)).
+                Result.FirstAsync(s => s.Id == key);
+
+            var viewModel = new ServiceDisplayVM();
+            viewModel.Import(entity);
+
+            return View(viewModel);
+        }
+
         private async Task<SelectList> GetActiveContracts()
         {
-            var contracts = await _contractRepo.GetAll().Result
+            var contracts = await _copierRepo.GetAll().Result
                 .Where(c => c.Status == ContractStatus.Active)
-                .Select(c => new { c.Id, DisplayText = $"{c.Copier.SerialNumber} - {c.Copier.MachineModel.Name}" })
+                .Select(c => new { c.Id, DisplayText = $"{c.SerialNumber} - {c.MachineModel.Name}" })
                 .ToListAsync();
 
             return new SelectList(contracts, "Id", "DisplayText");

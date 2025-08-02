@@ -25,23 +25,18 @@ namespace CapoteSolution.Models.Entities
         public bool ChargeExtras { get; set; }  // Cambiado de ChargeExtra (string) a bool
         public string Comments { get; set; }
 
-        [Required]
+        /*[Required]
         public ContractStatus Status { get; set; } = ContractStatus.Active;  // Enum: Active/Inactive
 
         // Relación 1:1 con Copier
-        [ForeignKey("Copier")]
-        public string CopierId { get; set; }  // Cambiado de MachineID
+        //[ForeignKey("Copier")]
+        /*public string CopierId { get; set; }  // Cambiado de MachineID
         public virtual Copier Copier { get; set; }
         //Relación 1:1 con Customer
-        [ForeignKey(nameof(Customer))]
-        public Guid CustomerId { get; set; }
-        public virtual Customer Customer { get; set; }
-        public ICollection<Service> Services { get; set; }
+        //[ForeignKey(nameof(Customer))]
+        //public Guid CustomerId { get; set; }
+        //public virtual Customer Customer { get; set; }
+        public ICollection<Service> Services { get; set; }*/
     }
-
-    public enum ContractStatus
-    {
-        Active,
-        Inactive
-    }
+    
 }

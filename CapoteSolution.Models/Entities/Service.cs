@@ -39,9 +39,9 @@ namespace CapoteSolution.Models.Entities
         public byte ServiceReasonId { get; set; }
         public ServiceReason ServiceReason { get; set; }
 
-        [ForeignKey("Contract")]
-        public Guid ContractId { get; set; }
-        public Contract Contract { get; set; }
+        [ForeignKey("Copier ")]
+        public string CopierId { get; set; }
+        public Copier Copier { get; set; }
 
         [ForeignKey("Technician")]
         public Guid TechnicianId { get; set; }  // Cambiado de UserID

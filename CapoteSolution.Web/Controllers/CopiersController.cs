@@ -15,27 +15,30 @@ namespace CapoteSolution.Web.Controllers
     public class CopiersController : AbstractEntityManagementController<Copier, string, CopierInputVM, CopierDisplayVM>
     {
         private readonly IEntityRepository<MachineModel, Guid> _machineModelRepo;
-        private readonly IEntityRepository<Contract, Guid> _contractRepo;
+        private readonly IEntityRepository<Customer, Guid> _customerRepo;
         private readonly IEntityRepository<Brand, Guid> _brandRepo;
 
         public CopiersController(
             IEntityRepository<Copier, string> repository,
-            IEntityRepository<MachineModel, Guid> machineModelRepo,
-            IEntityRepository<Contract, Guid> contractRepo,
+            IEntityRepository<MachineModel, Guid> machineModelRepo,            
             IEntityRepository<Brand, Guid> brandRepo,
+            IEntityRepository<Customer, Guid> customerRepo,
             IStringLocalizer<CopiersController> localizer,
             ILogger<CopiersController> logger)
             : base(repository, localizer, logger)
         {
             _machineModelRepo = machineModelRepo;
-            _contractRepo = contractRepo;
+            _customerRepo = customerRepo;
             _brandRepo = brandRepo;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
             var query = await _repository.GetAllWithNestedInclude(
-                nameof(MachineModel));
+                nameof(MachineModel),
+                nameof(Customer),
+                nameof(MachineModel)+"."+nameof(Toner),
+                nameof(MachineModel)+"."+nameof(Brand));
 
             var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
             return View(paginatedData);
@@ -49,7 +52,8 @@ namespace CapoteSolution.Web.Controllers
                 AvailableMachineModels = new SelectList(new List<SelectListItem>
                 {
                     new SelectListItem { Value = "", Text = "Seleccione una marca primero" }
-                }, "Value", "Text")
+                }, "Value", "Text"),
+                AvailableCustomers = await GetCustomers()
             };
             return View(model);
         }
@@ -82,6 +86,8 @@ namespace CapoteSolution.Web.Controllers
             var model = await base.Edit(key) as ViewResult;
             var copierInputVM = model.Model as CopierInputVM;
             copierInputVM.AvailableMachineModels = await GetMachineModels();
+            copierInputVM.AvailableBrands = await GetBrands();
+            copierInputVM.AvailableCustomers = await GetCustomers();
             return View(copierInputVM);
         }
 
@@ -94,9 +100,8 @@ namespace CapoteSolution.Web.Controllers
         [HttpGet]
         public async Task<IActionResult> ContractDetails(string id)
         {
-            var contract = await _contractRepo.GetAll().Result
-                .Include(c => c.Copier)
-                .FirstOrDefaultAsync(c => c.CopierId == id);
+            var contract = await _repository.GetAll().Result                
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (contract == null)
             {
@@ -178,6 +183,15 @@ namespace CapoteSolution.Web.Controllers
                 .ToListAsync();
 
             return new SelectList(machineModels, "Id", "DisplayText");
+        }
+
+        private async Task<SelectList> GetCustomers()
+        {
+            var customers = await _customerRepo.GetAll().Result
+                .Select(c => new { c.Id, DisplayText = c.CustomerName})
+                .ToListAsync();
+
+            return new SelectList(customers, "Id", "DisplayText");
         }
     }
 }
