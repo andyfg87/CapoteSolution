@@ -42,6 +42,10 @@ namespace CapoteSolution.Web.Models.ViewModels
         public string BrandName { get; set; }
         [Display(Name = "Día de Facturación")]
         public int InvoiceDay { get; set; }
+        [Display(Name = "Estado")]
+        public string Status { get; set; }
+        [Display(Name = "Precio Extra Plan")]
+        public decimal Extra {  get; set; }
 
         public void Import(Copier entity)
         {
@@ -58,6 +62,8 @@ namespace CapoteSolution.Web.Models.ViewModels
             CustomerName = entity.Customer?.CustomerName;
             TonerName = entity.MachineModel?.Toner.Model;
             BrandName = entity.MachineModel?.Brand?.Name;
+            Status = entity.Status.ToString();
+            Extra = entity.ExtraBW;
         }
     }
 }

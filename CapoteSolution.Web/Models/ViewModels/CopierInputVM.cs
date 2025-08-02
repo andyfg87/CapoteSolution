@@ -97,6 +97,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             IPAddress = entity.IPAddress;
             MachineEmail = entity.MachineEmail;
             MachineModelId = entity.MachineModelId;
+            BrandId = entity.MachineModel.BrandId;
             CustomerId = entity.CustomerId;
             Comments = entity.Comments;
             StartDate = entity.StartDate;
@@ -116,6 +117,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             entity.IPAddress = IPAddress;
             entity.MachineEmail = MachineEmail;
             entity.MachineModelId = MachineModelId;
+            //BrandId = entity.MachineModel.BrandId;
             entity.CustomerId = CustomerId;
             entity.Comments = Comments;
             entity.StartDate = StartDate;
