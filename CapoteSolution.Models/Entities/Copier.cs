@@ -49,8 +49,8 @@ namespace CapoteSolution.Models.Entities
 
         // Relaciones       
         public MachineModel MachineModel { get; set; }
-        public virtual Customer Customer { get; set; }
-        public ICollection<Service> Services { get; set; }
+        public Customer Customer { get; set; }
+        public virtual ICollection<Service> Services { get; set; }
         //public virtual Contract Contract { get; set; }
     }
 

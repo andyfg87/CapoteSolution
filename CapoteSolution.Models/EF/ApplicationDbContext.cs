@@ -82,12 +82,18 @@ namespace CapoteSolution.Models.EF
                 .OnDelete(DeleteBehavior.ClientNoAction);*/
 
             // Contract (1:1 con Customer)
-            modelBuilder.Entity<Copier>()
+            /*modelBuilder.Entity<Copier>()
                .HasOne(c => c.Customer)
                .WithOne(c => c.Copier)
                .HasForeignKey<Copier>(c => c.CustomerId)
-               .OnDelete(DeleteBehavior.ClientNoAction);
-          
+               .OnDelete(DeleteBehavior.ClientNoAction);*/
+
+            // Customer ( 1: * Copier)
+            modelBuilder.Entity<Copier>()
+                 .HasOne(c => c.Customer)
+                 .WithMany(mm => mm.Copiers)
+                 .OnDelete(DeleteBehavior.ClientNoAction);
+
 
             // Service
             modelBuilder.Entity<Service>()

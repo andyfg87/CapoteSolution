@@ -20,9 +20,7 @@ namespace CapoteSolution.Models.Entities
         public Guid Id { get; set; }
         [Required]
         public string CustomerName { get; set; }
-
         
-        // Relación inversa
-        public virtual Copier Copier { get; set; }// Relacion 1 * Contract
+        public ICollection<Copier> Copiers { get; set; }// Relacion 1 * Copier
     }
 }
