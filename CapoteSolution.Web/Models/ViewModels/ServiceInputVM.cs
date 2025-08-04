@@ -38,7 +38,7 @@ namespace CapoteSolution.Web.Models.ViewModels
 
         [Required]
         [Display(Name = "Técnico")]
-        public Guid TechnicianId { get; set; }
+        public Guid? TechnicianId { get; set; }
 
         // Listas para dropdowns
         public SelectList? AvailableCopiers { get; set; }

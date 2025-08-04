@@ -10,7 +10,8 @@ namespace CapoteSolution.Web.Models.ViewModels
         public Guid Id { get; set; }
 
         [Required]
-        [StringLength(50)]
+        [StringLength(100)]
+        [EmailAddress(ErrorMessage = "El formato del Email no es válido.")]
         public string UserName { get; set; }
 
         [Required]
@@ -24,6 +25,11 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Required]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [Required]
+        [DataType(DataType.Password)]
+        [Compare(nameof(Password), ErrorMessage = " las claves no son iguales")]
+        public string ConfirmPassword { get; set; }
 
         [Required]
         public UserRole Role { get; set; }

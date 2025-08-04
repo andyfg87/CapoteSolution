@@ -4,6 +4,7 @@ using CapoteSolution.Models.EF;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CapoteSolution.Models.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250804153140_UpdateServiceAttribute")]
+    partial class UpdateServiceAttribute
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -170,10 +173,6 @@ namespace CapoteSolution.Models.Migrations
                     b.Property<int?>("ColorDiff")
                         .HasColumnType("int");
 
-                    b.Property<string>("Comments")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CopierId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -190,7 +189,7 @@ namespace CapoteSolution.Models.Migrations
                     b.Property<byte>("ServiceReasonId")
                         .HasColumnType("tinyint");
 
-                    b.Property<Guid?>("TechnicianId")
+                    b.Property<Guid>("TechnicianId")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("TicketNumber")
@@ -355,7 +354,8 @@ namespace CapoteSolution.Models.Migrations
                     b.HasOne("CapoteSolution.Models.Entities.User", "Technician")
                         .WithMany("Services")
                         .HasForeignKey("TechnicianId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("Copier");
 

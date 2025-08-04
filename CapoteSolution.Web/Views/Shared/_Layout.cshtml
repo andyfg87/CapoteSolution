@@ -312,6 +312,14 @@
                                     <i class="bi bi-ink"></i> Tóners
                                 </a>
                             </li>
+
+                            <li class="nav-item">
+                                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Services" ? "active" : "")"
+                                   asp-controller="Services" asp-action="Index">
+                                    <i class="bi bi-tools"></i> Servicios
+                                </a>
+                            </li>
+
                         </ul>
                     </li>
                 }
@@ -326,21 +334,6 @@
                             <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Copiers" ? "active" : "")"
                                asp-controller="Copiers" asp-action="Index">
                                 <i class="bi bi-printer"></i> Copiadoras
-                            </a>
-                        </li>
-                    </ul>
-                </li>
-
-                <!-- Grupo: Servicios -->
-                <li class="nav-group">
-                    <span class="group-title">
-                        <i class="bi bi-tools"></i> Servicios
-                    </span>
-                    <ul class="nav">
-                        <li class="nav-item">
-                            <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Services" ? "active" : "")"
-                               asp-controller="Services" asp-action="Index">
-                                <i class="bi bi-tools"></i> Servicios
                             </a>
                         </li>
                     </ul>

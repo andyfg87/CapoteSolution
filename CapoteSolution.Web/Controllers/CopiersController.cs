@@ -17,12 +17,14 @@ namespace CapoteSolution.Web.Controllers
         private readonly IEntityRepository<MachineModel, Guid> _machineModelRepo;
         private readonly IEntityRepository<Customer, Guid> _customerRepo;
         private readonly IEntityRepository<Brand, Guid> _brandRepo;
+        private readonly IEntityRepository<Service, Guid> _serviceRepo;
 
         public CopiersController(
             IEntityRepository<Copier, string> repository,
             IEntityRepository<MachineModel, Guid> machineModelRepo,
             IEntityRepository<Brand, Guid> brandRepo,
             IEntityRepository<Customer, Guid> customerRepo,
+            IEntityRepository<Service, Guid> serviceRepo,
             IStringLocalizer<CopiersController> localizer,
             ILogger<CopiersController> logger)
             : base(repository, localizer, logger)
@@ -30,6 +32,7 @@ namespace CapoteSolution.Web.Controllers
             _machineModelRepo = machineModelRepo;
             _customerRepo = customerRepo;
             _brandRepo = brandRepo;
+            _serviceRepo = serviceRepo;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
@@ -125,6 +128,24 @@ namespace CapoteSolution.Web.Controllers
             return View(contract);
         }
 
+        [HttpGet]
+        public override async Task<IActionResult> Details(string key)
+        {
+            var entity = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
+                nameof(Customer),               
+                nameof(MachineModel) + "." + nameof(Toner),
+                nameof(MachineModel) + "." + nameof(Brand)).Result.FirstAsync(c => c.Id == key);
+
+            ViewBag.ServiceMonthlyCounter = await GetServicesByReason(key, ServiceReason.Reasons.MonthlyCounter);
+            ViewBag.ServiceTonerChange = await GetServicesByReason(key, ServiceReason.Reasons.TonerChange);
+            ViewBag.ServiceMaintenance = await GetServicesByReason(key, ServiceReason.Reasons.Maintenance);
+
+            var viewModel = new CopierDisplayVM();
+            viewModel.Import(entity);
+
+            return View(viewModel);
+        }
+
 
         public override async Task<IActionResult> Delete(string key)
         {
@@ -208,6 +229,17 @@ namespace CapoteSolution.Web.Controllers
                 .ToListAsync();
 
             return new SelectList(customers, "Id", "DisplayText");
+        }
+
+        private async Task<IEnumerable<Service>> GetServicesByReason(string key, string reason)
+        {
+            var services = await _serviceRepo.GetAllWithNestedInclude(nameof(Copier),
+                nameof(ServiceReason),
+                "Technician").Result.ToListAsync();
+            
+            var serviceByReason = services.Where(s => s.CopierId == key && s.ServiceReason.Name == reason);
+
+            return serviceByReason;
         }
     }
 }

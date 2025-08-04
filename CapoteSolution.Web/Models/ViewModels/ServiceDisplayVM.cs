@@ -19,14 +19,14 @@ namespace CapoteSolution.Web.Models.ViewModels
         public int ColorCounter { get; set; } //OK        
 
         [StringLength(50)]
-        public string TicketNumber { get; set; } // OK
+        public string TicketNumber { get; set; } = String.Empty; // OK
 
         // Toner (solo aplica para ServiceReason.TonerChange)
         public int? BlackTonerQty { get; set; }  // Cantidad de toners cambiados        OK
         public string ServiceReason { get; set; }
-        public string CopierInfo { get; set; }        
-       
-        public string TechnicianName { get; set; } //OK
+        public string CopierInfo { get; set; }
+
+        public string TechnicianName { get; set; } = String.Empty; //OK
 
 
         public void Import(Service entity)

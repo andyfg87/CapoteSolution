@@ -71,7 +71,7 @@
 
             <div class="row">
                 <div class="col-md-6">
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3" id="BlackTonerQtyFields">
                         <label asp-for="BlackTonerQty" class="control-label"></label>
                         <input asp-for="BlackTonerQty" class="form-control" />
                         <span asp-validation-for="BlackTonerQty" class="text-danger"></span>
@@ -79,7 +79,7 @@
                 </div>
 
                 <div class="col-md-6">
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3" id="TicketNumberFields">
                         <label asp-for="TicketNumber" class="control-label"></label>
                         <input asp-for="TicketNumber" class="form-control" />
                         <span asp-validation-for="TicketNumber" class="text-danger"></span>
@@ -109,12 +109,18 @@
                 if (reason === '1') { // TonerChange
                     $('#tonerFields').show();
                     $('#counterFields').hide();
+                    $('#TicketNumberFields').hide();
+
                 } else if (reason === '2') { // MonthlyCounter
                     $('#counterFields').show();
                     $('#tonerFields').hide();
+                    $('#TicketNumberFields').hide();
+                    $('#BlackTonerQtyFields').hide();
                 } else {
                     $('#tonerFields').hide();
                     $('#counterFields').hide();
+                    $('#TicketNumberFields').show();
+                    $('#BlackTonerQtyFields').show();
                 }
             }).trigger('change');
         });
