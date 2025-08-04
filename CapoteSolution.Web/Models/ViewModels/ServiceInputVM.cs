@@ -28,6 +28,9 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Display(Name = "Número de Ticket")]
         public string TicketNumber { get; set; }
 
+        [Display(Name = "Comentarios")]
+        public string Comments {  get; set; }
+
         [Required]
         [Display(Name = "Impresora")]
         public string CopierId { get; set; }

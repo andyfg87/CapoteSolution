@@ -89,8 +89,9 @@
                                 <div class="col-md-6">
                                     <div class="form-group mb-3">
                                         <label asp-for="Status" class="control-label"></label>
-                                        <select asp-for="Status" class="form-select"
-                                                asp-items="Html.GetEnumSelectList<ContractStatus>()">
+                                        <select id="StatusSelect" asp-for="Status" class="form-select"
+                                                asp-items="Html.GetEnumSelectList<ContractStatus>()"
+                                                onchange="EnabledDesabledCustomerSelect()">
                                         </select>
                                         <span asp-validation-for="Status" class="text-danger"></span>
                                     </div>
@@ -99,7 +100,7 @@
 
                             <div class="form-group mb-3">
                                 <label asp-for="CustomerId" class="control-label"></label>
-                                <select asp-for="CustomerId" class="form-select"
+                                <select id="CustomerSelect" asp-for="CustomerId" class="form-select"
                                         asp-items="Model.AvailableCustomers">
                                     <option value="">Seleccione un cliente</option>
                                 </select>
@@ -188,6 +189,8 @@
         $(document).ready(function () {
             // Deshabilitar el select de modelos inicialmente
             $('#machineModelSelect').prop('disabled', true);
+            EnabledDesabledCustomerSelect();
+           
 
             // Si hay una marca seleccionada (en caso de error de validación)
             var initialBrandId = $('#BrandId').val();
@@ -225,6 +228,16 @@
                     machineModelSelect.html('<option value="">Error al cargar modelos</option>');
                 }
             });
+        }
+
+        function EnabledDesabledCustomerSelect() {
+            var select = $('#StatusSelect').val();
+
+            if (select == '0') {
+                $('#CustomerSelect').prop('disabled', false);
+            } else {
+                $('#CustomerSelect').prop('disabled', true);
+            }
         }
 
         // Validación personalizada
