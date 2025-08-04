@@ -41,7 +41,8 @@ namespace CapoteSolution.Web.Controllers
                 nameof(MachineModel),
                 nameof(Customer),
                 nameof(MachineModel) + "." + nameof(Toner),
-                nameof(MachineModel) + "." + nameof(Brand));
+                nameof(MachineModel) + "." + nameof(Brand),
+                "Services");
 
             var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
             return View(paginatedData);
@@ -132,13 +133,18 @@ namespace CapoteSolution.Web.Controllers
         public override async Task<IActionResult> Details(string key)
         {
             var entity = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
-                nameof(Customer),               
-                nameof(MachineModel) + "." + nameof(Toner),
-                nameof(MachineModel) + "." + nameof(Brand)).Result.FirstAsync(c => c.Id == key);
+                nameof(Customer),    //Include           
+                nameof(MachineModel) + "." + nameof(Toner),// ThenInclude
+                nameof(MachineModel) + "." + nameof(Brand),// ThenInclude
+                "Services", //Incluye la lista Services => ThenInclude
+                "Services."+nameof(ServiceReason),// ThenInclude
+                "Services." + "Technician").Result.FirstAsync(c => c.Id == key);
 
-            ViewBag.ServiceMonthlyCounter = await GetServicesByReason(key, ServiceReason.Reasons.MonthlyCounter);
-            ViewBag.ServiceTonerChange = await GetServicesByReason(key, ServiceReason.Reasons.TonerChange);
-            ViewBag.ServiceMaintenance = await GetServicesByReason(key, ServiceReason.Reasons.Maintenance);
+            
+
+            ViewBag.ServiceMonthlyCounter = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.MonthlyCounter);
+            ViewBag.ServiceTonerChange = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange);
+            ViewBag.ServiceMaintenance = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.Maintenance);
 
             var viewModel = new CopierDisplayVM();
             viewModel.Import(entity);
@@ -229,17 +235,6 @@ namespace CapoteSolution.Web.Controllers
                 .ToListAsync();
 
             return new SelectList(customers, "Id", "DisplayText");
-        }
-
-        private async Task<IEnumerable<Service>> GetServicesByReason(string key, string reason)
-        {
-            var services = await _serviceRepo.GetAllWithNestedInclude(nameof(Copier),
-                nameof(ServiceReason),
-                "Technician").Result.ToListAsync();
-            
-            var serviceByReason = services.Where(s => s.CopierId == key && s.ServiceReason.Name == reason);
-
-            return serviceByReason;
-        }
+        }        
     }
 }

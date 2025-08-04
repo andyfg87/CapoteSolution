@@ -17,7 +17,7 @@
                 </span>
             </dd>
 
-            
+
             <dt class="col-sm-4">Plan B/N:</dt>
             <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
 
@@ -40,6 +40,7 @@
     var serviceMaintenance = ViewBag.ServiceMaintenance as IEnumerable<CapoteSolution.Models.Entities.Service>;
 }
 
+
 <ul class="nav nav-tabs" id="servicesTab" role="tablist">
     <li class="nav-item" role="presentation">
         <button class="nav-link active" id="toner-tab" data-bs-toggle="tab" data-bs-target="#toner" type="button" role="tab" aria-controls="toner" aria-selected="true">
@@ -57,6 +58,7 @@
         </button>
     </li>
 </ul>
+
 
 <div class="tab-content p-3 border border-top-0 rounded-bottom" id="servicesTabContent">
     <!-- Tab de Cambios de Tóner -->
@@ -96,12 +98,12 @@
 
     <!-- Tab de Mantenimientos -->
     <div class="tab-pane fade" id="maintenance" role="tabpanel" aria-labelledby="maintenance-tab">
-        @if (serviceMaintenance!= null && serviceMaintenance.Any())
+        @if (serviceMaintenance != null && serviceMaintenance.Any())
         {
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Fecha</th>                        
+                        <th>Fecha</th>
                         <th>Técnico</th>
                     </tr>
                 </thead>
@@ -132,7 +134,7 @@
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Contador Negro</th>                         
+                        <th>Contador Negro</th>
                         <th>Contador Color</th>
                         <th>Técnico</th>
                     </tr>
@@ -147,7 +149,7 @@
 
                         <tr>
                             <td>@viewModelService.ServiceDate.ToString("dd/MM/yyyy")</td>
-                            <td>@viewModelService.BlackCounter</td>                            
+                            <td>@viewModelService.BlackCounter</td>
                             <td>@viewModelService.ColorCounter</td>
                             <td>@viewModelService.TechnicianName</td>
                         </tr>
