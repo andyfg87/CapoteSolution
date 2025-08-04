@@ -1,0 +1,53 @@
+﻿@model CapoteSolution.Web.Models.ViewModels.CustomerDisplayVM
+
+@{
+    ViewData["Title"] = "Detalles del Cliente";
+
+    var Copiers = ViewBag.Copiers as IEnumerable<CapoteSolution.Models.Entities.Copier>;
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@ViewData["Title"] - @Model.CustomerName</h3>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-bg-4">Lista de Impresoras:</dt>
+        </dl>
+        <div class="tab-pane fade show active">
+            @if (Copiers != null && Copiers.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Correo</th>
+                            <th>Dirección IP</th>
+                            <th>Día de Facturación</th>
+                            <th>No de Serie</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var copier in Copiers)
+                        {
+                            var viewModelCopier = new CapoteSolution.Web.Models.ViewModels.CopierDisplayVM();
+                            viewModelCopier.Import(copier);
+
+                            <tr>
+                                <td>@copier.MachineEmail</td>
+                                <td>@copier.IPAddress</td>
+                                <td>@copier.InvoiceDay</td>
+                                <td>@copier.SerialNumber</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <div class="alert alert-info">No hay registros de impresoras.</div>
+            }
+        </div>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Volver al Listado</a>
