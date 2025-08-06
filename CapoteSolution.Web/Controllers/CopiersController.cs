@@ -1,6 +1,7 @@
 ﻿using CapoteSolution.Models.Entities;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
+using CapoteSolution.Web.Paginations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -129,7 +130,7 @@ namespace CapoteSolution.Web.Controllers
             return View(contract);
         }
 
-        [HttpGet]
+       
         public override async Task<IActionResult> Details(string key)
         {
             var entity = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
@@ -137,14 +138,14 @@ namespace CapoteSolution.Web.Controllers
                 nameof(MachineModel) + "." + nameof(Toner),// ThenInclude
                 nameof(MachineModel) + "." + nameof(Brand),// ThenInclude
                 "Services", //Incluye la lista Services => ThenInclude
-                "Services."+nameof(ServiceReason),// ThenInclude
+                "Services." + nameof(ServiceReason),// ThenInclude
                 "Services." + "Technician").Result.FirstAsync(c => c.Id == key);
 
-            
 
-            ViewBag.ServiceMonthlyCounter = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.MonthlyCounter);
-            ViewBag.ServiceTonerChange = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange);
-            ViewBag.ServiceMaintenance = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.Maintenance);
+
+            ViewBag.ServiceMonthlyCounter = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.MonthlyCounter).OrderBy(s => s.Date);
+            ViewBag.ServiceTonerChange = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange).OrderBy(s => s.Date);
+            ViewBag.ServiceMaintenance = entity.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.Maintenance).OrderBy(s => s.Date);
 
             var viewModel = new CopierDisplayVM();
             viewModel.Import(entity);
@@ -152,6 +153,55 @@ namespace CapoteSolution.Web.Controllers
             return View(viewModel);
         }
 
+            
+        public async Task<IActionResult> DetailsCopierByServicePagination(string key,
+        int tonerPage = 1,
+        int maintenancePage = 1,
+        int monthlyPage = 1,
+        int pageSize = 5)
+        {
+            var entity = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
+                 nameof(Customer),    //Include           
+                 nameof(MachineModel) + "." + nameof(Toner),// ThenInclude
+                 nameof(MachineModel) + "." + nameof(Brand),// ThenInclude
+                 "Services", //Incluye la lista Services => ThenInclude
+                 "Services." + nameof(ServiceReason),// ThenInclude
+                 "Services." + "Technician").Result.FirstAsync(c => c.Id == key);
+
+            // Servicios ordenados para cálculo de diferencias
+            var allMonthlyServices = entity.Services
+                .Where(s => s.ServiceReason.Name == ServiceReason.Reasons.MonthlyCounter)
+                .OrderBy(s => s.Date)
+                .ToList();
+
+            // Paginación
+            ViewBag.ServiceMonthlyCounter = PaginatedList<Service>.Create(
+                allMonthlyServices,
+                monthlyPage,
+                pageSize);
+
+            ViewBag.AllMonthlyServices = allMonthlyServices; // Para cálculo de diferencias
+
+            // Resto de tus servicios paginados (sin necesidad de lista completa)
+            ViewBag.ServiceTonerChange = PaginatedList<Service>.Create(
+                entity.Services
+                    .Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange)
+                    .OrderBy(s => s.Date),
+                tonerPage,
+                pageSize);
+
+            ViewBag.ServiceMaintenance = PaginatedList<Service>.Create(
+                entity.Services
+                    .Where(s => s.ServiceReason.Name == ServiceReason.Reasons.Maintenance)
+                    .OrderBy(s => s.Date),
+                maintenancePage,
+                pageSize);
+
+            var viewModel = new CopierDisplayVM();
+            viewModel.Import(entity);
+
+            return View(viewModel);
+        }
 
         public override async Task<IActionResult> Delete(string key)
         {
@@ -235,6 +285,11 @@ namespace CapoteSolution.Web.Controllers
                 .ToListAsync();
 
             return new SelectList(customers, "Id", "DisplayText");
-        }        
+        }
+
+        private async Task<PaginatedList<Service>> PaginateServices(IEnumerable<Service> services, int pageNumber, int pageSize)
+        {
+            return await PaginatedList<Service>.CreateAsync(services.AsQueryable(), pageNumber, pageSize);
+        }
     }
 }

@@ -26,7 +26,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         public int? BlackTonerQty { get; set; }
 
         [Display(Name = "Número de Ticket")]
-        public string TicketNumber { get; set; }
+        public string? TicketNumber { get; set; }
 
         [Display(Name = "Comentarios")]
         public string Comments {  get; set; }
@@ -68,6 +68,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             ServiceReasonId = entity.ServiceReasonId;
             TechnicianId = entity.TechnicianId;
             TicketNumber = entity.TicketNumber;
+            Comments = entity.Comments;
         }
 
         public void Merge(Service entity)
@@ -80,6 +81,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             entity.ServiceReasonId = ServiceReasonId;
             entity.TechnicianId = TechnicianId;
             entity.TicketNumber = TicketNumber;
+            entity.Comments = Comments;
         }
     }
 }

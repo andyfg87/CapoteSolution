@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Web.Interface;
+using Microsoft.EntityFrameworkCore;
 
 namespace CapoteSolution.Web.Paginations
 {
@@ -19,5 +20,23 @@ namespace CapoteSolution.Web.Paginations
 
         public bool HasPreviousPage => PageIndex > 1;
         public bool HasNextPage => PageIndex < TotalPages;
+
+        public static async Task<PaginatedList<T>> CreateAsync(IQueryable<T> source, int pageIndex, int pageSize)
+        {
+            var count = await source.CountAsync();
+            var items = await source.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+        }
+
+        public static PaginatedList<T> Create(IEnumerable<T> source, int pageIndex, int pageSize)
+        {
+            var count = source.Count();
+            var items = source
+                .Skip((pageIndex - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+
+            return new PaginatedList<T>(items, count, pageIndex, pageSize);
+        }
     }
 }

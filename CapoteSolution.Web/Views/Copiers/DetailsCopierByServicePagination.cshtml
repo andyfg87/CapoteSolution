@@ -1,0 +1,307 @@
+﻿@using CapoteSolution.Web.Paginations
+@model CapoteSolution.Web.Models.ViewModels.CopierDisplayVM
+
+@{
+    ViewData["Title"] = "Detalles de Impresora";
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@ViewData["Title"] - @Model.SerialNumber</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                
+                    <dl class="row">
+                        <dt class="col-sm-4">Estado:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
+                                @Model.Status
+                            </span>
+                        </dd>
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
+
+                        <dt class="col-sm-4">Correo</dt>
+                        <dd class="col-sm-8">@Model.MachineEmail</dd>
+
+                        <dt class="col-sm-4">Modelo </dt>
+                        <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+                    </dl>
+                
+            </div>
+
+            <div class="col-md-6">
+                
+                    <dl class="row">
+
+
+                        <dt class="col-sm-4">Plan B/N:</dt>
+                        <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+
+                        <dt class="col-sm-4">Plan Color:</dt>
+                        <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+
+                        <dt class="col-sm-4">Precio Extra B/N:</dt>
+                        <dd class="col-sm-8">@Model.Extra.ToString("C") por copia</dd>
+
+                        <dt class="col-sm-4">Precio Mensual</dt>
+                        <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
+                    </dl>
+                
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- Pestañas de servicios -->
+@{
+    var serviceMonthlyCounter = ViewBag.ServiceMonthlyCounter as PaginatedList<CapoteSolution.Models.Entities.Service>;
+    var serviceTonerChange = ViewBag.TonerChange as PaginatedList<CapoteSolution.Models.Entities.Service>;
+    var serviceMaintenance = ViewBag.ServiceMaintenance as PaginatedList<CapoteSolution.Models.Entities.Service>;
+}
+
+<ul class="nav nav-tabs" id="servicesTab" role="tablist">
+    <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="toner-tab" data-bs-toggle="tab" data-bs-target="#toner" type="button" role="tab" aria-controls="toner" aria-selected="true">
+            Cambios de Tóner
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="maintenance-tab" data-bs-toggle="tab" data-bs-target="#maintenance" type="button" role="tab" aria-controls="maintenance" aria-selected="false">
+            Mantenimientos
+        </button>
+    </li>
+    <li class="nav-item" role="presentation">
+        <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other" type="button" role="tab" aria-controls="other" aria-selected="false">
+            Contadores Mensuales
+        </button>
+    </li>
+</ul>
+
+<div class="tab-content p-3 border border-top-0 rounded-bottom" id="servicesTabContent">
+    <!-- Tab de Cambios de Tóner -->
+    <div class="tab-pane fade show active" id="toner" role="tabpanel" aria-labelledby="toner-tab">
+        @if (serviceTonerChange != null && serviceTonerChange.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Tóner Color</th>
+                        <th>Tóner B/N</th>
+                        <th>Técnico</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var change in serviceTonerChange)
+                    {
+                        var viewModelUser = new CapoteSolution.Web.Models.ViewModels.UserDisplayVM();
+                        viewModelUser.Import(change.Technician);
+
+                        <tr>
+                            <td>@change.Date.ToString("dd/MM/yyyy")</td>
+                            <td>@change.ColorCounter</td>
+                            <td>@change.BlackCounter</td>
+                            <td>@viewModelUser.FullName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(!serviceTonerChange.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="Details"
+                           asp-route-key="@Model.Id"
+                           asp-route-tonerPage="@(serviceTonerChange.PageIndex - 1)"
+                           asp-route-maintenancePage="@(serviceMaintenance?.PageIndex ?? 1)"
+                           asp-route-monthlyPage="@(serviceMonthlyCounter?.PageIndex ?? 1)">Anterior</a>
+                    </li>
+                    @for (var i = 1; i <= serviceTonerChange.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == serviceTonerChange.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="Details"
+                               asp-route-key="@Model.Id"
+                               asp-route-tonerPage="@i"
+                               asp-route-maintenancePage="@(serviceMaintenance?.PageIndex ?? 1)"
+                               asp-route-monthlyPage="@(serviceMonthlyCounter?.PageIndex ?? 1)">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(!serviceTonerChange.HasNextPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="Details"
+                           asp-route-key="@Model.Id"
+                           asp-route-tonerPage="@(serviceTonerChange.PageIndex + 1)"
+                           asp-route-maintenancePage="@(serviceMaintenance?.PageIndex ?? 1)"
+                           asp-route-monthlyPage="@(serviceMonthlyCounter?.PageIndex ?? 1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+        else
+        {
+            <div class="alert alert-info">No hay registros de cambios de tóner.</div>
+        }
+    </div>
+
+    <!-- Tab de Mantenimientos -->
+    <div class="tab-pane fade" id="maintenance" role="tabpanel" aria-labelledby="maintenance-tab">
+        @if (serviceMaintenance != null && serviceMaintenance.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Técnico</th>
+                        <th>Contador Negro</th>
+                        <th>Diferencia de Negro</th>
+                        <th>Contador Color</th>
+                        <th>Diferencia de Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var maintenance in serviceMaintenance.Select((x, i) => new { Current = x, Previous = i > 0 ? serviceMaintenance.ElementAt(i - 1) : null }))
+                    {
+                        var viewModelUser = new CapoteSolution.Web.Models.ViewModels.UserDisplayVM();
+                        var viewModelService = new CapoteSolution.Web.Models.ViewModels.ServiceDisplayVM();
+                        //TODO: agrager atributos a DisplayViewModel para no usar las Entidades directamente
+
+                        viewModelUser.Import(maintenance.Current.Technician);
+                        <tr>
+                            <td>@maintenance.Current.Date.ToString("dd/MM/yyyy")</td>
+                            <td>@viewModelUser.FullName</td>
+                            <td>@maintenance.Current.BlackCounter.ToString("N0")</td>
+                            <td>
+                                @(maintenance.Previous != null ? (maintenance.Current.BlackCounter - maintenance.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
+                            </td>
+                            <td>@maintenance.Current.ColorCounter.ToString("N0")</td>
+                            <td>
+                                @(maintenance.Previous != null ? (maintenance.Current.ColorCounter - maintenance.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(!serviceMaintenance.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="Details"
+                           asp-route-key="@Model.Id"
+                           asp-route-maintenancePage="@(serviceMaintenance.PageIndex - 1)"
+                           asp-route-tonerPage="@(serviceTonerChange?.PageIndex ?? 1)"
+                           asp-route-monthlyPage="@(serviceMonthlyCounter?.PageIndex ?? 1)">Anterior</a>
+                    </li>
+                    @for (var i = 1; i <= serviceMaintenance.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == serviceMaintenance.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="Details"
+                               asp-route-key="@Model.Id"
+                               asp-route-maintenancePage="@i"
+                               asp-route-tonerPage="@(serviceTonerChange?.PageIndex ?? 1)"
+                               asp-route-monthlyPage="@(serviceMonthlyCounter?.PageIndex ?? 1)">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(!serviceMaintenance.HasNextPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="Details"
+                           asp-route-key="@Model.Id"
+                           asp-route-maintenancePage="@(serviceMaintenance.PageIndex + 1)"
+                           asp-route-tonerPage="@(serviceTonerChange?.PageIndex ?? 1)"
+                           asp-route-monthlyPage="@(serviceMonthlyCounter?.PageIndex ?? 1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+        else
+        {
+            <div class="alert alert-info">No hay registros de mantenimientos.</div>
+        }
+    </div>
+
+    <!-- Tab de Contadores Mensuales -->
+    <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="other-tab">
+        @if (serviceMonthlyCounter != null && serviceMonthlyCounter.Any())
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Contador Negro</th>
+                        <th>Diferencia de Negro</th>
+                        <th>Contador Color</th>
+                        <th>Diferencia de Color</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var pair in serviceMonthlyCounter.Select((x, i) => new { Current = x, Previous = i > 0 ? serviceMonthlyCounter.ElementAt(i - 1) : null }))
+                    {
+                        var viewModelService = new CapoteSolution.Web.Models.ViewModels.ServiceDisplayVM();
+                        viewModelService.Import(pair.Current);
+
+                        <tr>
+                            <td>@viewModelService.ServiceDate.ToString("dd/MM/yyyy")</td>
+                            <td>@viewModelService.BlackCounter.ToString("N0")</td>
+                            <td>
+                                @(pair.Previous != null ? (viewModelService.BlackCounter - pair.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
+                            </td>
+                            <td>@viewModelService.ColorCounter.ToString("N0")</td>
+                            <td>
+                                @(pair.Previous != null ? (viewModelService.ColorCounter - pair.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <!-- Paginación -->
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item @(!serviceMonthlyCounter.HasPreviousPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="Details"
+                           asp-route-key="@Model.Id"
+                           asp-route-monthlyPage="@(serviceMonthlyCounter.PageIndex - 1)"
+                           asp-route-tonerPage="@(serviceTonerChange?.PageIndex ?? 1)"
+                           asp-route-maintenancePage="@(serviceMaintenance?.PageIndex ?? 1)">Anterior</a>
+                    </li>
+                    @for (var i = 1; i <= serviceMonthlyCounter.TotalPages; i++)
+                    {
+                        <li class="page-item @(i == serviceMonthlyCounter.PageIndex ? "active" : "")">
+                            <a class="page-link"
+                               asp-action="Details"
+                               asp-route-key="@Model.Id"
+                               asp-route-monthlyPage="@i"
+                               asp-route-tonerPage="@(serviceTonerChange?.PageIndex ?? 1)"
+                               asp-route-maintenancePage="@(serviceMaintenance?.PageIndex ?? 1)">@i</a>
+                        </li>
+                    }
+                    <li class="page-item @(!serviceMonthlyCounter.HasNextPage ? "disabled" : "")">
+                        <a class="page-link"
+                           asp-action="Details"
+                           asp-route-key="@Model.Id"
+                           asp-route-monthlyPage="@(serviceMonthlyCounter.PageIndex + 1)"
+                           asp-route-tonerPage="@(serviceTonerChange?.PageIndex ?? 1)"
+                           asp-route-maintenancePage="@(serviceMaintenance?.PageIndex ?? 1)">Siguiente</a>
+                    </li>
+                </ul>
+            </nav>
+        }
+        else
+        {
+            <div class="alert alert-info">No hay registros de otros servicios.</div>
+        }
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Volver al Listado</a>
