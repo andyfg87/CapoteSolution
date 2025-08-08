@@ -71,7 +71,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             ExtraColor = entity.ExtraColor;
             LastServiceDate = LastService(entity) != null ? LastService(entity).Date.ToString("dd/MM/yyyy") : "Sin Servicio Aún" ;
             HighestTonerChangeCounter = HightTonerChange(entity) !=null ? HightTonerChange(entity).BlackCounter: 0;
-            TonerYield = entity.MachineModel?.Toner?.Yield;
+            TonerYield = HightTonerChange(entity) != null ? HightTonerChange(entity).BlackTonerQty : 0;
         }
 
         //Devolver servicio de la ultima fecha 
@@ -94,6 +94,16 @@ namespace CapoteSolution.Web.Models.ViewModels
 
             return lastService;
              
+        }
+
+        private Service HightNoChangeToner(Copier copier)
+        {
+            if (copier.Services.Count == 0)
+                return null;
+
+            var lastService = copier.Services.Where(s => s.ServiceReason.Name != ServiceReason.Reasons.TonerChange).OrderBy(c => c.BlackCounter).LastOrDefault();
+
+            return lastService;
         }
     }
 }

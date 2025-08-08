@@ -14,34 +14,35 @@
             <div class="col-md-6">
 
                 <dl class="row">
-                    <dt class="col-sm-4">Estado:</dt>
-                    <dd class="col-sm-8">
-                        <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
-                            @Model.Status
-                        </span>
-                    </dd>
-                    <dt class="col-sm-4">ID</dt>
-                    <dd class="col-sm-8">@Model.Id</dd>
+                    
+                        <dt class="col-sm-4">Estado:</dt>
+                        <dd class="col-sm-8">
+                            <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
+                                @Model.Status
+                            </span>
+                        </dd>
+                        <dt class="col-sm-4">ID</dt>
+                        <dd class="col-sm-8">@Model.Id</dd>
 
-                    <dt class="col-sm-4">Correo</dt>
-                    <dd class="col-sm-8">@Model.MachineEmail</dd>
+                        <dt class="col-sm-4">Correo</dt>
+                        <dd class="col-sm-8">@Model.MachineEmail</dd>
 
-                    <dt class="col-sm-4">Modelo </dt>
-                    <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+                        <dt class="col-sm-4">Modelo </dt>
+                        <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+
+                        <dt class="col-sm-4">Plan B/N:</dt>
+                        <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+
+                        <dt class="col-sm-4">Plan Color:</dt>
+                        <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+                                    
                 </dl>
 
             </div>
 
             <div class="col-md-6">
 
-                <dl class="row">
-
-
-                    <dt class="col-sm-4">Plan B/N:</dt>
-                    <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
-
-                    <dt class="col-sm-4">Plan Color:</dt>
-                    <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+                <dl class="row">         
 
                     <dt class="col-sm-4">Precio Extra B/N:</dt>
                     <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
@@ -54,6 +55,9 @@
 
                     <dt class="col-sm-4">Toner Cambiados</dt>
                     <dd class="col-sm-8">@Model.TonerYield</dd>
+
+                    <dt class="col-sm-8">Contador Alto Cambio de Toner</dt>
+                    <dd class="col-sm-4">@Model.HighestTonerChangeCounter</dd>
                 </dl>
 
             </div>
@@ -66,7 +70,7 @@
 <!-- Pestañas de servicios -->
 @{
     var serviceMonthlyCounter = ViewBag.ServiceMonthlyCounter as PaginatedList<CapoteSolution.Models.Entities.Service>;
-    var serviceTonerChange = ViewBag.TonerChange as PaginatedList<CapoteSolution.Models.Entities.Service>;
+    var serviceTonerChange = ViewBag.ServiceTonerChange as PaginatedList<CapoteSolution.Models.Entities.Service>;
     var serviceMaintenance = ViewBag.ServiceMaintenance as PaginatedList<CapoteSolution.Models.Entities.Service>;
 }
 

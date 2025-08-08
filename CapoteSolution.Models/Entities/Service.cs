@@ -27,11 +27,11 @@ namespace CapoteSolution.Models.Entities
         public int? ExtraColor { get; set; }
 
         [StringLength(50)]
-        public string TicketNumber { get; set; } = string.Empty; // OK
+        public string? TicketNumber { get; set; } = string.Empty; // OK
 
         // Toner (solo aplica para ServiceReason.TonerChange)
         public int? BlackTonerQty { get; set; }  // Cantidad de toners cambiados        OK
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         
 
@@ -46,6 +46,6 @@ namespace CapoteSolution.Models.Entities
 
         [ForeignKey("Technician")]
         public Guid? TechnicianId { get; set; }  // Cambiado de UserID
-        public User Technician { get; set; } //OK
+        public User? Technician { get; set; } //OK
     }   
 }

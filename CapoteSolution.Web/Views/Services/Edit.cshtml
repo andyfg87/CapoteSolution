@@ -42,7 +42,7 @@
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="form-group mb-3">
+                    <div class="form-group mb-3" id="TechnicianSelect">
                         <label asp-for="TechnicianId" class="control-label"></label>
                         <select asp-for="TechnicianId" asp-items="Model.AvailableTechnicians" class="form-select">
                             <option value="">Seleccione un técnico</option>
@@ -117,17 +117,20 @@
                     $('#tonerFields').show();
                     $('#counterFields').hide();
                     $('#TicketNumberFields').hide();
+                    $('#TechnicianSelect').show();
 
                 } else if (reason === '2') { // MonthlyCounter
                     $('#counterFields').show();
                     $('#tonerFields').hide();
                     $('#TicketNumberFields').hide();
                     $('#BlackTonerQtyFields').hide();
+                    $('#TechnicianSelect').hide();
                 } else {
                     $('#tonerFields').hide();
                     $('#counterFields').hide();
                     $('#TicketNumberFields').show();
                     $('#BlackTonerQtyFields').show();
+                    $('#TechnicianSelect').show();
                 }
             }).trigger('change');
         });

@@ -29,7 +29,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         public string? TicketNumber { get; set; }
 
         [Display(Name = "Comentarios")]
-        public string Comments {  get; set; }
+        public string? Comments {  get; set; }
 
         [Required]
         [Display(Name = "Impresora")]
@@ -38,8 +38,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Required]
         [Display(Name = "Motivo")]
         public byte ServiceReasonId { get; set; }
-
-        [Required]
+        
         [Display(Name = "Técnico")]
         public Guid? TechnicianId { get; set; }
 
