@@ -43,7 +43,7 @@ namespace CapoteSolution.Web.Controllers
                 nameof(Customer),
                 nameof(MachineModel) + "." + nameof(Toner),
                 nameof(MachineModel) + "." + nameof(Brand),
-                "Services");
+                "Services"+"."+nameof(ServiceReason));
 
             var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
             return View(paginatedData);

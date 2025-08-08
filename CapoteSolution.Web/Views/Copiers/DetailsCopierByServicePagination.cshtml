@@ -12,44 +12,50 @@
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
-                
-                    <dl class="row">
-                        <dt class="col-sm-4">Estado:</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
-                                @Model.Status
-                            </span>
-                        </dd>
-                        <dt class="col-sm-4">ID</dt>
-                        <dd class="col-sm-8">@Model.Id</dd>
 
-                        <dt class="col-sm-4">Correo</dt>
-                        <dd class="col-sm-8">@Model.MachineEmail</dd>
+                <dl class="row">
+                    <dt class="col-sm-4">Estado:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
+                            @Model.Status
+                        </span>
+                    </dd>
+                    <dt class="col-sm-4">ID</dt>
+                    <dd class="col-sm-8">@Model.Id</dd>
 
-                        <dt class="col-sm-4">Modelo </dt>
-                        <dd class="col-sm-8">@Model.MachineModelInfo</dd>
-                    </dl>
-                
+                    <dt class="col-sm-4">Correo</dt>
+                    <dd class="col-sm-8">@Model.MachineEmail</dd>
+
+                    <dt class="col-sm-4">Modelo </dt>
+                    <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+                </dl>
+
             </div>
 
             <div class="col-md-6">
-                
-                    <dl class="row">
+
+                <dl class="row">
 
 
-                        <dt class="col-sm-4">Plan B/N:</dt>
-                        <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+                    <dt class="col-sm-4">Plan B/N:</dt>
+                    <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
 
-                        <dt class="col-sm-4">Plan Color:</dt>
-                        <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+                    <dt class="col-sm-4">Plan Color:</dt>
+                    <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
 
-                        <dt class="col-sm-4">Precio Extra B/N:</dt>
-                        <dd class="col-sm-8">@Model.Extra.ToString("C") por copia</dd>
+                    <dt class="col-sm-4">Precio Extra B/N:</dt>
+                    <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
 
-                        <dt class="col-sm-4">Precio Mensual</dt>
-                        <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
-                    </dl>
-                
+                    <dt class="col-sm-4">Precio Extra Color:</dt>
+                    <dd class="col-sm-8">@Model.ExtraColor.ToString("C") por copia</dd>
+
+                    <dt class="col-sm-4">Precio Mensual</dt>
+                    <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
+
+                    <dt class="col-sm-4">Toner Cambiados</dt>
+                    <dd class="col-sm-8">@Model.TonerYield</dd>
+                </dl>
+
             </div>
 
         </div>
@@ -242,6 +248,7 @@
                         <th>ExtraBandW</th>
                         <th>Contador Color</th>
                         <th>Diferencia de Color</th>
+                        <th>ExtraColor</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -250,6 +257,9 @@
                         var viewModelService = new CapoteSolution.Web.Models.ViewModels.ServiceDisplayVM();
                         viewModelService.Import(pair.Current);
 
+                        var differentBlack = pair.Previous != null ? viewModelService.BlackCounter - pair.Previous.BlackCounter : 0;
+                        var differentColor = pair.Previous != null ? viewModelService.ColorCounter - pair.Previous.ColorCounter : 0;
+
                         <tr>
                             <td>@viewModelService.ServiceDate.ToString("dd/MM/yyyy")</td>
                             <td>@viewModelService.BlackCounter.ToString("N0")</td>
@@ -257,12 +267,14 @@
                                 @(pair.Previous != null ? (viewModelService.BlackCounter - pair.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
                             <td>
-                                @( (pair.Current.BlackCounter - Model.PlanBW).ToString("N0"))
+                                @(differentBlack - Model.PlanBW)
+                                @*(differentBlack - Model.PlanBW > 0 ?(differentBlack - Model.PlanBW).ToString("N0"): "-")*@
                             </td>
                             <td>@viewModelService.ColorCounter.ToString("N0")</td>
                             <td>
                                 @(pair.Previous != null ? (viewModelService.ColorCounter - pair.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
+                            <td> @(differentColor - Model.PlanColor) @*(differentColor - Model.PlanColor > 0 ?(differentColor - Model.PlanColor).ToString("N0"): "-")*@</td>
                         </tr>
                     }
                 </tbody>

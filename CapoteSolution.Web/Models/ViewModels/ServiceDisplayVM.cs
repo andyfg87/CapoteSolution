@@ -38,7 +38,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             TicketNumber = entity.TicketNumber;
             BlackTonerQty = entity.BlackTonerQty;
             ServiceReason = entity.ServiceReason.Name;
-            CopierInfo = $"{entity.Copier?.Customer?.CustomerName} {entity.Copier?.MachineEmail}";
+            CopierInfo = $"{entity.Copier?.Id} {entity.Copier?.Customer?.CustomerName} {entity.Copier?.MachineEmail}";
             TechnicianName = $"{entity.Technician?.FirstName} {entity.Technician?.LastName}";
         }
     }

@@ -1,0 +1,83 @@
+﻿@using CapoteSolution.Web.Paginations
+@model CapoteSolution.Web.Models.ViewModels.CustomerDisplayVM
+
+@{
+    ViewData["Title"] = "Detalles del Cliente";
+
+    var Copiers = ViewBag.Copiers as PaginatedList<CapoteSolution.Models.Entities.Copier>;
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@ViewData["Title"] - @Model.CustomerName</h3>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-bg-4">Lista de Impresoras:</dt>
+        </dl>
+        <div class="tab-pane fade show active">
+            @if (Copiers != null && Copiers.Any())
+            {
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Correo</th>
+                            <th>Dirección IP</th>
+                            <th>Día de Facturación</th>
+                            <th>No de Serie</th>
+                            <th>Modelo</th>
+                            <th>Precio Mensual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var copier in Copiers)
+                        {
+                            var viewModelCopier = new CapoteSolution.Web.Models.ViewModels.CopierDisplayVM();
+                            viewModelCopier.Import(copier);
+
+                            <tr>
+                                <td>@viewModelCopier.MachineEmail</td>
+                                <td>@viewModelCopier.IPAddress</td>
+                                <td>@viewModelCopier.InvoiceDay</td>
+                                <td>@viewModelCopier.SerialNumber</td>
+                                <td>@viewModelCopier.MachineModelInfo</td>
+                                <td>@viewModelCopier.MonthlyPrice.ToString("N0")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+                <nav>
+                    <ul class="pagination">
+                        <li class="page-item @(!Copiers.HasPreviousPage ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="DetailsCopierByServicePagination"
+                               asp-route-key="@Model.Id"
+                               asp-route-page="@(Copiers.PageIndex - 1)">Anterior</a>
+                        </li>
+                        @for (var i = 1; i <= Copiers.TotalPages; i++)
+                        {
+                            <li class="page-item @(i == Copiers.PageIndex ? "active" : "")">
+                                <a class="page-link"
+                                   asp-action="DetailsCopierByServicePagination"
+                                   asp-route-key="@Model.Id"
+                                   asp-route-page="@i">@i</a>
+                            </li>
+                        }
+                        <li class="page-item @(!Copiers.HasNextPage ? "disabled" : "")">
+                            <a class="page-link"
+                               asp-action="DetailsCopierByServicePagination"
+                               asp-route-key="@Model.Id"
+                               asp-route-page="@(Copiers.PageIndex + 1)">Siguiente</a>
+                        </li>
+                    </ul>
+                </nav>
+            }
+            else
+            {
+                <div class="alert alert-info">No hay registros de impresoras.</div>
+            }
+        </div>
+    </div>
+</div>
+
+<a asp-action="Index" class="btn btn-secondary mt-3">Volver al Listado</a>

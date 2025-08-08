@@ -1,6 +1,7 @@
 ﻿using CapoteSolution.Models.Entities;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
+using CapoteSolution.Web.Paginations;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +38,18 @@ namespace CapoteSolution.Web.Controllers
             ViewBag.Copiers = entity.Copiers;
 
             return View(viewModel);
-        }        
+        }
+        
+        public async Task<IActionResult> DetailByCopiers(Guid key, int page = 1, int pageSize = 5)
+        {
+            var entity = await _repository.GetAllWithNestedInclude("Copiers"+"."+nameof(MachineModel)+"."+nameof(Toner)).Result.FirstAsync(c => c.Id == key);
+
+            var viewModel = new CustomerDisplayVM();
+            viewModel.Import(entity);           
+
+            ViewBag.Copiers = PaginatedList<Copier>.Create(entity.Copiers, page, pageSize);
+
+            return View(viewModel);
+        }
     }
 }
