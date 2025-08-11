@@ -32,16 +32,16 @@
                     <tbody>
                         @foreach (var copier in Copiers)
                         {
-                            var viewModelCopier = new CapoteSolution.Web.Models.ViewModels.CopierDisplayVM();
-                            viewModelCopier.Import(copier);
+                            //var viewModelCopier = new CapoteSolution.Web.Models.ViewModels.CopierDisplayVM();
+                            //viewModelCopier.Import(copier);
 
                             <tr>
-                                <td>@viewModelCopier.MachineEmail</td>
-                                <td>@viewModelCopier.IPAddress</td>
-                                <td>@viewModelCopier.InvoiceDay</td>
-                                <td>@viewModelCopier.SerialNumber</td>
-                                <td>@viewModelCopier.MachineModelInfo</td>
-                                <td>@viewModelCopier.MonthlyPrice.ToString("N0")</td>
+                                <td>@copier.MachineEmail</td>
+                                <td>@copier.IPAddress</td>
+                                <td>@copier.InvoiceDay</td>
+                                <td>@copier.SerialNumber</td>
+                                <td>@($"{copier.MachineModel?.Brand?.Name} {copier.MachineModel.Name}")</td>
+                                <td>@copier.MonthlyPrice.ToString("N0")</td>
                             </tr>
                         }
                     </tbody>

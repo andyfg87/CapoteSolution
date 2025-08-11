@@ -75,7 +75,17 @@ namespace CapoteSolution.Web.Controllers
                 await _repository.AddAsync(entity);
                 await _repository.SaveChangesAsync();
 
-                return RedirectToAction(nameof(Index));
+                ViewData["ShowSuccessDialog"] = true;
+                ViewData["NewCopierId"] = entity.Id;
+
+                // Recargamos los datos necesarios para la vista
+                inputViewModel.AvailableBrands = await GetBrands();
+                inputViewModel.AvailableCustomers = await GetCustomers();
+                inputViewModel.AvailableMachineModels = new SelectList(new List<SelectListItem>());
+
+                return View(inputViewModel);
+
+                //return RedirectToAction(nameof(Index));               
             }
             catch (Exception ex)
             {
@@ -205,7 +215,13 @@ namespace CapoteSolution.Web.Controllers
 
         public override async Task<IActionResult> Delete(string key)
         {
-            var result = await _repository.GetAllWithNestedInclude(nameof(MachineModel));
+            var result = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
+                 nameof(Customer),    //Include           
+                 nameof(MachineModel) + "." + nameof(Toner),// ThenInclude
+                 nameof(MachineModel) + "." + nameof(Brand),// ThenInclude
+                 "Services", //Incluye la lista Services => ThenInclude
+                 "Services." + nameof(ServiceReason),// ThenInclude
+                 "Services." + "Technician");
             var entity = result.FirstAsync(c => c.Id == key).Result;
 
             if (entity == null)

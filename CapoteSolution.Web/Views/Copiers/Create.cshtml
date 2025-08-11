@@ -2,10 +2,29 @@
 @model CapoteSolution.Web.Models.ViewModels.CopierInputVM
 
 @{
-    ViewData["Title"] = "Registrar Nueva Impresora";
+
+
+
 }
 
-<h1>@ViewData["Title"]</h1>
+@if (ViewData["ShowSuccessDialog"] != null && (bool)ViewData["ShowSuccessDialog"])
+{
+    <h1>La impresora @ViewData["NewCopierId"] se ha registrado correctamente.</h1>
+    <a id="btnAddService" href="@Url.Action("CreateService", "Services", new { copierId = ViewData["NewCopierId"] })"
+       class="btn btn-primary">
+        <i class="fas fa-plus-circle"></i> Agregar servicio
+    </a>
+    <a id="btnAddService" href="@Url.Action("Index")"     class="btn btn-secondary">
+        <i class="fas fa-plus-circle"></i> Volver a la Lista
+    </a>
+
+}
+else
+{
+    ViewData["Title"] = "Registrar Nueva Impresora";
+    <h1>@ViewData["Title"]</h1>
+}
+
 
 <hr />
 <div class="row">
@@ -171,14 +190,16 @@
             <div class="row">
                 <div class="col-md-12">
                     <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                        <button id="submit" type="submit" class="btn btn-primary">Guardar</button>
+                        <a id="cancelHref" asp-action="Index" class="btn btn-secondary">Cancelar</a>
                     </div>
                 </div>
             </div>
         </form>
     </div>
 </div>
+
+
 
 @section Scripts {
     @{
@@ -187,10 +208,21 @@
 
     <script>
         $(document).ready(function () {
+
+           
+       
+
             // Deshabilitar el select de modelos inicialmente
             $('#machineModelSelect').prop('disabled', true);
+
+            @if (ViewData["ShowSuccessDialog"] != null && (bool)ViewData["ShowSuccessDialog"]){
+                <text>
+                    $("#submit").prop("disabled", true);
+                    $("#cancelHref").prop("disabled", true);
+                </text>
+            }
             EnabledDesabledCustomerSelect();
-           
+
 
             // Si hay una marca seleccionada (en caso de error de validación)
             var initialBrandId = $('#BrandId').val();
@@ -251,5 +283,14 @@
                 return true;
             });
         });
+
+        $(document).on('click', '#btnToList', function () {
+            window.location.href = '@Url.Action("Index")';
+        });
+
+        $(document).on('click', '#btnAddService', function () {
+            window.location.href = '@Url.Action("Create", "Services", new { copierId = ViewData["NewCopierId"] })';
+        });
+
     </script>
 }

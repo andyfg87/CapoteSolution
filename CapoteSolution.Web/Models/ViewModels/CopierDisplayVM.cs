@@ -48,8 +48,10 @@ namespace CapoteSolution.Web.Models.ViewModels
         public decimal ExtraBW {  get; set; }
         public decimal ExtraColor {  get; set; }
         public string? LastServiceDate {  get; set; }
-        public decimal? HighestTonerChangeCounter { get; set; }
-        public int? TonerYield { get; set; }
+        public int? HighestTonerChangeCounter { get; set; }
+        public int? HighestNoChangeTonerCounter { get; set; }
+        public int? TonerYield { get; set; }       
+
 
         public void Import(Copier entity)
         {
@@ -70,8 +72,9 @@ namespace CapoteSolution.Web.Models.ViewModels
             ExtraBW = entity.ExtraBW;
             ExtraColor = entity.ExtraColor;
             LastServiceDate = LastService(entity) != null ? LastService(entity).Date.ToString("dd/MM/yyyy") : "Sin Servicio Aún" ;
-            HighestTonerChangeCounter = HightTonerChange(entity) !=null ? HightTonerChange(entity).BlackCounter: 0;
-            TonerYield = HightTonerChange(entity) != null ? HightTonerChange(entity).BlackTonerQty : 0;
+            HighestTonerChangeCounter = HightTonerChange(entity);
+            HighestNoChangeTonerCounter = HightNoChangeToner(entity);
+            TonerYield = entity.MachineModel?.Toner?.Yield;
         }
 
         //Devolver servicio de la ultima fecha 
@@ -85,25 +88,29 @@ namespace CapoteSolution.Web.Models.ViewModels
             return lastService;
         }
 
-        private Service HightTonerChange(Copier copier)
+        private int HightTonerChange(Copier copier)
         {
             if (copier.Services.Count == 0)
-                return null;
+                return 0;
 
-            var lastService = copier.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange).OrderBy(c => c.BlackCounter).LastOrDefault();
+            var lastService = copier.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange)
+                .Select(c => new { Service = c, TotalCounter = c.BlackCounter + c.ColorCounter})
+                .OrderBy(c => c.TotalCounter).LastOrDefault();
 
-            return lastService;
+            return  lastService != null ? lastService.TotalCounter: 0;
              
         }
 
-        private Service HightNoChangeToner(Copier copier)
+        private int HightNoChangeToner(Copier copier)
         {
             if (copier.Services.Count == 0)
-                return null;
+                return 0;
 
-            var lastService = copier.Services.Where(s => s.ServiceReason.Name != ServiceReason.Reasons.TonerChange).OrderBy(c => c.BlackCounter).LastOrDefault();
+            var lastService = copier.Services.Where(s => s.ServiceReason.Name != ServiceReason.Reasons.TonerChange)
+                .Select(c => new { Service = c, TotalCounter = c.BlackCounter + c.ColorCounter})
+                .OrderBy(c => c.TotalCounter).LastOrDefault();
 
-            return lastService;
+            return lastService != null ? lastService.TotalCounter : 0;
         }
     }
 }

@@ -7,42 +7,45 @@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h3>@ViewData["Title"] - @Model.SerialNumber</h3>
+        <h3>@ViewData["Title"] - @Model.Id</h3>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-6">
 
                 <dl class="row">
-                    
-                        <dt class="col-sm-4">Estado:</dt>
-                        <dd class="col-sm-8">
-                            <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
-                                @Model.Status
-                            </span>
-                        </dd>
-                        <dt class="col-sm-4">ID</dt>
-                        <dd class="col-sm-8">@Model.Id</dd>
 
-                        <dt class="col-sm-4">Correo</dt>
-                        <dd class="col-sm-8">@Model.MachineEmail</dd>
+                    <dt class="col-sm-4">Estado:</dt>
+                    <dd class="col-sm-8">
+                        <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
+                            @Model.Status
+                        </span>
+                    </dd>
+                    <dt class="col-sm-4">No Serie</dt>
+                    <dd class="col-sm-8">@Model.SerialNumber</dd>
 
-                        <dt class="col-sm-4">Modelo </dt>
-                        <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+                    <dt class="col-sm-4">Correo</dt>
+                    <dd class="col-sm-8">@Model.MachineEmail</dd>
 
-                        <dt class="col-sm-4">Plan B/N:</dt>
-                        <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+                    <dt class="col-sm-4">Modelo </dt>
+                    <dd class="col-sm-8">@Model.MachineModelInfo</dd>
 
-                        <dt class="col-sm-4">Plan Color:</dt>
-                        <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
-                                    
+                    <dt class="col-sm-4">Plan B/N:</dt>
+                    <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+
+                    <dt class="col-sm-4">Plan Color:</dt>
+                    <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+
+                    <dt class="col-sm-4">Rendimimeto del Toner:</dt>
+                    <dd class="col-sm-8">@Model.TonerYield</dd>
+
                 </dl>
 
             </div>
 
             <div class="col-md-6">
 
-                <dl class="row">         
+                <dl class="row">
 
                     <dt class="col-sm-4">Precio Extra B/N:</dt>
                     <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
@@ -52,9 +55,6 @@
 
                     <dt class="col-sm-4">Precio Mensual</dt>
                     <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
-
-                    <dt class="col-sm-4">Toner Cambiados</dt>
-                    <dd class="col-sm-8">@Model.TonerYield</dd>
 
                     <dt class="col-sm-8">Contador Alto Cambio de Toner</dt>
                     <dd class="col-sm-4">@Model.HighestTonerChangeCounter</dd>
@@ -73,6 +73,9 @@
     var serviceTonerChange = ViewBag.ServiceTonerChange as PaginatedList<CapoteSolution.Models.Entities.Service>;
     var serviceMaintenance = ViewBag.ServiceMaintenance as PaginatedList<CapoteSolution.Models.Entities.Service>;
 }
+<div class="d-flex justify-content-between align-items-center mb-4">
+      <a asp-action="CreateService" asp-route-copierId="@Model.Id" asp-controller="Services" class="btn btn-success">Nuevo Servicio</a>
+</div>
 
 <ul class="nav nav-tabs" id="servicesTab" role="tablist">
     <li class="nav-item" role="presentation">
@@ -103,7 +106,9 @@
                         <th>Fecha</th>
                         <th>Tóner Color</th>
                         <th>Tóner B/N</th>
-                        <th>Técnico</th>
+                        <th>Contador Total</th>
+                        <th>Toner Cambiados</th>
+                        <th>Comentarios</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,7 +121,9 @@
                             <td>@change.Current.Date.ToString("dd/MM/yyyy")</td>
                             <td>@change.Current.ColorCounter</td>
                             <td>@change.Current.BlackCounter</td>
-                            <td>@viewModelUser.FullName</td>
+                            <td>@(change.Current.BlackCounter + change.Current.ColorCounter)</td>
+                            <td>@change.Current.BlackTonerQty</td>
+                            <td>@change.Current.Comments</td>
                         </tr>
                     }
                 </tbody>
@@ -169,11 +176,11 @@
                 <thead>
                     <tr>
                         <th>Fecha</th>
-                        <th>Técnico</th>
                         <th>Contador Negro</th>
-                        <th>Diferencia de Negro</th>
                         <th>Contador Color</th>
-                        <th>Diferencia de Color</th>
+                        <th>Ticket</th>
+                        <th>Técnico</th>
+                        <th>Comentarios</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -185,16 +192,12 @@
 
                         viewModelUser.Import(maintenance.Current.Technician);
                         <tr>
-                            <td>@maintenance.Current.Date.ToString("dd/MM/yyyy")</td>
-                            <td>@viewModelUser.FullName</td>
-                            <td>@maintenance.Current.BlackCounter.ToString("N0")</td>
-                            <td>
-                                @(maintenance.Previous != null ? (maintenance.Current.BlackCounter - maintenance.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
-                            </td>
+                            <td>@maintenance.Current.Date.ToString("dd/MM/yyyy")</td>                          
+                            <td>@maintenance.Current.BlackCounter.ToString("N0")</td>                            
                             <td>@maintenance.Current.ColorCounter.ToString("N0")</td>
-                            <td>
-                                @(maintenance.Previous != null ? (maintenance.Current.ColorCounter - maintenance.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
-                            </td>
+                            <td>@maintenance.Current.TicketNumber</td>
+                            <td>@viewModelUser.FullName</td>
+                            <td>@maintenance.Current.Comments</td>
                         </tr>
                     }
                 </tbody>
@@ -253,6 +256,7 @@
                         <th>Contador Color</th>
                         <th>Diferencia de Color</th>
                         <th>ExtraColor</th>
+                        <th>Contador Total</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -279,6 +283,7 @@
                                 @(pair.Previous != null ? (viewModelService.ColorCounter - pair.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
                             <td> @(differentColor - Model.PlanColor) @*(differentColor - Model.PlanColor > 0 ?(differentColor - Model.PlanColor).ToString("N0"): "-")*@</td>
+                            <td> @(pair.Current.ColorCounter + pair.Current.BlackCounter)</td>
                         </tr>
                     }
                 </tbody>

@@ -36,11 +36,12 @@ namespace CapoteSolution.Web.Controllers
 
 
 
-        public override async Task<IActionResult> Create()
+        public async Task<IActionResult> CreateService(string copierId = "")
         {
             var model = new ServiceInputVM
             {
                 ServiceDate = DateTime.Now,
+                CopierId = copierId,
                 AvailableCopiers = await GetActiveContracts(),
                 AvailableTechnicians = await GetTechnicians(),
                 ServiceReasons = GetServiceReasons()// TODO Enumerable con 3 motivos

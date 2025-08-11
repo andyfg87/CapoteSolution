@@ -103,6 +103,43 @@ namespace CapoteSolution.Web.Controllers
             return RedirectToAction("Index", "Home");
         }
 
+        public async Task<IActionResult> Edit(Guid key)
+        {
+            var entity = await _userRepo.GetByIdAsync(key);
+            if (entity == null)
+                return NotFound();
+
+            var viewModel = new UserInputVM();
+            viewModel.AvailableRoles = GetRoles();
+            viewModel.Import(entity);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Edit(UserInputVM model)
+        {
+            if (!ModelState.IsValid)
+            {
+                model.AvailableRoles = GetRoles();
+                return View(model);
+            }
+
+            var user = new User
+            {
+                Username = model.UserName,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Role = model.Role
+            };
+            user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+
+            await _userRepo.UpdateAsync(user);
+            await _userRepo.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
         private SelectList GetRoles()
         {
             return new SelectList(Enum.GetValues(typeof(UserRole))
