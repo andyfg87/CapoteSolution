@@ -48,10 +48,10 @@ namespace CapoteSolution.Web.Models.ViewModels
         public decimal ExtraBW {  get; set; }
         public decimal ExtraColor {  get; set; }
         public string? LastServiceDate {  get; set; }
-        public int? HighestTonerChangeCounter { get; set; }
-        public int? HighestNoChangeTonerCounter { get; set; }
-        public int? TonerYield { get; set; } 
-        public int? QtyOfHightestTonerChange { get;set; }
+        public int? HighestTonerChangeCounter { get; set; } = 0;
+        public int? HighestNoChangeTonerCounter { get; set; } = 0;
+        public int? TonerYield { get; set; } = 0;
+        public int? QtyOfHightestTonerChange { get;set; } = 0;
 
 
         public void Import(Copier entity)
@@ -88,7 +88,7 @@ namespace CapoteSolution.Web.Models.ViewModels
 
             return lastService;
         }
-
+        //Del Servicio mas alto de cambio de toner
         private int HightTonerChange(Copier copier)
         {
             if (copier.Services.Count == 0)
@@ -97,12 +97,12 @@ namespace CapoteSolution.Web.Models.ViewModels
             var lastService = copier.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange)
                 .Select(c => new { Service = c, TotalCounter = c.BlackCounter + c.ColorCounter})
                 .OrderBy(c => c.TotalCounter).LastOrDefault();
-            QtyOfHightestTonerChange = lastService?.Service.BlackTonerQty;
+            QtyOfHightestTonerChange = lastService?.Service.BlackTonerQty != null  ? lastService?.Service.BlackTonerQty: 0;
 
             return  lastService != null ? lastService.TotalCounter: 0;
              
         }
-
+        //Del Servicio mas alto de no cambio de toner
         private int HightNoChangeToner(Copier copier)
         {
             if (copier.Services.Count == 0)
@@ -113,6 +113,27 @@ namespace CapoteSolution.Web.Models.ViewModels
                 .OrderBy(c => c.TotalCounter).LastOrDefault();
 
             return lastService != null ? lastService.TotalCounter : 0;
+        }
+
+        public int TotalYield() 
+        { 
+            return ((int)(TonerYield * QtyOfHightestTonerChange)); 
+        }
+
+
+        public int CheckAt() 
+        { 
+            return (int)(HighestTonerChangeCounter + TotalYield()); 
+        }
+
+        public int ChangeIn() 
+        { 
+            return (int)(CheckAt() - HighestNoChangeTonerCounter); 
+        }
+
+        public decimal TonerLife() { 
+            var totaYield = TotalYield() > 0 ? TotalYield() : 1;
+            return ChangeIn() / TotalYield(); 
         }
     }
 }
