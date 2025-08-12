@@ -11,7 +11,7 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
 
                 <dl class="row">
 
@@ -43,7 +43,7 @@
 
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-4">
 
                 <dl class="row">
 
@@ -66,6 +66,22 @@
                     <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>
                 </dl>
 
+            </div>
+
+            <div class="col-md-4">
+                <dl class="row">
+                    <dt>Total Yield:</dt>
+                    <dd>@Model.TotalYield()</dd>
+
+                    <dt>Check At:</dt>
+                    <dd>@Model.CheckAt()</dd>
+
+                    <dt>Change In:</dt>
+                    <dd>@Model.ChangeIn()</dd>
+
+                    <dt>Toner Life:</dt>
+                    <dd>@Model.TonerLife()</dd>
+                </dl>
             </div>
 
         </div>
@@ -116,6 +132,7 @@
                         <th>Contador Total</th>
                         <th>Toner Cambiados</th>
                         <th>Comentarios</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -129,6 +146,12 @@
                             <td>@(change.Current.BlackCounter + change.Current.ColorCounter)</td>
                             <td>@change.Current.BlackTonerQty</td>
                             <td>@change.Current.Comments</td>
+                            <td>
+                                 <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-key="@change.Current.Id" asp-controller="Services" class="btn btn-sm btn-primary">Editar</a>                                    
+                                    <a asp-action="Delete" asp-route-key="@change.Current.Id" asp-controller="Services" class="btn btn-sm btn-danger">Eliminar</a>
+                                 </div>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -186,6 +209,7 @@
                         <th>Ticket</th>
                         <th>Técnico</th>
                         <th>Comentarios</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -203,6 +227,12 @@
                             <td>@maintenance.Current.TicketNumber</td>
                             <td>@viewModelUser.FullName</td>
                             <td>@maintenance.Current.Comments</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-key="@maintenance.Current.Id" asp-controller="Services" class="btn btn-sm btn-primary">Editar</a>
+                                    <a asp-action="Delete" asp-route-key="@maintenance.Current.Id" asp-controller="Services" class="btn btn-sm btn-danger">Eliminar</a>
+                                </div>
+                            </td>
                         </tr>
                     }
                 </tbody>
@@ -262,6 +292,7 @@
                         <th>Diferencia de Color</th>
                         <th>ExtraColor</th>
                         <th>Contador Total</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -289,6 +320,12 @@
                             </td>
                             <td> @(differentColor - Model.PlanColor) @*(differentColor - Model.PlanColor > 0 ?(differentColor - Model.PlanColor).ToString("N0"): "-")*@</td>
                             <td> @(pair.Current.ColorCounter + pair.Current.BlackCounter)</td>
+                            <td>
+                                <div class="btn-group" role="group">
+                                    <a asp-action="Edit" asp-route-key="@maintenance.Current.Id" asp-controller="Services" class="btn btn-sm btn-primary">Editar</a>
+                                    <a asp-action="Delete" asp-route-key="@maintenance.Current.Id" asp-controller="Services" class="btn btn-sm btn-danger">Eliminar</a>
+                                </div>
+                            </td>
                         </tr>
                     }
                 </tbody>
