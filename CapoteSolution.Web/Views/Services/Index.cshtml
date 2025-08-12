@@ -24,7 +24,7 @@
         @foreach (var item in Model)
         {
             <tr>
-                <td>@item.ServiceDate.ToShortDateString()</td>
+                <td>@item.ServiceDate.ToString("MM/dd/yyyy")</td>
                 <td>@item.CopierInfo</td>
                 <td>@item.ServiceReason</td>
                 <td>@item.TechnicianName</td>

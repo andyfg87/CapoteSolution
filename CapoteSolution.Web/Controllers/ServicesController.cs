@@ -83,7 +83,7 @@ namespace CapoteSolution.Web.Controllers
         {
             var contracts = await _copierRepo.GetAll().Result
                 .Where(c => c.Status == ContractStatus.Active)
-                .Select(c => new { c.Id, DisplayText = $"{c.SerialNumber} - {c.MachineModel.Name}" })
+                .Select(c => new { c.Id, DisplayText = $"{c.Id} - {c.MachineModel.Name}" })
                 .ToListAsync();
 
             return new SelectList(contracts, "Id", "DisplayText");

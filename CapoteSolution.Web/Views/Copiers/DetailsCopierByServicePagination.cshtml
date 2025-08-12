@@ -56,8 +56,14 @@
                     <dt class="col-sm-4">Precio Mensual</dt>
                     <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
 
-                    <dt class="col-sm-8">Contador Alto Cambio de Toner</dt>
-                    <dd class="col-sm-4">@Model.HighestTonerChangeCounter</dd>
+                    <dt class="col-sm-5">Contador Alto Cambio de Toner</dt>
+                    <dd class="col-sm-6">@Model.HighestTonerChangeCounter</dd>
+
+                    <dt class="col-sm-5">Toners Cambiado</dt>
+                    <dd class="col-sm-6">@Model.QtyOfHightestTonerChange</dd>
+
+                    <dt class="col-sm-5">Contador Alto No Cambio de Toner</dt>
+                    <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>
                 </dl>
 
             </div>
@@ -79,8 +85,8 @@
 
 <ul class="nav nav-tabs" id="servicesTab" role="tablist">
     <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="toner-tab" data-bs-toggle="tab" data-bs-target="#toner" type="button" role="tab" aria-controls="toner" aria-selected="true">
-            Cambios de Tóner
+        <button class="nav-link active" id="other-tab" data-bs-toggle="tab" data-bs-target="#other" type="button" role="tab" aria-controls="other" aria-selected="false">
+            Contadores Mensuales
         </button>
     </li>
     <li class="nav-item" role="presentation">
@@ -89,10 +95,11 @@
         </button>
     </li>
     <li class="nav-item" role="presentation">
-        <button class="nav-link" id="other-tab" data-bs-toggle="tab" data-bs-target="#other" type="button" role="tab" aria-controls="other" aria-selected="false">
-            Contadores Mensuales
+        <button class="nav-link" id="toner-tab" data-bs-toggle="tab" data-bs-target="#toner" type="button" role="tab" aria-controls="toner" aria-selected="true">
+            Cambios de Tóner
         </button>
-    </li>
+    </li>   
+    
 </ul>
 
 <div class="tab-content p-3 border border-top-0 rounded-bottom" id="servicesTabContent">
@@ -103,9 +110,9 @@
             <table class="table table-striped">
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Tóner Color</th>
+                        <th>Fecha</th>                        
                         <th>Tóner B/N</th>
+                        <th>Tóner Color</th>
                         <th>Contador Total</th>
                         <th>Toner Cambiados</th>
                         <th>Comentarios</th>
@@ -113,14 +120,12 @@
                 </thead>
                 <tbody>
                     @foreach (var change in serviceTonerChange.Select((x, i) => new { Current = x, Previous = i > 0 ? serviceMaintenance.ElementAt(i - 1) : null }))
-                    {
-                        var viewModelUser = new CapoteSolution.Web.Models.ViewModels.UserDisplayVM();
-                        viewModelUser.Import(change.Current.Technician);
+                    {                     
 
                         <tr>
-                            <td>@change.Current.Date.ToString("dd/MM/yyyy")</td>
-                            <td>@change.Current.ColorCounter</td>
+                            <td>@change.Current.Date.ToString("dd/MM/yyyy")</td>                            
                             <td>@change.Current.BlackCounter</td>
+                            <td>@change.Current.ColorCounter</td>
                             <td>@(change.Current.BlackCounter + change.Current.ColorCounter)</td>
                             <td>@change.Current.BlackTonerQty</td>
                             <td>@change.Current.Comments</td>

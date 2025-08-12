@@ -50,7 +50,8 @@ namespace CapoteSolution.Web.Models.ViewModels
         public string? LastServiceDate {  get; set; }
         public int? HighestTonerChangeCounter { get; set; }
         public int? HighestNoChangeTonerCounter { get; set; }
-        public int? TonerYield { get; set; }       
+        public int? TonerYield { get; set; } 
+        public int? QtyOfHightestTonerChange { get;set; }
 
 
         public void Import(Copier entity)
@@ -71,7 +72,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             Status = entity.Status.ToString();
             ExtraBW = entity.ExtraBW;
             ExtraColor = entity.ExtraColor;
-            LastServiceDate = LastService(entity) != null ? LastService(entity).Date.ToString("dd/MM/yyyy") : "Sin Servicio Aún" ;
+            LastServiceDate = LastService(entity) != null ? LastService(entity).Date.ToString("MM/dd/yyyy") : "Sin Servicio Aún" ;
             HighestTonerChangeCounter = HightTonerChange(entity);
             HighestNoChangeTonerCounter = HightNoChangeToner(entity);
             TonerYield = entity.MachineModel?.Toner?.Yield;
@@ -96,6 +97,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             var lastService = copier.Services.Where(s => s.ServiceReason.Name == ServiceReason.Reasons.TonerChange)
                 .Select(c => new { Service = c, TotalCounter = c.BlackCounter + c.ColorCounter})
                 .OrderBy(c => c.TotalCounter).LastOrDefault();
+            QtyOfHightestTonerChange = lastService?.Service.BlackTonerQty;
 
             return  lastService != null ? lastService.TotalCounter: 0;
              

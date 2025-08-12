@@ -22,9 +22,9 @@ namespace CapoteSolution.Models.Entities
         [EmailAddress]
         public string MachineEmail { get; set; }
 
-        public string IPAddress { get; set; }
+        public string? IPAddress { get; set; }
         
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         //Campos de Contratos que pasan a impresora
         [Required]

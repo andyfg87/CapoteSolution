@@ -42,7 +42,7 @@ namespace CapoteSolution.Web.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             var model = new UserInputVM
@@ -127,14 +127,45 @@ namespace CapoteSolution.Web.Controllers
 
             var user = new User
             {
-                Username = model.UserName,
+                //Username = model.UserName,
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 Role = model.Role
             };
-            user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+            var findUser = await _userRepo.GetByIdAsync(model.Id);
+            findUser.Username = model.UserName;
+            findUser.FirstName = model.FirstName;
+            findUser.LastName = model.LastName;
+            findUser.Role = model.Role;
+            findUser.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
+            //user.PasswordHash = _passwordHasher.HashPassword(user, model.Password);
 
-            await _userRepo.UpdateAsync(user);
+            //await _userRepo.UpdateAsync(user);
+            await _userRepo.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+
+
+        public async Task<IActionResult> Delete(Guid key)
+        {
+            var entity = await _userRepo.GetByIdAsync(key);
+            if (entity == null)
+                return NotFound();
+
+            var viewModel = new UserDisplayVM();
+           
+            viewModel.Import(entity);
+
+            return View(viewModel);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Delete(UserInputVM model)
+        {
+            
+
+            await _userRepo.DeleteAsync(model.Id);
             await _userRepo.SaveChangesAsync();
 
             return RedirectToAction(nameof(Index));

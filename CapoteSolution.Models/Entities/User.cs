@@ -10,6 +10,7 @@ namespace CapoteSolution.Models.Entities
 {
     public class User : IEntity<Guid>
     {
+        [Key]
         public Guid Id { get; set; }
 
         [Required]

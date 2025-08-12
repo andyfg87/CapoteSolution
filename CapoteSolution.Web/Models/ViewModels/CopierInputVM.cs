@@ -16,11 +16,10 @@ namespace CapoteSolution.Web.Models.ViewModels
         [StringLength(50)]
         [Display(Name = "Número de Serie")]
         public string SerialNumber { get; set; }
-
-        [Required]
+       
         [Display(Name = "Dirección IP")]
         [RegularExpression(@"^(?:[0-9]{1,3}\.){3}[0-9]{1,3}$", ErrorMessage = "Formato IP inválido")]
-        public string IPAddress { get; set; }
+        public string? IPAddress { get; set; }
 
         [EmailAddress]
         [Display(Name = "Email de Notificaciones")]
@@ -39,7 +38,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         public Guid CustomerId { get; set; }
 
         [Display(Name = "Comentarios")]
-        public string Comments { get; set; }
+        public string? Comments { get; set; }
 
         [Required]
         [Display(Name = "Fecha Inicio")]
