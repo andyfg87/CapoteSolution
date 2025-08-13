@@ -14,14 +14,14 @@
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
-                <th>ID Impresora</th>
+                <th>ID</th>
                 <th>Modelo</th>
                 <th>Cliente</th>
-                <th>Facturación</th>
-                <th>Correo</th>               
-                <th>Contrato</th>
+                <th>Día</th>
+                <th>Correo</th>  
                 <th>Ultimo Servicio</th>
-                <th>Precio por mes</th>
+                <th>Precio</th>
+                <th>Vida Toner</th>
                 <th>Acciones</th>
             </tr>
         </thead>
@@ -34,13 +34,27 @@
                     <td>@item.CustomerName</td>
                     <td>@item.InvoiceDay</td>
                     <td>@item.MachineEmail</td>                    
-                    <td>
-                        <span class="badge @(item.ContractStatus == "Active" ? "bg-success" : "bg-warning")">
-                            @item.ContractStatus
-                        </span>
-                    </td>
                     <td>@item.LastServiceDate</td>
                     <td>@item.MonthlyPrice</td>
+                    <td>
+                        <!-- Barra de progreso para TonerLife -->
+                        @{
+                            // Asegúrate de que TonerLife está entre 0 y 1 (o 0-100)
+                            double tonerPercentage = (double)item.TonerLife() * 100; // Convierte a porcentaje
+                            string progressBarClass = tonerPercentage > 20 ? "bg-success" :
+                            tonerPercentage > 10 ? "bg-warning" : "bg-danger";
+                        }
+                        <div class="progress" style="height: 20px; width: 100px;">
+                            <div class="progress-bar @progressBarClass"
+                                 role="progressbar"
+                                 style="width: @tonerPercentage%"
+                                 aria-valuenow="@tonerPercentage"
+                                 aria-valuemin="0"
+                                 aria-valuemax="100">
+                                <small>@tonerPercentage.ToString("0")%</small>
+                            </div>
+                        </div>
+                    </td>
                     <td>                        
                         <div class="btn-group" role="group">
                             <a asp-action="Edit" asp-route-key="@item.Id.ToString()" class="btn btn-sm btn-primary">Editar</a>
