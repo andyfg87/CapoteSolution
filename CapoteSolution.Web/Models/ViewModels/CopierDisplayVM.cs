@@ -131,9 +131,20 @@ namespace CapoteSolution.Web.Models.ViewModels
             return (int)(CheckAt() - HighestNoChangeTonerCounter); 
         }
 
-        public decimal TonerLife() { 
-            var totaYield = TotalYield() > 0 ? TotalYield() : 1;
-            return ChangeIn() / TotalYield(); 
+        public decimal TonerLife()
+        {
+            try
+            {
+                var totaYield = TotalYield();
+                if (totaYield <= 0) return 0m; // Evitar división por cero
+
+                decimal result = (decimal)ChangeIn() / (decimal)totaYield;
+                return Math.Round(result, 2, MidpointRounding.AwayFromZero);
+            }
+            catch
+            {
+                return 0m; // Manejo de errores
+            }
         }
     }
 }
