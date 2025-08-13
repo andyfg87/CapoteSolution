@@ -10,6 +10,32 @@
     <a asp-action="Create" class="btn btn-success">Nueva Impresora</a>
 </div>
 
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                <label for="searchId" class="form-label">ID Impresora</label>
+                <input type="text" class="form-control" id="searchId" name="searchId"
+                       value="@Context.Request.Query["searchId"]">
+            </div>
+            <div class="col-md-3">
+                <label for="searchDate" class="form-label">Fecha Servicio</label>
+                <input type="date" class="form-control" id="searchDate" name="searchDate"
+                       value="@Context.Request.Query["searchDate"]">
+            </div>
+            <div class="col-md-3">
+                <label for="searchCustomer" class="form-label">Cliente</label>
+                <input type="text" class="form-control" id="searchCustomer" name="searchCustomer"
+                       value="@Context.Request.Query["searchCustomer"]">
+            </div>
+            <div class="col-md-3 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary me-2">Filtrar</button>
+                <a href="@Url.Action("Index")" class="btn btn-secondary">Limpiar</a>
+            </div>
+        </form>
+    </div>
+</div>
+
 <div class="table-responsive">
     <table class="table table-striped table-hover">
         <thead class="table-dark">

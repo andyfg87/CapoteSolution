@@ -172,6 +172,10 @@ namespace CapoteSolution.Web.Controllers
         int pageNumber = 1,
         int pageSize = 10)
         {
+
+            // Mantener los parámetros de búsqueda en la paginación
+            var routeValues = ViewBag.RouteValues as RouteValueDictionary ?? new RouteValueDictionary();
+
             var count = await source.CountAsync();
             var items = await source
                 .Skip((pageNumber - 1) * pageSize)
@@ -185,7 +189,7 @@ namespace CapoteSolution.Web.Controllers
                 return vm;
             });
 
-            return new PaginatedList<TDisplayViewModel>(viewModels, count, pageNumber, pageSize);
+            return new PaginatedList<TDisplayViewModel>(viewModels, count, pageNumber, pageSize, routeValues);
         }
     }
 }

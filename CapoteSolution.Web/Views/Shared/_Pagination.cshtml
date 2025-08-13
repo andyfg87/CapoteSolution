@@ -8,6 +8,13 @@
     {
         throw new InvalidOperationException("El modelo debe implementar IPaginatedList");
     }
+
+    // Copiar los valores de ruta existentes
+    var routeValues = new Dictionary<string, string>();
+    foreach (var key in Model.RouteValues.Keys)
+    {
+        routeValues[key.ToString()] = Model.RouteValues[key]?.ToString();
+    }
 }
 
 <nav aria-label="Page navigation">

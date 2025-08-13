@@ -38,6 +38,16 @@ namespace CapoteSolution.Web.Controllers
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
+            // Obtener parámetros de filtro del query string
+            string searchId = HttpContext.Request.Query["searchId"];
+            string searchCustomer = HttpContext.Request.Query["searchCustomer"];
+            DateTime? searchDate = null;
+
+            if (DateTime.TryParse(HttpContext.Request.Query["searchDate"], out var parsedDate))
+            {
+                searchDate = parsedDate;
+            }
+
             var query = await _repository.GetAllWithNestedInclude(
                 nameof(MachineModel),
                 nameof(Customer),
@@ -45,9 +55,33 @@ namespace CapoteSolution.Web.Controllers
                 nameof(MachineModel) + "." + nameof(Brand),
                 "Services"+"."+nameof(ServiceReason));
 
+            // Aplicar filtros
+            if (!string.IsNullOrEmpty(searchId))
+            {
+                query = query.Where(c => c.Id.Contains(searchId));
+            }
+
+            if (searchDate.HasValue)
+            {
+                query = query.Where(c => c.Services.Any(s => s.Date.Date == searchDate.Value.Date));
+            }
+
+            if (!string.IsNullOrEmpty(searchCustomer))
+            {
+                query = query.Where(c => c.Customer.CustomerName.Contains(searchCustomer));
+            }
+
+            // Crear diccionario para mantener los filtros
+            var routeValues = new RouteValueDictionary();
+            if (!string.IsNullOrEmpty(searchId)) routeValues.Add("searchId", searchId);
+            if (searchDate.HasValue) routeValues.Add("searchDate", searchDate.Value.ToString("dd/MM/yyyy"));
+            if (!string.IsNullOrEmpty(searchCustomer)) routeValues.Add("searchCustomer", searchCustomer);
+
+            ViewBag.RouteValues = routeValues;
+
             var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
             return View(paginatedData);
-        }
+        }        
 
         public override async Task<IActionResult> Create()
         {
