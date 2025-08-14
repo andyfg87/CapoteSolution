@@ -39,21 +39,21 @@ namespace CapoteSolution.Web.Controllers
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
         {
             // Obtener parámetros de filtro del query string
-            string searchId = HttpContext.Request.Query["searchId"];
-            string searchCustomer = HttpContext.Request.Query["searchCustomer"];
-            DateTime? searchDate = null;
+            string searchId = HttpContext.Request.Query["searchId"].ToString();
+            string searchCustomer = HttpContext.Request.Query["searchCustomer"].ToString();
+            string invoiceDayStr = HttpContext.Request.Query["InvoiceDay"].ToString();
 
-            if (DateTime.TryParse(HttpContext.Request.Query["searchDate"], out var parsedDate))
-            {
-                searchDate = parsedDate;
-            }
+            ViewBag.InvoiceDays = GetDays();
 
             var query = await _repository.GetAllWithNestedInclude(
-                nameof(MachineModel),
-                nameof(Customer),
-                nameof(MachineModel) + "." + nameof(Toner),
-                nameof(MachineModel) + "." + nameof(Brand),
-                "Services"+"."+nameof(ServiceReason));
+        nameof(MachineModel),
+        nameof(Customer),
+        $"{nameof(MachineModel)}.{nameof(Toner)}",
+        $"{nameof(MachineModel)}.{nameof(Brand)}",
+        $"Services.{nameof(ServiceReason)}");
+
+            int invoiceDay = 0;
+            int.TryParse(invoiceDayStr, out invoiceDay);
 
             // Aplicar filtros
             if (!string.IsNullOrEmpty(searchId))
@@ -61,9 +61,9 @@ namespace CapoteSolution.Web.Controllers
                 query = query.Where(c => c.Id.Contains(searchId));
             }
 
-            if (searchDate.HasValue)
+            if (invoiceDay > 0)
             {
-                query = query.Where(c => c.Services.Any(s => s.Date.Date == searchDate.Value.Date));
+                query = query.Where(c => c.InvoiceDay == invoiceDay);
             }
 
             if (!string.IsNullOrEmpty(searchCustomer))
@@ -74,7 +74,7 @@ namespace CapoteSolution.Web.Controllers
             // Crear diccionario para mantener los filtros
             var routeValues = new RouteValueDictionary();
             if (!string.IsNullOrEmpty(searchId)) routeValues.Add("searchId", searchId);
-            if (searchDate.HasValue) routeValues.Add("searchDate", searchDate.Value.ToString("dd/MM/yyyy"));
+            if (invoiceDay > 0) routeValues.Add("InvoiceDay", invoiceDay.ToString());
             if (!string.IsNullOrEmpty(searchCustomer)) routeValues.Add("searchCustomer", searchCustomer);
 
             ViewBag.RouteValues = routeValues;
@@ -340,6 +340,15 @@ namespace CapoteSolution.Web.Controllers
         private async Task<PaginatedList<Service>> PaginateServices(IEnumerable<Service> services, int pageNumber, int pageSize)
         {
             return await PaginatedList<Service>.CreateAsync(services.AsQueryable(), pageNumber, pageSize);
+        }
+
+        private SelectList GetDays()
+        {
+            var days = _repository.GetAll().Result
+                .Select(c =>c.InvoiceDay).Distinct()
+                .Select(c => new { Value = c, Text = c });
+
+            return new SelectList(days, "Value", "Text");
         }
     }
 }
