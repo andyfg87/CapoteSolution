@@ -20,7 +20,7 @@
                        value="@Context.Request.Query["searchId"]">
             </div>
             <div class="col-md-3">
-                <label for="searchDate" class="form-label">Día de Facturación</label>
+                <label for="searchDate" class="form-label">Fecha Servicio</label>
                 <select name="InvoiceDay" class="form-select">
                     <option value="0">Seleccione día</option>
                     @foreach (var day in ViewBag.InvoiceDays)
