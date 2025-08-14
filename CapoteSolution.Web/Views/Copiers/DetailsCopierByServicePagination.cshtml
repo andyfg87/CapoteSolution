@@ -120,7 +120,7 @@
 
 <div class="tab-content p-3 border border-top-0 rounded-bottom" id="servicesTabContent">
     <!-- Tab de Cambios de Tóner -->
-    <div class="tab-pane fade show active" id="toner" role="tabpanel" aria-labelledby="toner-tab">
+    <div class="tab-pane fade" id="toner" role="tabpanel" aria-labelledby="toner-tab">
         @if (serviceTonerChange != null && serviceTonerChange.Any())
         {
             <table class="table table-striped">
@@ -278,7 +278,7 @@
     </div>
 
     <!-- Tab de Contadores Mensuales -->
-    <div class="tab-pane fade" id="other" role="tabpanel" aria-labelledby="other-tab">
+    <div class="tab-pane fade show active" id="other" role="tabpanel" aria-labelledby="other-tab">
         @if (serviceMonthlyCounter != null && serviceMonthlyCounter.Any())
         {
             <table class="table table-striped">

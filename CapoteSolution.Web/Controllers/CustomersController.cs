@@ -42,7 +42,9 @@ namespace CapoteSolution.Web.Controllers
         
         public async Task<IActionResult> DetailByCopiers(Guid key, int page = 1, int pageSize = 5)
         {
-            var entity = await _repository.GetAllWithNestedInclude("Copiers"+"."+nameof(MachineModel)+"."+nameof(Toner)).Result.FirstAsync(c => c.Id == key);
+            var entity = await _repository.GetAllWithNestedInclude($"Copiers.{nameof(MachineModel)}.{nameof(Toner)}",
+                $"Copiers.Services",
+                $"Copiers.Services.{nameof(ServiceReason)}").Result.FirstAsync(c => c.Id == key);
 
             var viewModel = new CustomerDisplayVM();
             viewModel.Import(entity);           

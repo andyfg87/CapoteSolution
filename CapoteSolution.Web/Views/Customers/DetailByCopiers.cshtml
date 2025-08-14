@@ -22,25 +22,25 @@
                     <thead>
                         <tr>
                             <th>ID Impresora</th>
+                            <th>ID Modelo</th>
                             <th>Correo</th>                           
-                            <th>Día de Facturación</th>
-                            <th>No de Serie</th>
-                            <th>Modelo</th>
+                            <th>Día</th>
+                            <th>Ultimo Servicio</th>                            
                             <th>Precio Mensual</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var copier in Copiers)
                         {
-                            //var viewModelCopier = new CapoteSolution.Web.Models.ViewModels.CopierDisplayVM();
-                            //viewModelCopier.Import(copier);
+                            var viewModelCopier = new CapoteSolution.Web.Models.ViewModels.CopierDisplayVM();
+                            viewModelCopier.Import(copier);
 
                             <tr>
                                 <td>@copier.Id</td>
+                                <td>@copier.MachineModel?.Name</td>                                
                                 <td>@copier.MachineEmail</td>                                
                                 <td>@copier.InvoiceDay</td>
-                                <td>@copier.SerialNumber</td>
-                                <td>@($"{copier.MachineModel?.Brand?.Name} {copier.MachineModel.Name}")</td>
+                                <td>@viewModelCopier.LastServiceDate</td>                               
                                 <td>@copier.MonthlyPrice.ToString("N0")</td>
                             </tr>
                         }

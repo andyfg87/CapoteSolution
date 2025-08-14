@@ -60,7 +60,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             SerialNumber = entity.SerialNumber;
             IPAddress = entity.IPAddress;
             MachineEmail = entity.MachineEmail;
-            MachineModelInfo = $"{entity.MachineModel?.Brand?.Name} {entity.MachineModel?.Name}";
+            MachineModelInfo = $"{entity.MachineModel?.Name}";
             PlanBW = entity.PlanBW;
             PlanColor = entity.PlanColor;
             MonthlyPrice = entity.MonthlyPrice;

@@ -206,11 +206,11 @@ namespace CapoteSolution.Web.Controllers
         {
             var entity = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
                  nameof(Customer),    //Include           
-                 nameof(MachineModel) + "." + nameof(Toner),// ThenInclude
-                 nameof(MachineModel) + "." + nameof(Brand),// ThenInclude
-                 "Services", //Incluye la lista Services => ThenInclude
-                 "Services." + nameof(ServiceReason),// ThenInclude
-                 "Services." + "Technician").Result.FirstAsync(c => c.Id == key);
+                 $"{nameof(MachineModel)}.{nameof(Toner)}",// ThenInclude
+                 $"{nameof(MachineModel)}.{nameof(Brand)}",// ThenInclude
+                 $"Services", //Incluye la lista Services => ThenInclude
+                 $"Services.{nameof(ServiceReason)}",// ThenInclude
+                 $"Services.Technician").Result.FirstAsync(c => c.Id == key);
 
             // Servicios ordenados para cálculo de diferencias
             var allMonthlyServices = entity.Services
