@@ -94,9 +94,10 @@
     var serviceMonthlyCounter = ViewBag.ServiceMonthlyCounter as PaginatedList<CapoteSolution.Models.Entities.Service>;
     var serviceTonerChange = ViewBag.ServiceTonerChange as PaginatedList<CapoteSolution.Models.Entities.Service>;
     var serviceMaintenance = ViewBag.ServiceMaintenance as PaginatedList<CapoteSolution.Models.Entities.Service>;
+    var detail = true;
 }
 <div class="d-flex justify-content-between align-items-center mb-4">
-      <a asp-action="CreateService" asp-route-copierId="@Model.Id" asp-controller="Services" class="btn btn-success">Nuevo Servicio</a>
+      <a asp-action="CreateService" asp-route-copierId="@Model.Id" asp-route-IsDetail="@detail" asp-controller="Services" class="btn btn-success">Nuevo Servicio</a>
 </div>
 
 <ul class="nav nav-tabs" id="servicesTab" role="tablist">

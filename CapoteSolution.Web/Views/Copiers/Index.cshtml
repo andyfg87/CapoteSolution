@@ -20,7 +20,7 @@
                        value="@Context.Request.Query["searchId"]">
             </div>
             <div class="col-md-3">
-                <label for="searchDate" class="form-label">Día de Facturación</label>
+                <label for="searchDate" class="form-label">Fecha Servicio</label>
                 <select name="InvoiceDay" class="form-select">
                     <option value="0">Seleccione día</option>
                     @foreach (var day in ViewBag.InvoiceDays)
@@ -71,21 +71,26 @@
                     <td>@item.LastServiceDate</td>
                     <td>@item.MonthlyPrice</td>
                     <td>
+                        <!-- Barra de progreso para TonerLife -->
                         @{
-                            double tonerPercentage = (double)item.TonerLife() * 100;
+                            // Asegúrate de que TonerLife está entre 0 y 1 (o 0-100)
+                            double tonerPercentage = (double)item.TonerLife() * 100; // Convierte a porcentaje
                             string progressBarClass = tonerPercentage > 20 ? "bg-success" :
                             tonerPercentage > 10 ? "bg-warning" : "bg-danger";
-                            string textClass = tonerPercentage < 15 ? "text-dark" : "text-white"; // Cambia el color del texto
                         }
-                        <div class="progress" style="height: 20px; width: 100px;">
-                            <div class="progress-bar @progressBarClass"
-                                 role="progressbar"
-                                 style="width: @tonerPercentage%"
-                                 aria-valuenow="@tonerPercentage"
-                                 aria-valuemin="0"
-                                 aria-valuemax="100">
-                                <small class="@textClass fw-bold">@tonerPercentage.ToString("0")%</small>
+                        <div class="position-relative" style="width: 120px;">
+                            <div class="progress" style="height: 20px;">
+                                <div class="progress-bar @progressBarClass"
+                                     role="progressbar"
+                                     style="width: @tonerPercentage%"
+                                     aria-valuenow="@tonerPercentage"
+                                     aria-valuemin="0"
+                                     aria-valuemax="100">
+                                </div>
                             </div>
+                            <span class="position-absolute top-0 start-100 translate-middle px-2">
+                                @tonerPercentage.ToString("0")%
+                            </span>
                         </div>
                     </td>
                     <td>                        
