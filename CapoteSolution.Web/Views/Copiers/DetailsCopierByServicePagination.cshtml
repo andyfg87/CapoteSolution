@@ -136,7 +136,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var change in serviceTonerChange.Select((x, i) => new { Current = x, Previous = i > 0 ? serviceMaintenance.ElementAt(i - 1) : null }))
+                    @foreach (var change in serviceTonerChange.Select((x, i) => new { Current = x, Previous = i > 0 ? serviceTonerChange.ElementAt(i - 1) : null }))
                     {                     
 
                         <tr>
