@@ -5,89 +5,91 @@
     ViewData["Title"] = "Detalles de Impresora";
 }
 
+
 <div class="card">
     <div class="card-header bg-primary text-white">
         <h3>@ViewData["Title"] - @Model.Id</h3>
     </div>
-    <div class="card-body">
-        <div class="row">
-            <div class="col-md-4">
+</div>
 
-                <dl class="row">
+<div class="card-group">
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
 
-                    <dt class="col-sm-4">Estado:</dt>
-                    <dd class="col-sm-8">
-                        <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
-                            @Model.Status
-                        </span>
-                    </dd>
-                    <dt class="col-sm-4">No Serie</dt>
-                    <dd class="col-sm-8">@Model.SerialNumber</dd>
+                <dt class="col-sm-4">Estado:</dt>
+                <dd class="col-sm-8">
+                    <span class="badge @(Model.Status == CapoteSolution.Models.Entities.ContractStatus.Active.ToString() ? "bg-success" : "bg-warning")">
+                        @Model.Status
+                    </span>
+                </dd>
+                <dt class="col-sm-4">No Serie</dt>
+                <dd class="col-sm-8">@Model.SerialNumber</dd>
 
-                    <dt class="col-sm-4">Correo</dt>
-                    <dd class="col-sm-8">@Model.MachineEmail</dd>
+                <dt class="col-sm-4">IP</dt>
+                <dd class="col-sm-8">@Model.IPAddress</dd>
 
-                    <dt class="col-sm-4">Modelo </dt>
-                    <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+                <dt class="col-sm-4">Correo</dt>
+                <dd class="col-sm-8">@Model.MachineEmail</dd>
 
-                    <dt class="col-sm-4">Plan B/N:</dt>
-                    <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
+                <dt class="col-sm-4">Modelo </dt>
+                <dd class="col-sm-8">@Model.MachineModelInfo</dd>
 
-                    <dt class="col-sm-4">Plan Color:</dt>
-                    <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
+                <dt class="col-sm-4">Plan B/N:</dt>
+                <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
 
-                    <dt class="col-sm-4">Rendimimeto del Toner:</dt>
-                    <dd class="col-sm-8">@Model.TonerYield</dd>
+                <dt class="col-sm-4">Plan Color:</dt>
+                <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
 
-                </dl>
+                <dt class="col-sm-4">Rendimimeto del Toner:</dt>
+                <dd class="col-sm-8">@Model.TonerYield</dd>
 
-            </div>
-
-            <div class="col-md-4">
-
-                <dl class="row">
-
-                    <dt class="col-sm-4">Precio Extra B/N:</dt>
-                    <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
-
-                    <dt class="col-sm-4">Precio Extra Color:</dt>
-                    <dd class="col-sm-8">@Model.ExtraColor.ToString("C") por copia</dd>
-
-                    <dt class="col-sm-4">Precio Mensual</dt>
-                    <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
-
-                    <dt class="col-sm-5">Contador Alto Cambio de Toner</dt>
-                    <dd class="col-sm-6">@Model.HighestTonerChangeCounter</dd>
-
-                    <dt class="col-sm-5">Toners Cambiado</dt>
-                    <dd class="col-sm-6">@Model.QtyOfHightestTonerChange</dd>
-
-                    <dt class="col-sm-5">Contador Alto No Cambio de Toner</dt>
-                    <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>
-                </dl>
-
-            </div>
-
-            <div class="col-md-4">
-                <dl class="row">
-                    <dt>Total Yield:</dt>
-                    <dd>@Model.TotalYield()</dd>
-
-                    <dt>Check At:</dt>
-                    <dd>@Model.CheckAt()</dd>
-
-                    <dt>Change In:</dt>
-                    <dd>@Model.ChangeIn()</dd>
-
-                    <dt>Toner Life:</dt>
-                    <dd>@Model.TonerLife()</dd>
-                </dl>
-            </div>
-
+            </dl>
         </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
 
+                <dt class="col-sm-4">Precio Extra B/N:</dt>
+                <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
+
+                <dt class="col-sm-4">Precio Extra Color:</dt>
+                <dd class="col-sm-8">@Model.ExtraColor.ToString("C") por copia</dd>
+
+                <dt class="col-sm-4">Precio Mensual</dt>
+                <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
+
+                <dt class="col-sm-5">Contador Alto Cambio de Toner</dt>
+                <dd class="col-sm-6">@Model.HighestTonerChangeCounter</dd>
+
+                <dt class="col-sm-5">Toners Cambiado</dt>
+                <dd class="col-sm-6">@Model.QtyOfHightestTonerChange</dd>
+
+                <dt class="col-sm-5">Contador Alto No Cambio de Toner</dt>
+                <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>
+            </dl>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <dl class="row">
+                <dt class="col-sm-5">Total Yield:</dt>
+                <dd class="col-sm-6">@Model.TotalYield()</dd>
+
+                <dt class="col-sm-5">Check At:</dt>
+                <dd class="col-sm-6">@Model.CheckAt()</dd>
+
+                <dt class="col-sm-5">Change In:</dt>
+                <dd class="col-sm-6">@Model.ChangeIn()</dd>
+
+                <dt class="col-sm-5">Toner Life:</dt>
+                <dd class="col-sm-5">@Model.TonerLife()</dd>
+            </dl>
+        </div>
     </div>
 </div>
+
 
 <!-- Pestañas de servicios -->
 @{
@@ -141,7 +143,7 @@
                     {                     
 
                         <tr>
-                            <td>@change.Current.Date.ToString("dd/MM/yyyy")</td>                            
+                            <td>@change.Current.Date.ToString("MM/dd/yyyy")</td>                            
                             <td>@change.Current.BlackCounter</td>
                             <td>@change.Current.ColorCounter</td>
                             <td>@(change.Current.BlackCounter + change.Current.ColorCounter)</td>
@@ -222,7 +224,7 @@
 
                         viewModelUser.Import(maintenance.Current.Technician);
                         <tr>
-                            <td>@maintenance.Current.Date.ToString("dd/MM/yyyy")</td>                          
+                            <td>@maintenance.Current.Date.ToString("MM/dd/yyyy")</td>                          
                             <td>@maintenance.Current.BlackCounter.ToString("N0")</td>                            
                             <td>@maintenance.Current.ColorCounter.ToString("N0")</td>
                             <td>@maintenance.Current.TicketNumber</td>
@@ -306,7 +308,7 @@
                         var differentColor = pair.Previous != null ? viewModelService.ColorCounter - pair.Previous.ColorCounter : 0;
 
                         <tr>
-                            <td>@viewModelService.ServiceDate.ToString("dd/MM/yyyy")</td>
+                            <td>@viewModelService.ServiceDate.ToString("MM/dd/yyyy")</td>
                             <td>@viewModelService.BlackCounter.ToString("N0")</td>
                             <td>
                                 @(pair.Previous != null ? (viewModelService.BlackCounter - pair.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")

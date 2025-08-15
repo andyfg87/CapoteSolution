@@ -2,6 +2,9 @@
 
 @{
     ViewData["Title"] = "Registrar Nuevo Servicio";
+    bool detail = ViewBag.IsDetail;
+
+    var test = "";
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -9,7 +12,7 @@
 <hr />
 <div class="row">
     <div class="col-md-8">
-        <form asp-action="Create">
+        <form asp-action="@( !detail ? "Create" : "CreateRedirectCopierDetails")">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <div class="row">
@@ -23,10 +26,14 @@
                 <div class="col-md-6">
                     <div class="form-group mb-3">
                         <label asp-for="CopierId" class="control-label"></label>
-                        <select asp-for="CopierId" asp-items="Model.AvailableCopiers" class="form-select">
+                        <select asp-for="CopierId" asp-items="Model.AvailableCopiers" class="form-select" disabled="@(detail)">
                             <option value="">Seleccione una impresora</option>
                         </select>
                         <span asp-validation-for="CopierId" class="text-danger"></span>
+                        @if (detail)
+                        {
+                            <input type="hidden" asp-for="CopierId" />
+                        }
                     </div>
                 </div>
             </div>

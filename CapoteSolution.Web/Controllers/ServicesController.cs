@@ -36,7 +36,7 @@ namespace CapoteSolution.Web.Controllers
 
 
 
-        public async Task<IActionResult> CreateService(string copierId = "")
+        public async Task<IActionResult> CreateService(string copierId = "", bool IsDetail = false)
         {
             var model = new ServiceInputVM
             {
@@ -46,7 +46,35 @@ namespace CapoteSolution.Web.Controllers
                 AvailableTechnicians = await GetTechnicians(),
                 ServiceReasons = GetServiceReasons()// TODO Enumerable con 3 motivos
             };
+
+            ViewBag.IsDetail = IsDetail;
+
             return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateRedirectCopierDetails(ServiceInputVM inputViewModel)
+        {
+            if (!ModelState.IsValid)
+                return View(inputViewModel);
+
+            try
+            {
+                var entity = inputViewModel.Export();
+                await _repository.AddAsync(entity);
+                await _repository.SaveChangesAsync();
+
+
+
+                return RedirectToAction("DetailsCopierByServicePagination", "Copiers", new { key = inputViewModel.CopierId });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error al crear entidad");
+                ModelState.AddModelError("", _localizer["ErrorCreationMessage"]);
+                return View(inputViewModel);
+            }
         }
 
         public override async Task<IActionResult> Edit(Guid key)
@@ -63,6 +91,22 @@ namespace CapoteSolution.Web.Controllers
             model.Import(entity);
 
             return View(model);
+        }
+
+        public override async Task<IActionResult> Delete(Guid key)
+        {
+            var entity = await _repository.GetAllWithNestedInclude(nameof(ServiceReason)).Result.FirstAsync(s => s.Id == key);
+            var viewModel = new ServiceDisplayVM();
+
+            if (entity == null)
+            {
+                return NotFound();
+            }
+
+            viewModel.Import(entity);
+
+            return View(viewModel);
+
         }
 
         public override async Task<IActionResult> Details(Guid key)
