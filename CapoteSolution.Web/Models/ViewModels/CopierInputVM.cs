@@ -23,7 +23,7 @@ namespace CapoteSolution.Web.Models.ViewModels
 
         [EmailAddress]
         [Display(Name = "Email de Notificaciones")]
-        public string MachineEmail { get; set; }
+        public string? MachineEmail { get; set; }
 
         [Required]
         [Display(Name = "Modelo")]
@@ -44,36 +44,36 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Display(Name = "Fecha Inicio")]
         public DateTime StartDate { get; set; } = DateTime.Today;
 
-        [Required]
+        
         [Display(Name = "Plan B/N")]
-        public int PlanBW { get; set; }
+        public int? PlanBW { get; set; }
 
-        [Required]
+        
         [Display(Name = "Plan Color")]
-        public int PlanColor { get; set; }
+        public int? PlanColor { get; set; }
 
-        [Required]
+        
         [Display(Name = "Precio Extra B/N")]
-        public decimal ExtraBWPrice { get; set; }
+        public decimal? ExtraBWPrice { get; set; }
 
-        [Required]
+        
         [Display(Name = "Precio Extra Color")]
-        public decimal ExtraColorPrice { get; set; }
+        public decimal? ExtraColorPrice { get; set; }
 
         [Required]
         [Display(Name = "Día Facturación")]
         public int InvoiceDay { get; set; } = 1;
 
-        [Required]
+        
         [Display(Name = "Precio Mensual")]
-        public decimal MonthlyPrice { get; set; }
+        public decimal? MonthlyPrice { get; set; }
 
         [Display(Name = "Cobrar Extras")]
         public bool ChargeExtras { get; set; } = true;
 
-        [Required]
+        
         [Display(Name = "Estado")]
-        public ContractStatus Status { get; set; } = ContractStatus.Active;
+        public ContractStatus? Status { get; set; } = ContractStatus.Active;
 
         // Para dropdown
         public SelectList? AvailableMachineModels { get; set; }

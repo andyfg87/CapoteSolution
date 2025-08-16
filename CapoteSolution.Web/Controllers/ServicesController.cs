@@ -93,6 +93,31 @@ namespace CapoteSolution.Web.Controllers
             return View(model);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> EditRedirectCopierDetails(ServiceInputVM inputVM)
+        {
+            if (!ModelState.IsValid)
+                return View(inputVM);
+
+            try
+            {
+
+                var entity = await _repository.GetByIdAsync(inputVM.Id);
+                inputVM.Merge(entity);
+                await _repository.UpdateAsync(entity);
+                await _repository.SaveChangesAsync();
+
+                return RedirectToAction("DetailsCopierByServicePagination", "Copiers", new { key = inputVM.CopierId });
+            }
+            catch (Exception ex)
+            {
+
+                _logger.LogError(ex, "Error al actualizar entidad");
+                ModelState.AddModelError("", _localizer["ErrorUpdateMessage"]);
+                return View(inputVM);
+            }
+        }
+
         public override async Task<IActionResult> Delete(Guid key)
         {
             var entity = await _repository.GetAllWithNestedInclude(nameof(ServiceReason)).Result.FirstAsync(s => s.Id == key);

@@ -21,13 +21,13 @@ namespace CapoteSolution.Web.Models.ViewModels
         public string MachineModelInfo { get; set; }
 
         [Display(Name = "Plan B/N")]
-        public int PlanBW { get; set; }
+        public int? PlanBW { get; set; }
 
         [Display(Name = "Plan Color")]
-        public int PlanColor { get; set; }
+        public int? PlanColor { get; set; }
 
         [Display(Name = "Precio Mensual")]
-        public decimal MonthlyPrice { get; set; }
+        public decimal? MonthlyPrice { get; set; }
 
         [Display(Name = "Estado Contrato")]
         public string ContractStatus { get; set; }
@@ -45,8 +45,8 @@ namespace CapoteSolution.Web.Models.ViewModels
         [Display(Name = "Estado")]
         public string Status { get; set; }
         [Display(Name = "Precio Extra Plan")]
-        public decimal ExtraBW {  get; set; }
-        public decimal ExtraColor {  get; set; }
+        public decimal? ExtraBW {  get; set; }
+        public decimal? ExtraColor {  get; set; }
         public string? LastServiceDate {  get; set; }
         public int? HighestTonerChangeCounter { get; set; } = 0;
         public int? HighestNoChangeTonerCounter { get; set; } = 0;

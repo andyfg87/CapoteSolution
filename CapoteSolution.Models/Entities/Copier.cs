@@ -20,7 +20,7 @@ namespace CapoteSolution.Models.Entities
         
 
         [EmailAddress]
-        public string MachineEmail { get; set; }
+        public string? MachineEmail { get; set; }
 
         public string? IPAddress { get; set; }
         
@@ -29,21 +29,25 @@ namespace CapoteSolution.Models.Entities
         //Campos de Contratos que pasan a impresora
         [Required]
         public DateTime StartDate { get; set; }
-        public int PlanBW { get; set; }  // Copias plan B/N
-        public int PlanColor { get; set; }  // Copias plan color
-        public decimal ExtraBW { get; set; }  // Precio copia extra B/N
-        public decimal ExtraColor { get; set; }  // Precio copia extra color
+        public int? PlanBW { get; set; }  // Copias plan B/N
+        public int? PlanColor { get; set; }  // Copias plan color
+        public decimal? ExtraBW { get; set; }  // Precio copia extra B/N
+        public decimal? ExtraColor { get; set; }  // Precio copia extra color
+        [Required]
+        [Range(1, 31, ErrorMessage = "El día de facturación debe estar entre 1 y 31.")]
         public int InvoiceDay { get; set; }  // Día de facturación (1-28)
-        public decimal MonthlyPrice { get; set; }
+        public decimal? MonthlyPrice { get; set; }
         public bool ChargeExtras { get; set; }  // Cambiado de ChargeExtra (string) a bool
         [Required]
-        public ContractStatus Status { get; set; } = ContractStatus.Active;
+        public ContractStatus? Status { get; set; } = ContractStatus.Active;
 
 
         // Claves foráneas      
-
+        [Required]
         [ForeignKey("MachineModel")]
         public System.Guid MachineModelId { get; set; }
+
+        [Required]
         [ForeignKey(nameof(Customer))]
         public Guid CustomerId { get; set; }
 

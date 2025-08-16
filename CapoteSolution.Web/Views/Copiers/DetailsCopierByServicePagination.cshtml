@@ -52,10 +52,10 @@
             <dl class="row">
 
                 <dt class="col-sm-4">Precio Extra B/N:</dt>
-                <dd class="col-sm-8">@Model.ExtraBW.ToString("C") por copia</dd>
+                <dd class="col-sm-8">@Model.ExtraBW?.ToString("C") por copia</dd>
 
                 <dt class="col-sm-4">Precio Extra Color:</dt>
-                <dd class="col-sm-8">@Model.ExtraColor.ToString("C") por copia</dd>
+                <dd class="col-sm-8">@Model.ExtraColor?.ToString("C") por copia</dd>
 
                 <dt class="col-sm-4">Precio Mensual</dt>
                 <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
@@ -313,15 +313,19 @@
                             <td>
                                 @(pair.Previous != null ? (viewModelService.BlackCounter - pair.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
-                            <td>
-                                @(differentBlack - Model.PlanBW)
-                                @*(differentBlack - Model.PlanBW > 0 ?(differentBlack - Model.PlanBW).ToString("N0"): "-")*@
+                            <td> 
+                                <span class="badge @(differentBlack - Model.PlanBW > 0 ? "bg-warning" : "")">
+                                    @(differentBlack - Model.PlanBW)
+                                </span>
                             </td>
                             <td>@viewModelService.ColorCounter.ToString("N0")</td>
                             <td>
                                 @(pair.Previous != null ? (viewModelService.ColorCounter - pair.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
-                            <td> @(differentColor - Model.PlanColor) @*(differentColor - Model.PlanColor > 0 ?(differentColor - Model.PlanColor).ToString("N0"): "-")*@</td>
+                            <td>                                 
+                                <span class="badge @(differentColor - Model.PlanColor > 0 ? "bg-warning" : "")">
+                                    @(differentColor - Model.PlanColor)
+                                </span>
                             <td> @(pair.Current.ColorCounter + pair.Current.BlackCounter)</td>
                             <td>
                                 <div class="btn-group" role="group">

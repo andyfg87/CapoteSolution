@@ -2,9 +2,7 @@
 
 @{
     ViewData["Title"] = "Registrar Nuevo Servicio";
-    bool detail = ViewBag.IsDetail;
-
-    var test = "";
+    bool detail = ViewBag.IsDetail;  
 }
 
 <h1>@ViewData["Title"]</h1>
@@ -103,7 +101,13 @@
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Registrar Servicio</button>
-                <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                @if(detail)
+                {
+                    <a asp-action="DetailsCopierByServicePagination" asp-controller="Copiers" asp-route-key="@Model.CopierId" class="btn btn-secondary">Cancelar</a>
+                }else
+                {
+                    <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+                }                
             </div>
         </form>
     </div>
