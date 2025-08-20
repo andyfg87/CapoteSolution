@@ -365,13 +365,19 @@ namespace CapoteSolution.Web.Controllers
             return Json(machineModels);
         }
 
-        public async Task<IActionResult> GenerateReport(string key)
+        public async Task<IActionResult> GenerateReport(string key, string startDate, string endDate)
         {
+            if (!DateTime.TryParse(startDate, out DateTime startDateParsed))
+                return BadRequest("Fecha de inicio inválida");
+
+            if (!DateTime.TryParse(endDate, out DateTime endDateParsed))
+                return BadRequest("Fecha de fin inválida");
+
             var copiers = await _repository.GetAllWithNestedInclude("Services");
 
             var entity = copiers.FirstAsync(c => c.Id == key);
             
-            var services =  entity.Result.Services.Select(s => new CopierReportItem
+            var services =  entity.Result.Services.Where(s => s.Date >= startDateParsed && s.Date <= endDateParsed).OrderBy(c => c.Date).Select(s => new CopierReportItem
             {               
                 Month = s.Date.ToString("MM/dd/yyyy"),
                 PlanBW = (int)entity.Result.PlanBW != null ? (int)entity.Result.PlanBW : 0,

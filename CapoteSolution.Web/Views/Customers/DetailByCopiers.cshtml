@@ -27,6 +27,7 @@
                             <th>Día</th>
                             <th>Ultimo Servicio</th>                            
                             <th>Precio Mensual</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +43,9 @@
                                 <td>@copier.InvoiceDay</td>
                                 <td>@viewModelCopier.LastServiceDate</td>                               
                                 <td>@copier.MonthlyPrice?.ToString("N0")</td>
+                                <td>
+                                    <a class="btn btn-info" asp-action="DetailsCopierByServicePagination" asp-controller="Copiers" asp-route-key="@copier.Id">Ir</a>
+                                </td>
                             </tr>
                         }
                     </tbody>
