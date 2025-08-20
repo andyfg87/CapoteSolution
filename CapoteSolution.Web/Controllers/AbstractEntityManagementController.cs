@@ -26,7 +26,7 @@ namespace CapoteSolution.Web.Controllers
             _logger = logger;
         }        
 
-        public virtual async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public virtual async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
         {
             var query = _repository.GetAll();
             var paginatedData = await GetPaginatedData(query.Result, pageNumber, pageSize);

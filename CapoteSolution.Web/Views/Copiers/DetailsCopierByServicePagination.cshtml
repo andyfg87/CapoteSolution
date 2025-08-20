@@ -12,6 +12,10 @@
     </div>
 </div>
 
+<a href="@Url.Action("GenerateReport","Copiers", new { key = Model.Id })" class="btn btn-primary">
+    <i class="fas fa-file-pdf"></i> Descargar Reporte
+</a>
+
 <div class="card-group">
     <div class="card">
         <div class="card-body">
@@ -34,15 +38,10 @@
 
                 <dt class="col-sm-4">Modelo </dt>
                 <dd class="col-sm-8">@Model.MachineModelInfo</dd>
+               
 
-                <dt class="col-sm-4">Plan B/N:</dt>
-                <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>
-
-                <dt class="col-sm-4">Plan Color:</dt>
-                <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
-
-                <dt class="col-sm-4">Rendimimeto del Toner:</dt>
-                <dd class="col-sm-8">@Model.TonerYield</dd>
+                @*<dt class="col-sm-4">Rendimimeto del Toner:</dt>
+                <dd class="col-sm-8">@Model.TonerYield</dd>*@
 
             </dl>
         </div>
@@ -51,8 +50,14 @@
         <div class="card-body">
             <dl class="row">
 
+                <dt class="col-sm-4">Plan B/N:</dt>
+                <dd class="col-sm-8">@Model.PlanBW copias/mes</dd>                
+
                 <dt class="col-sm-4">Precio Extra B/N:</dt>
                 <dd class="col-sm-8">@Model.ExtraBW?.ToString("C") por copia</dd>
+
+                <dt class="col-sm-4">Plan Color:</dt>
+                <dd class="col-sm-8">@Model.PlanColor copias/mes</dd>
 
                 <dt class="col-sm-4">Precio Extra Color:</dt>
                 <dd class="col-sm-8">@Model.ExtraColor?.ToString("C") por copia</dd>
@@ -60,14 +65,14 @@
                 <dt class="col-sm-4">Precio Mensual</dt>
                 <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
 
-                <dt class="col-sm-5">Contador Alto Cambio de Toner</dt>
-                <dd class="col-sm-6">@Model.HighestTonerChangeCounter</dd>
+                @*<dt class="col-sm-5">Contador Alto Cambio de Toner</dt>
+                <dd class="col-sm-6">@Model.HighestTonerChangeCounter</dd>*@
 
                 <dt class="col-sm-5">Toners Cambiado</dt>
                 <dd class="col-sm-6">@Model.QtyOfHightestTonerChange</dd>
 
-                <dt class="col-sm-5">Contador Alto No Cambio de Toner</dt>
-                <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>
+                @*<dt class="col-sm-5">Contador Alto No Cambio de Toner</dt>
+                <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>*@
             </dl>
         </div>
     </div>
@@ -77,8 +82,8 @@
                 <dt class="col-sm-5">Total Yield:</dt>
                 <dd class="col-sm-6">@Model.TotalYield()</dd>
 
-                <dt class="col-sm-5">Check At:</dt>
-                <dd class="col-sm-6">@Model.CheckAt()</dd>
+                @*<dt class="col-sm-5">Check At:</dt>
+                <dd class="col-sm-6">@Model.CheckAt()</dd>*@
 
                 <dt class="col-sm-5">Change In:</dt>
                 <dd class="col-sm-6">@Model.ChangeIn()</dd>

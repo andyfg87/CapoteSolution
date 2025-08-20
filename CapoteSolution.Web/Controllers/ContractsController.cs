@@ -21,7 +21,7 @@ namespace CapoteSolution.Web.Controllers
             this._customerRepo = customerRepo;
         }
 
-        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
         {
             var contracts = _repository.GetAllWithNestedInclude(
                 nameof(Customer),

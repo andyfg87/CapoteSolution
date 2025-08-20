@@ -23,7 +23,7 @@ namespace CapoteSolution.Web.Controllers
             _tonerRepo = tonerRepo;
         }
 
-        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
         {
             var includes = new List<Expression<Func<MachineModel, object>>>
             {

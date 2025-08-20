@@ -22,7 +22,7 @@ namespace CapoteSolution.Web.Controllers
             _userRepo = userRepo;
         }
 
-        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
         {
             var services = _repository.GetAllWithNestedInclude(
                 "Technician",

@@ -2,6 +2,7 @@
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using CapoteSolution.Web.Paginations;
+using CapoteSolution.Web.Reports;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -36,12 +37,13 @@ namespace CapoteSolution.Web.Controllers
             _serviceRepo = serviceRepo;
         }
 
-        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10)
+        public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
         {
             // Obtener parámetros de filtro del query string
             string searchId = HttpContext.Request.Query["searchId"].ToString();
             string searchCustomer = HttpContext.Request.Query["searchCustomer"].ToString();
             string invoiceDayStr = HttpContext.Request.Query["InvoiceDay"].ToString();
+            string searchModel = HttpContext.Request.Query["searchModel"].ToString();
 
             ViewBag.InvoiceDays = GetDays();
 
@@ -71,13 +73,42 @@ namespace CapoteSolution.Web.Controllers
                 query = query.Where(c => c.Customer.CustomerName.Contains(searchCustomer));
             }
 
+            if (!string.IsNullOrEmpty(searchModel))
+            {
+                query = query.Where(c => c.MachineModel.Name.Contains(searchModel));
+            }
+
+            var copiersList = await query.ToListAsync();
+            var viewModels = copiersList.Select(c =>
+            {
+                var vm = new CopierDisplayVM();
+                vm.Import(c);
+                return vm;
+            }).AsQueryable();
+
+            query = sortBy.ToLower() switch 
+            {
+                "id" => sortOrder == "asc" ? query.OrderBy(c => c.Id): query.OrderByDescending(c => c.Id),
+                "modelo" => sortOrder == "asc" ? query.OrderBy(c => c.MachineModel.Name) : query.OrderByDescending(c => c.MachineModel.Name),
+                "cliente" => sortOrder == "asc" ? query.OrderBy(c => c.Customer.CustomerName) : query.OrderByDescending(c => c.Customer.CustomerName),
+                "dia" => sortOrder == "asc" ? query.OrderBy(c => c.InvoiceDay) : query.OrderByDescending(c => c.InvoiceDay),
+                "ultimoservicio" => sortOrder == "asc" ? query.OrderBy(c => c.Services.Max(s => s.Date)) : query.OrderByDescending(c => c.Services.Max(s => s.Date)),
+                "precio" => sortOrder == "asc" ? query.OrderBy(c => c.MonthlyPrice) : query.OrderByDescending(c => c.MonthlyPrice)
+            };
+
             // Crear diccionario para mantener los filtros
             var routeValues = new RouteValueDictionary();
             if (!string.IsNullOrEmpty(searchId)) routeValues.Add("searchId", searchId);
             if (invoiceDay > 0) routeValues.Add("InvoiceDay", invoiceDay.ToString());
             if (!string.IsNullOrEmpty(searchCustomer)) routeValues.Add("searchCustomer", searchCustomer);
+            if (!string.IsNullOrEmpty(searchModel)) routeValues.Add("searchModel", searchModel);
+
+            routeValues.Add("sortBy", sortBy);
+            routeValues.Add("sortOrder", sortOrder);
 
             ViewBag.RouteValues = routeValues;
+            ViewBag.CurrentSortBy = sortBy;
+            ViewBag.CurrentSortOrder = sortOrder;
 
             var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
             return View(paginatedData);
@@ -298,6 +329,26 @@ namespace CapoteSolution.Web.Controllers
             }
 
             return Json(machineModels);
+        }
+
+        public async Task<IActionResult> GenerateReport(string key)
+        {
+            var copiers = await _repository.GetAllWithNestedInclude("Services");
+
+            var entity = copiers.FirstAsync(c => c.Id == key);
+            
+            var services =  entity.Result.Services.Select(s => new CopierReportItem
+            {               
+                Month = s.Date.ToString("MM/dd/yyyy"),
+                PlanBW = (int)entity.Result.PlanBW != null ? (int)entity.Result.PlanBW : 0,
+                BlackCopies = s.BlackCounter,
+                PlanColor = (int)entity.Result.PlanColor != null ? (int)entity.Result.PlanColor : 0,
+                ColorCopies = s.ColorCounter
+            }).ToList();
+
+            var pdfBytes = new CopierReportGenerator(services, key).GeneratePdf();
+
+            return File(pdfBytes, "application/pdf", $"{key}-ImpresoraReporte.pdf");
         }
 
         public async Task<SelectList> GetBrands()

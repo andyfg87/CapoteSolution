@@ -1,4 +1,5 @@
 ﻿@using CapoteSolution.Web.Paginations
+@using Microsoft.AspNetCore.Html
 @model  PaginatedList<CapoteSolution.Web.Models.ViewModels.CopierDisplayVM>
 
 @{
@@ -19,6 +20,12 @@
                 <input type="text" class="form-control" id="searchId" name="searchId"
                        value="@Context.Request.Query["searchId"]">
             </div>
+            <div class="col-md-3">
+                <label for="searchModel" class="form-label">Modelo</label>
+                <input type="text" class="form-control" id="searchModel" name="searchModel"
+                       value="@Context.Request.Query["searchModel"]">
+            </div>         
+
             <div class="col-md-3">
                 <label for="searchDate" class="form-label">Fecha Servicio</label>
                 <select name="InvoiceDay" class="form-select">
@@ -48,16 +55,45 @@
     <table class="table table-striped table-hover">
         <thead class="table-dark">
             <tr>
-                <th>ID</th>
-                <th>Modelo</th>
-                <th>Cliente</th>
-                <th>Día</th>
-                <th>Correo</th>  
-                <th>Ultimo Servicio</th>
-                <th>Precio</th>
-                <th>Vida Toner</th>
+            <tr>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "id", sortOrder = ViewBag.CurrentSortBy == "id" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        ID @GetSortIcon("id")
+                    </a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "modelo", sortOrder = ViewBag.CurrentSortBy == "modelo" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Modelo @GetSortIcon("modelo")
+                    </a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "cliente", sortOrder = ViewBag.CurrentSortBy == "cliente" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Cliente @GetSortIcon("cliente")
+                    </a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "dia", sortOrder = ViewBag.CurrentSortBy == "dia" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Día @GetSortIcon("dia")
+                    </a>
+                </th>
+                <th>Correo</th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "ultimoservicio", sortOrder = ViewBag.CurrentSortBy == "ultimoservicio" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Último Servicio @GetSortIcon("ultimoservicio")
+                    </a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "precio", sortOrder = ViewBag.CurrentSortBy == "precio" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Precio @GetSortIcon("precio")
+                    </a>
+                </th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "vidatoner", sortOrder = ViewBag.CurrentSortBy == "vidatoner" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Vida Toner @GetSortIcon("vidatoner")
+                    </a>
+                </th>
                 <th>Acciones</th>
-            </tr>
+            </tr>                
         </thead>
         <tbody>
             @foreach (var item in Model)
@@ -75,7 +111,7 @@
                         @{
                             // Asegúrate de que TonerLife está entre 0 y 1 (o 0-100)
                             double tonerPercentage = (double)item.TonerLife() * 100; // Convierte a porcentaje
-                            string progressBarClass = tonerPercentage > 20 ? "bg-success" :
+                            string progressBarClass = tonerPercentage > 31 ? "bg-success" :
                             tonerPercentage > 10 ? "bg-warning" : "bg-danger";
                         }
                         <div class="position-relative" style="width: 120px;">
@@ -88,9 +124,9 @@
                                      aria-valuemax="100">
                                 </div>
                             </div>
-                            <span class="position-absolute top-0 start-100 translate-middle px-2">
+                            @*<span class="position-absolute top-0 start-100 translate-middle px-2">
                                 @tonerPercentage.ToString("0")%
-                            </span>
+                            </span>*@
                         </div>
                     </td>
                     <td>                        
@@ -107,3 +143,16 @@
 </div>
 
 @await Html.PartialAsync("_Pagination", Model)
+
+@functions {
+    public IHtmlContent GetSortIcon(string columnName)
+    {
+        if (ViewBag.CurrentSortBy != columnName)
+            return Html.Raw("<i class='fas fa-sort'></i>");
+
+        if (ViewBag.CurrentSortOrder == "asc")
+            return Html.Raw("<i class='fas fa-sort-up'></i>");
+        else
+            return Html.Raw("<i class='fas fa-sort-down'></i>");
+    }
+}
