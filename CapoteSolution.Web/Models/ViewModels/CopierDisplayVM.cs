@@ -1,6 +1,7 @@
 ﻿using CapoteSolution.Models.Entities;
 using CapoteSolution.Models.Interface;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace CapoteSolution.Web.Models.ViewModels
 {
@@ -52,6 +53,7 @@ namespace CapoteSolution.Web.Models.ViewModels
         public int? HighestNoChangeTonerCounter { get; set; } = 0;
         public int? TonerYield { get; set; } = 0;
         public int? QtyOfHightestTonerChange { get;set; } = 0;
+        public string? Comments {  get; set; }
 
 
         public void Import(Copier entity)
@@ -72,6 +74,7 @@ namespace CapoteSolution.Web.Models.ViewModels
             Status = entity.Status.ToString();
             ExtraBW = entity.ExtraBW;
             ExtraColor = entity.ExtraColor;
+            Comments = entity.Comments;
             LastServiceDate = LastService(entity) != null ? LastService(entity).Date.ToString("MM/dd/yyyy") : "Sin Servicio Aún" ;
             HighestTonerChangeCounter = HightTonerChange(entity);
             HighestNoChangeTonerCounter = HightNoChangeToner(entity);

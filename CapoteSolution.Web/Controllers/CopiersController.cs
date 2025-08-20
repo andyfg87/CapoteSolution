@@ -78,24 +78,6 @@ namespace CapoteSolution.Web.Controllers
                 query = query.Where(c => c.MachineModel.Name.Contains(searchModel));
             }
 
-            var copiersList = await query.ToListAsync();
-            var viewModels = copiersList.Select(c =>
-            {
-                var vm = new CopierDisplayVM();
-                vm.Import(c);
-                return vm;
-            }).AsQueryable();
-
-            query = sortBy.ToLower() switch 
-            {
-                "id" => sortOrder == "asc" ? query.OrderBy(c => c.Id): query.OrderByDescending(c => c.Id),
-                "modelo" => sortOrder == "asc" ? query.OrderBy(c => c.MachineModel.Name) : query.OrderByDescending(c => c.MachineModel.Name),
-                "cliente" => sortOrder == "asc" ? query.OrderBy(c => c.Customer.CustomerName) : query.OrderByDescending(c => c.Customer.CustomerName),
-                "dia" => sortOrder == "asc" ? query.OrderBy(c => c.InvoiceDay) : query.OrderByDescending(c => c.InvoiceDay),
-                "ultimoservicio" => sortOrder == "asc" ? query.OrderBy(c => c.Services.Max(s => s.Date)) : query.OrderByDescending(c => c.Services.Max(s => s.Date)),
-                "precio" => sortOrder == "asc" ? query.OrderBy(c => c.MonthlyPrice) : query.OrderByDescending(c => c.MonthlyPrice)
-            };
-
             // Crear diccionario para mantener los filtros
             var routeValues = new RouteValueDictionary();
             if (!string.IsNullOrEmpty(searchId)) routeValues.Add("searchId", searchId);
@@ -110,8 +92,60 @@ namespace CapoteSolution.Web.Controllers
             ViewBag.CurrentSortBy = sortBy;
             ViewBag.CurrentSortOrder = sortOrder;
 
-            var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
-            return View(paginatedData);
+            if (sortBy.ToLower() != "vidatoner")
+            {
+                query = sortBy.ToLower() switch
+                {
+                    "id" => sortOrder == "asc" ? query.OrderBy(c => c.Id) : query.OrderByDescending(c => c.Id),
+                    "modelo" => sortOrder == "asc" ? query.OrderBy(c => c.MachineModel.Name) : query.OrderByDescending(c => c.MachineModel.Name),
+                    "cliente" => sortOrder == "asc" ? query.OrderBy(c => c.Customer.CustomerName) : query.OrderByDescending(c => c.Customer.CustomerName),
+                    "dia" => sortOrder == "asc" ? query.OrderBy(c => c.InvoiceDay) : query.OrderByDescending(c => c.InvoiceDay),
+                    "ultimoservicio" => sortOrder == "asc" ? query.OrderBy(c => c.Services.Max(s => s.Date)) : query.OrderByDescending(c => c.Services.Max(s => s.Date)),
+                    "precio" => sortOrder == "asc" ? query.OrderBy(c => c.MonthlyPrice) : query.OrderByDescending(c => c.MonthlyPrice),
+                    "comentario" => sortOrder == "asc" ? query.OrderBy(c => c.Comments) : query.OrderByDescending(c => c.Comments),
+
+                };
+
+                var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
+                return View(paginatedData);
+            }
+            else
+            {
+                // Para vidatoner: solución especial
+                var count = await query.CountAsync();
+                var items = await query
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                // Convertir a ViewModel y ordenar por TonerLife
+                var viewModels = items.Select(item =>
+                {
+                    var vm = new CopierDisplayVM();
+                    vm.Import(item);
+                    return vm;
+                });
+
+                viewModels = sortOrder == "asc" ?
+                    viewModels.OrderBy(vm => vm.TonerLife()) :
+                    viewModels.OrderByDescending(vm => vm.TonerLife());
+
+                // Crear PaginatedList manualmente
+                var paginatedData = new PaginatedList<CopierDisplayVM>(
+                    viewModels,
+                    count,
+                    pageNumber,
+                    pageSize,
+                    ViewBag.RouteValues as RouteValueDictionary
+                );
+
+                return View(paginatedData);
+            }            
+
+           
+
+            /*var paginatedData = await GetPaginatedData(query, pageNumber, pageSize);
+            return View(paginatedData);*/
         }        
 
         public override async Task<IActionResult> Create()

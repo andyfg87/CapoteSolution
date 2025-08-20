@@ -15,6 +15,8 @@
 <a href="@Url.Action("GenerateReport","Copiers", new { key = Model.Id })" class="btn btn-primary">
     <i class="fas fa-file-pdf"></i> Descargar Reporte
 </a>
+<a asp-action="Edit" asp-route-key="@Model.Id" asp-controller="Copiers" class="btn btn-sm btn-primary">Editar</a>
+<a asp-action="Delete" asp-route-key="@Model.Id" asp-controller="Copiers" class="btn btn-sm btn-danger">Eliminar</a>
 
 <div class="card-group">
     <div class="card">

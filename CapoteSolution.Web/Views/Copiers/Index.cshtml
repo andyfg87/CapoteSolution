@@ -53,7 +53,7 @@
 
 <div class="table-responsive">
     <table class="table table-striped table-hover">
-        <thead class="table-dark">
+        <thead class="table-hover">
             <tr>
             <tr>
                 <th>
@@ -92,14 +92,20 @@
                         Vida Toner @GetSortIcon("vidatoner")
                     </a>
                 </th>
-                <th>Acciones</th>
+                <th>
+                    <a href="@Url.Action("Index", new { sortBy = "vidatoner", sortOrder = ViewBag.CurrentSortBy == "comentario" && ViewBag.CurrentSortOrder == "asc" ? "desc" : "asc" })">
+                        Comentarios @GetSortIcon("comentario")
+                    </a>
+                </th>
             </tr>                
         </thead>
         <tbody>
             @foreach (var item in Model)
             {
                 <tr>
-                    <td>@item.Id</td>
+                    <td >
+                        <a href="@Url.Action("DetailsCopierByServicePagination", new { key = item.Id})"> @item.Id</a>
+                    </td>
                     <td>@item.MachineModelInfo</td>
                     <td>@item.CustomerName</td>
                     <td>@item.InvoiceDay</td>
@@ -129,12 +135,13 @@
                             </span>*@
                         </div>
                     </td>
-                    <td>                        
-                        <div class="btn-group" role="group">
+                    <td> 
+                        @item.Comments
+                        @*<div class="btn-group" role="group">
                             <a asp-action="Edit" asp-route-key="@item.Id.ToString()" class="btn btn-sm btn-primary">Editar</a>
                             <a asp-action="DetailsCopierByServicePagination" asp-route-key="@item.Id" class="btn btn-sm btn-info">Contrato</a>
                             <a asp-action="Delete" asp-route-key="@item.Id" class="btn btn-sm btn-danger">Eliminar</a>
-                        </div>
+                        </div>*@
                     </td>
                 </tr>
             }           
