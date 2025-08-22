@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using CapoteSolution.Web.Paginations;
@@ -9,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Linq.Expressions;
+using System.Text.Json;
 using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace CapoteSolution.Web.Controllers
@@ -20,6 +22,7 @@ namespace CapoteSolution.Web.Controllers
         private readonly IEntityRepository<Customer, Guid> _customerRepo;
         private readonly IEntityRepository<Brand, Guid> _brandRepo;
         private readonly IEntityRepository<Service, Guid> _serviceRepo;
+        private readonly IAppLogger _logger;
 
         public CopiersController(
             IEntityRepository<Copier, string> repository,
@@ -28,13 +31,14 @@ namespace CapoteSolution.Web.Controllers
             IEntityRepository<Customer, Guid> customerRepo,
             IEntityRepository<Service, Guid> serviceRepo,
             IStringLocalizer<CopiersController> localizer,
-            ILogger<CopiersController> logger)
+            IAppLogger logger)
             : base(repository, localizer, logger)
         {
             _machineModelRepo = machineModelRepo;
             _customerRepo = customerRepo;
             _brandRepo = brandRepo;
             _serviceRepo = serviceRepo;
+            _logger = logger;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
@@ -182,6 +186,8 @@ namespace CapoteSolution.Web.Controllers
                 inputViewModel.AvailableCustomers = await GetCustomers();
                 inputViewModel.AvailableMachineModels = new SelectList(new List<SelectListItem>());
 
+                _logger.LogInformation($"Se Creó {nameof(Copier)}", nameof(CopiersController), nameof(Create), JsonSerializer.Serialize(inputViewModel));
+
                 return View(inputViewModel);
 
                 //return RedirectToAction(nameof(Index));               
@@ -189,7 +195,7 @@ namespace CapoteSolution.Web.Controllers
             catch (Exception ex)
             {
 
-                _logger.LogError(ex, "Error al crear entidad");
+                _logger.LogError("Error al crear entidad", ex, ex.Message, nameof(Create), "");
                 ModelState.AddModelError("", _localizer["ErrorCreationMessage"]);
                 return View(inputViewModel);
             }

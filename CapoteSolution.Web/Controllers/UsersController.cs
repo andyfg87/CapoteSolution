@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
@@ -16,13 +17,15 @@ namespace CapoteSolution.Web.Controllers
     {
         private readonly IEntityRepository<User, Guid> _userRepo;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IAppLogger _logger;
 
         public UsersController(
         IEntityRepository<User, Guid> userRepo,
-        IPasswordHasher<User> passwordHasher)
+        IPasswordHasher<User> passwordHasher, IAppLogger logger)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
+            _logger = logger;
         }
 
         public async Task<IActionResult> Index()

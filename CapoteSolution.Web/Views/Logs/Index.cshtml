@@ -1,0 +1,30 @@
+﻿@model CapoteSolution.Web.Paginations.PaginatedList<CapoteSolution.Models.Entities.ApplicationLog>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Fecha</th>
+            <th>Nivel</th>
+            <th>Usuario</th>
+            <th>Acción</th>
+            <th>Mensaje</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var log in Model)
+        {
+            <tr class="@(log.Level == "ERROR" ? "table-danger" : log.Level == "WARNING" ? "table-warning" : "")">
+                <td>@log.Timestamp.ToString("g")</td>
+                <td><span class="badge bg-@(log.Level == "ERROR" ? "danger" : log.Level == "WARNING" ? "warning" : "success")">@log.Level</span></td>
+                <td>@log.User</td>
+                <td>@log.Action</td>
+                <td>@log.Message</td>
+                <td><a asp-action="Details" asp-route-key="@log.Id" class="btn btn-secondary">Detalles</a></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+
+@await Html.PartialAsync("_Pagination", Model)

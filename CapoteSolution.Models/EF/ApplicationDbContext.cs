@@ -18,6 +18,7 @@ namespace CapoteSolution.Models.EF
         public DbSet<Service> Services { get; set; }
         public DbSet<ServiceReason> ServiceReasons { get; set; }
         public DbSet<Customer> Customers { get; set; }
+        public DbSet<ApplicationLog> ApplicationLogs { get; set; }
 
         // Configuración de la conexión (LocalDB)
         /*protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

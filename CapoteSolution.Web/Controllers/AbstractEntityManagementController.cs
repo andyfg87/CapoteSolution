@@ -4,6 +4,7 @@ using CapoteSolution.Web.Paginations;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 
 namespace CapoteSolution.Web.Controllers
 {
@@ -14,12 +15,12 @@ namespace CapoteSolution.Web.Controllers
     {
         protected readonly IEntityRepository<TEntity, TKey> _repository;
         protected readonly IStringLocalizer _localizer;
-        protected readonly ILogger _logger;
+        protected readonly IAppLogger _logger;
 
         public AbstractEntityManagementController(
         IEntityRepository<TEntity, TKey> repository,
         IStringLocalizer localizer,
-        ILogger logger)
+        IAppLogger logger)
         {
             _repository = repository;
             _localizer = localizer;
@@ -50,12 +51,13 @@ namespace CapoteSolution.Web.Controllers
                 await _repository.AddAsync(entity);
                 await _repository.SaveChangesAsync();
 
+                await _logger.LogInformation($"Se creó {nameof(entity)}", nameof(this.ControllerContext), nameof(Create), JsonSerializer.Serialize(inputViewModel));
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
 
-                _logger.LogError(ex, "Error al crear entidad");
+                await _logger.LogError("Error al crear entidad", ex, ex.Message, nameof(Create),"");
                 ModelState.AddModelError("", _localizer["ErrorCreationMessage"]);
                 return View(inputViewModel);
             }
@@ -103,13 +105,15 @@ namespace CapoteSolution.Web.Controllers
                 await _repository.UpdateAsync(entity);
                 await _repository.SaveChangesAsync();
 
+                _logger.LogInformation($"Se Editó {nameof(TEntity)}", ControllerContext.ToString(), nameof(Edit), JsonSerializer.Serialize(inputModel));
+
                 return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)
             {
 
-                _logger.LogError(ex, "Error al actualizar entidad");
+                await _logger.LogError("Error al actualizar entidad", ex, ex.Message, nameof(Edit),"");
                 ModelState.AddModelError("", _localizer["ErrorUpdateMessage"]);
                 return View(inputModel);
             }
@@ -133,13 +137,15 @@ namespace CapoteSolution.Web.Controllers
                 await _repository.UpdateAsync(entity);
                 await _repository.SaveChangesAsync();
 
+                _logger.LogInformation($"Se Editó {nameof(TEntity)}", ControllerContext.ToString(), nameof(EditWithKeyAndModel), JsonSerializer.Serialize(inputModel));
+
                 return RedirectToAction(nameof(Index));
 
             }
             catch (Exception ex)
             {
 
-                _logger.LogError(ex, "Error al actualizar entidad");
+                await _logger.LogError("Error al actualizar entidad");
                 ModelState.AddModelError("", _localizer["ErrorUpdateMessage"]);
                 return View(inputModel);
             }
@@ -163,6 +169,8 @@ namespace CapoteSolution.Web.Controllers
         {
             await _repository.DeleteAsync(displayModel.Id);
             await _repository.SaveChangesAsync();
+
+            _logger.LogInformation($"Elimando en el  {nameof(TDisplayViewModel)}", ControllerContext.ToString(), nameof(Delete), JsonSerializer.Serialize(displayModel));
 
             return RedirectToAction(nameof(Index));
         }

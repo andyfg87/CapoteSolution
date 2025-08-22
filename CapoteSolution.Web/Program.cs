@@ -1,5 +1,6 @@
 using CapoteSolution.Models.EF;
 using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Controllers;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Repositories;
@@ -29,6 +30,8 @@ builder.Services.AddScoped<IEntityRepository<ServiceReason, byte>, EntityReposit
 builder.Services.AddScoped<IEntityRepository<User, Guid>, EntityRepository<User, Guid>>();
 builder.Services.AddScoped<IEntityRepository<Customer, Guid>, EntityRepository<Customer, Guid>>();
 builder.Services.AddScoped<ContractRepository>();
+builder.Services.AddScoped<IAppLogger, DatabaseLogger>();
+builder.Services.AddHttpContextAccessor();
 
 // Configuración de controladores
 builder.Services.AddScoped<TonersController>();
@@ -38,7 +41,8 @@ builder.Services.AddScoped<CopiersController>();
 builder.Services.AddScoped<ContractsController>();
 builder.Services.AddScoped<ServicesController>();
 builder.Services.AddScoped<ServiceReasonsController>();
-builder.Services.AddScoped<UsersController>();
+builder.Services.AddScoped<UsersController>();  
+
 
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
     .AddCookie(options =>

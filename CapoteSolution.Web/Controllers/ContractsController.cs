@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -14,11 +15,13 @@ namespace CapoteSolution.Web.Controllers
     {
         private readonly IEntityRepository<Copier, string> _copierRepo;
         private readonly IEntityRepository<Customer, System.Guid> _customerRepo;
+        private readonly IAppLogger _logger;
 
-        public ContractsController(IEntityRepository<Contract, Guid> repository, IEntityRepository<Copier, string> copierRepo, IEntityRepository<Customer, System.Guid> customerRepo, IStringLocalizer<ContractsController> localizer, ILogger<ContractsController> logger) : base(repository, localizer, logger)
+        public ContractsController(IEntityRepository<Contract, Guid> repository, IEntityRepository<Copier, string> copierRepo, IEntityRepository<Customer, System.Guid> customerRepo, IStringLocalizer<ContractsController> localizer, IAppLogger logger) : base(repository, localizer, logger)
         {
             this._copierRepo = copierRepo;
             this._customerRepo = customerRepo;
+            _logger = logger;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")

@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using CapoteSolution.Web.Paginations;
@@ -13,10 +14,12 @@ namespace CapoteSolution.Web.Controllers
     public class CustomersController : AbstractEntityManagementController<Customer, System.Guid, CustomerInputVM, CustomerDisplayVM>
     {    
         private readonly IEntityRepository<Copier, string> _copierRepo;
+        private readonly IAppLogger _logger;
 
-        public CustomersController(IEntityRepository<Customer, Guid> repository, IEntityRepository<Copier, string> copierRepo, IStringLocalizer<CustomersController> localizer, ILogger<CustomersController> logger) : base(repository, localizer, logger)
+        public CustomersController(IEntityRepository<Customer, Guid> repository, IEntityRepository<Copier, string> copierRepo, IStringLocalizer<CustomersController> localizer, IAppLogger logger) : base(repository, localizer, logger)
         {
             this._copierRepo = copierRepo;
+            _logger = logger;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")

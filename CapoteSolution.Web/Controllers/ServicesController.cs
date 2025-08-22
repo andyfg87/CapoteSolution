@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -6,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using System.Text.Json;
 
 namespace CapoteSolution.Web.Controllers
 {
@@ -14,12 +16,14 @@ namespace CapoteSolution.Web.Controllers
     {
         private readonly IEntityRepository<Copier, string> _copierRepo;
         private readonly IEntityRepository<User, Guid> _userRepo;
+        private readonly IAppLogger _logger;
 
         public ServicesController(IEntityRepository<Service, Guid> repository, IEntityRepository<Copier, string> copierRepo,
-        IEntityRepository<User, Guid> userRepo, IStringLocalizer<ServicesController> localizer, ILogger<ServicesController> logger) : base(repository, localizer, logger)
+        IEntityRepository<User, Guid> userRepo, IStringLocalizer<ServicesController> localizer, IAppLogger logger) : base(repository, localizer, logger)
         {
             _copierRepo = copierRepo;
             _userRepo = userRepo;
+            _logger = logger;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")
@@ -64,14 +68,15 @@ namespace CapoteSolution.Web.Controllers
                 await _repository.AddAsync(entity);
                 await _repository.SaveChangesAsync();
 
-
+                await _logger.LogInformation($"Se creó {nameof(Service)}", nameof(ServicesController), nameof(Create), JsonSerializer.Serialize(inputViewModel));
+               
 
                 return RedirectToAction("DetailsCopierByServicePagination", "Copiers", new { key = inputViewModel.CopierId });
             }
             catch (Exception ex)
             {
 
-                _logger.LogError(ex, "Error al crear entidad");
+                _logger.LogError("Error al crear entidad", ex, ex.Message, nameof(Create), "");
                 ModelState.AddModelError("", _localizer["ErrorCreationMessage"]);
                 return View(inputViewModel);
             }
@@ -90,6 +95,25 @@ namespace CapoteSolution.Web.Controllers
 
             model.Import(entity);
 
+            ViewBag.IsDetail = false;
+
+            return View(model);
+        }
+
+        public async Task<IActionResult> EditService(Guid key,bool IsDetail = false)
+        {
+            var entity = _repository.GetByIdAsync(key).Result;
+            var model = new ServiceInputVM
+            {
+                ServiceDate = DateTime.Now,
+                AvailableCopiers = await GetActiveContracts(),
+                AvailableTechnicians = await GetTechnicians(),
+                ServiceReasons = GetServiceReasons()// TODO Enumerable con 3 motivos
+            };
+
+            model.Import(entity);
+            ViewBag.IsDetail = IsDetail;
+
             return View(model);
         }
 
@@ -107,12 +131,14 @@ namespace CapoteSolution.Web.Controllers
                 await _repository.UpdateAsync(entity);
                 await _repository.SaveChangesAsync();
 
+                _logger.LogInformation($"Se creó {nameof(Service)}", nameof(ServicesController), nameof(EditRedirectCopierDetails), JsonSerializer.Serialize(inputVM));
+
                 return RedirectToAction("DetailsCopierByServicePagination", "Copiers", new { key = inputVM.CopierId });
             }
             catch (Exception ex)
             {
 
-                _logger.LogError(ex, "Error al actualizar entidad");
+                _logger.LogError("Error al actualizar entidad", ex, ex.Message, nameof(Edit), "");
                 ModelState.AddModelError("", _localizer["ErrorUpdateMessage"]);
                 return View(inputVM);
             }

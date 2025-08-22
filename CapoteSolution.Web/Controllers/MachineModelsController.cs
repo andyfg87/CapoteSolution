@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -15,12 +16,14 @@ namespace CapoteSolution.Web.Controllers
     {
         private readonly IEntityRepository<Brand, Guid> _brandRepo;
         private readonly IEntityRepository<Toner, Guid> _tonerRepo;
+        private readonly IAppLogger _logger;
 
         public MachineModelsController(IEntityRepository<MachineModel, Guid> repository, IEntityRepository<Brand, Guid> brandRepo,
-        IEntityRepository<Toner, Guid> tonerRepo, IStringLocalizer<MachineModelsController> localizer, ILogger<MachineModelsController> logger) : base(repository, localizer, logger)
+        IEntityRepository<Toner, Guid> tonerRepo, IStringLocalizer<MachineModelsController> localizer, IAppLogger logger) : base(repository, localizer, logger)
         {
             _brandRepo = brandRepo;
             _tonerRepo = tonerRepo;
+            _logger = logger;
         }
 
         public override async Task<IActionResult> Index(int pageNumber = 1, int pageSize = 10, string sortBy = "Id", string sortOrder = "asc")

@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -10,8 +11,10 @@ namespace CapoteSolution.Web.Controllers
     [Authorize(Roles = "Admin")]
     public class ServiceReasonsController : AbstractEntityManagementController<ServiceReason, byte, ServiceReasonInputVM, ServiceReasonDisplayVM>
     {
-        public ServiceReasonsController(IEntityRepository<ServiceReason, byte> repository, IStringLocalizer<ServiceReasonsController> localizer, ILogger<ServiceReasonsController> logger) : base(repository, localizer, logger)
+        private IAppLogger _logger;
+        public ServiceReasonsController(IEntityRepository<ServiceReason, byte> repository, IStringLocalizer<ServiceReasonsController> localizer, IAppLogger logger) : base(repository, localizer, logger)
         {
+            _logger = logger;
         }
         
     }

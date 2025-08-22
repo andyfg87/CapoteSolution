@@ -346,8 +346,8 @@
                             <td>
                                 @(pair.Previous != null ? (viewModelService.BlackCounter - pair.Previous.BlackCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
-                            <td> 
-                                <span class="badge @(differentBlack - Model.PlanBW > 0 ? "bg-warning" : "")">
+                            <td>
+                                <span class="badge @(differentBlack - Model.PlanBW > 0 ? "bg-danger" : "bg-info")">
                                     @(differentBlack - Model.PlanBW)
                                 </span>
                             </td>
@@ -355,14 +355,17 @@
                             <td>
                                 @(pair.Previous != null ? (viewModelService.ColorCounter - pair.Previous.ColorCounter).ToString("N0", System.Globalization.CultureInfo.InvariantCulture) : "-")
                             </td>
-                            <td>                                 
-                                <span class="badge @(differentColor - Model.PlanColor > 0 ? "bg-warning" : "")">
+                            <td>
+                                <span class="badge @(differentColor - Model.PlanColor > 0 ? "bg-danger" : "bg-info")">
                                     @(differentColor - Model.PlanColor)
                                 </span>
                             <td> @(pair.Current.ColorCounter + pair.Current.BlackCounter)</td>
                             <td>
+                                    @{
+                                        var isDetail = true;
+                                    }
                                 <div class="btn-group" role="group">
-                                    <a asp-action="Edit" asp-route-key="@pair.Current.Id" asp-controller="Services" class="btn btn-sm btn-primary">Editar</a>
+                                    <a asp-action="EditService" asp-route-key="@pair.Current.Id" asp-route-IsDetail="@isDetail" asp-controller="Services" class="btn btn-sm btn-primary">Editar</a>
                                     <a asp-action="Delete" asp-route-key="@pair.Current.Id" asp-controller="Services" class="btn btn-sm btn-danger">Eliminar</a>
                                 </div>
                             </td>

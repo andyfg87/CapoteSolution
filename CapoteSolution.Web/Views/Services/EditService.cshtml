@@ -12,7 +12,7 @@
     <div class="col-md-8">
         <form asp-action="@( !detail ? "Edit" : "EditRedirectCopierDetails")">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="@Model.Id"/>
+            <input type="hidden" asp-for="@Model.Id" />
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group mb-3">
@@ -97,17 +97,18 @@
                     <span asp-validation-for="Comments" class="text-danger"></span>
                 </div>
 
-            </div>           
+            </div>
 
             <div class="form-group">
                 <button type="submit" class="btn btn-primary">Actualizar Servicio</button>
-                @if(detail)
+                @if (detail)
                 {
                     <a asp-action="DetailsCopierByServicePagination" asp-controller="Copiers" asp-route-key="@Model.CopierId" class="btn btn-secondary">Cancelar</a>
-                }else
+                }
+                else
                 {
                     <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-                }                
+                }
             </div>
         </form>
     </div>
@@ -116,7 +117,7 @@
 
 
 @section Scripts {
-    
+
 
     <script>
         $(document).ready(function () {

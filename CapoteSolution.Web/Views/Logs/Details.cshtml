@@ -1,0 +1,78 @@
+﻿@using CapoteSolution.Web.Extensions;
+@model CapoteSolution.Models.Entities.ApplicationLog
+
+@{
+    ViewData["Title"] = "Detalles del Marca";   
+}
+
+<div class="card">
+    <div class="card-header bg-primary text-white">
+        <h3>@ViewData["Title"]</h3>
+    </div>
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-4">Level:</dt>
+            <dd class="col-sm-8">@Model.Level</dd>
+
+            <dt class="col-sm-4">Parameters:</dt>
+            <dd class="col-sm-8">
+                @if (!string.IsNullOrEmpty(Model.Parameters) && Model.Parameters != "null")
+                {
+                    <button class="btn btn-sm btn-outline-info mb-2"
+                            onclick="toggleJson('@Model.Id')"
+                            title="Ver parámetros">
+                        <i class="fas fa-code"></i> Ver JSON
+                    </button>
+                    <div id="json-@Model.Id"
+                         class="json-display"
+                         style="display: none;
+                    width: 100%;
+                    min-height: 120px;
+                    max-height: 300px;
+                    overflow: auto;
+                    font-family: 'Courier New', monospace;
+                    font-size: 12px;
+                    background: #f8f9fa;
+                    border: 1px solid #ced4da;
+                    border-radius: 4px;
+                    padding: 8px;
+                    white-space: pre-wrap;
+                    word-break: break-all;">
+                       @Model.Parameters.UnescapeJson().FormatJson();
+                    </div>
+                }
+                else
+                {
+                    <span class="text-muted">-</span>
+                }
+            </dd>
+
+            <dt class="col-sm-4">Message:</dt>
+            <dd class="col-sm-8">@Model.Message</dd>
+
+            <dt class="col-sm-4">Action:</dt>
+            <dd class="col-sm-8">@Model.Action</dd>
+
+            <dt class="col-sm-4">Logger:</dt>
+            <dd class="col-sm-8">@Model.Logger</dd>
+
+        </dl>
+    </div>
+    <div class="card-footer">
+        <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">Editar</a>
+        <a asp-action="Index" class="btn btn-secondary">Volver al Listado</a>
+    </div>
+</div>
+
+<script>
+    function toggleJson(logId) {
+        var textarea = document.getElementById('json-' + logId);
+        textarea.style.display = textarea.style.display === 'none' ? 'block' : 'none';
+
+        // Auto-ajustar altura si está visible
+        if (textarea.style.display === 'block') {
+            textarea.style.height = 'auto';
+            textarea.style.height = (textarea.scrollHeight) + 'px';
+        }
+    }
+</script>

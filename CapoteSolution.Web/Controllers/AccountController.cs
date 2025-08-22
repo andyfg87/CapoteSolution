@@ -1,4 +1,5 @@
 ﻿using CapoteSolution.Models.Entities;
+using CapoteSolution.Models.Interface;
 using CapoteSolution.Web.Interface;
 using CapoteSolution.Web.Models.ViewModels;
 using Microsoft.AspNetCore.Authentication;
@@ -7,6 +8,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text.Json;
 
 namespace CapoteSolution.Web.Controllers
 {
@@ -14,13 +16,15 @@ namespace CapoteSolution.Web.Controllers
     {
         private readonly IEntityRepository<User, Guid> _userRepo;
         private readonly IPasswordHasher<User> _passwordHasher;
+        private readonly IAppLogger _logger;
 
         public AccountController(
             IEntityRepository<User, Guid> userRepo,
-            IPasswordHasher<User> passwordHasher)
+            IPasswordHasher<User> passwordHasher, IAppLogger logger)
         {
             _userRepo = userRepo;
             _passwordHasher = passwordHasher;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -67,6 +71,14 @@ namespace CapoteSolution.Web.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 new ClaimsPrincipal(claimsIdentity),
                 authProperties);
+            try
+            {
+                await _logger.LogInformation("Entrada al sistema",  $"{user.Username} {user.FirstName} {user.LastName}", "GET", JsonSerializer.Serialize(user));
+            }
+            catch (Exception ex) 
+            {
+                await _logger.LogError("Error al entrar a la aplicación", ex);
+            }
 
             return LocalRedirect(returnUrl ?? "/");
         }
