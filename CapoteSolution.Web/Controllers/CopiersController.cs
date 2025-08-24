@@ -382,8 +382,13 @@ namespace CapoteSolution.Web.Controllers
             // Ajustar endDate para incluir todo el día
             endDateParsed = endDateParsed.Date.AddDays(1).AddSeconds(-1);
 
-            var copiers = await _repository.GetAllWithNestedInclude("Services", "Services.ServiceReason", nameof(Customer));
-            var entity = await copiers.FirstAsync(c => c.Id == key);
+            var entity = await _repository.GetAllWithNestedInclude(nameof(MachineModel),
+                  nameof(Customer),    //Include           
+                  $"{nameof(MachineModel)}.{nameof(Toner)}",// ThenInclude
+                  $"{nameof(MachineModel)}.{nameof(Brand)}",// ThenInclude
+                  $"Services", //Incluye la lista Services => ThenInclude
+                  $"Services.{nameof(ServiceReason)}",// ThenInclude
+                  $"Services.Technician").Result.FirstAsync(c => c.Id == key);
 
             // Filtrar solo servicios de contador mensual y ordenar por fecha
             var servicesOrderByDate = entity.Services
@@ -434,7 +439,10 @@ namespace CapoteSolution.Web.Controllers
                 });
             }
 
-            var pdfBytes = new CopierReportGenerator(copiersReports, key, entity.Customer.CustomerName).GeneratePdf();
+            var displayVM = new CopierDisplayVM();
+            displayVM.Import(entity);
+
+            var pdfBytes = new CopierReportGenerator(copiersReports, key, displayVM).GeneratePdf();
 
             return File(pdfBytes, "application/pdf", $"{key}-ReporteMensual-{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
