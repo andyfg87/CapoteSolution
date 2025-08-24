@@ -379,22 +379,64 @@ namespace CapoteSolution.Web.Controllers
             if (!DateTime.TryParse(endDate, out DateTime endDateParsed))
                 return BadRequest("Fecha de fin inválida");
 
-            var copiers = await _repository.GetAllWithNestedInclude("Services");
+            // Ajustar endDate para incluir todo el día
+            endDateParsed = endDateParsed.Date.AddDays(1).AddSeconds(-1);
 
-            var entity = copiers.FirstAsync(c => c.Id == key);
-            
-            var services =  entity.Result.Services.Where(s => s.Date >= startDateParsed && s.Date <= endDateParsed).OrderBy(c => c.Date).Select(s => new CopierReportItem
-            {               
-                Month = s.Date.ToString("MM/dd/yyyy"),
-                PlanBW = (int)entity.Result.PlanBW != null ? (int)entity.Result.PlanBW : 0,
-                BlackCopies = s.BlackCounter,
-                PlanColor = (int)entity.Result.PlanColor != null ? (int)entity.Result.PlanColor : 0,
-                ColorCopies = s.ColorCounter
-            }).ToList();
+            var copiers = await _repository.GetAllWithNestedInclude("Services", "Services.ServiceReason", nameof(Customer));
+            var entity = await copiers.FirstAsync(c => c.Id == key);
 
-            var pdfBytes = new CopierReportGenerator(services, key).GeneratePdf();
+            // Filtrar solo servicios de contador mensual y ordenar por fecha
+            var servicesOrderByDate = entity.Services
+                .Where(s => s.Date >= startDateParsed &&
+                           s.Date <= endDateParsed &&
+                           s.ServiceReason.Name == ServiceReason.Reasons.MonthlyCounter)
+                .OrderBy(s => s.Date)
+                .ToList();
 
-            return File(pdfBytes, "application/pdf", $"{key}-ImpresoraReporte.pdf");
+            // Crear la lista de reportes con información de diferencia
+            var copiersReports = new List<CopierReportItem>();
+
+            for (int i = 0; i < servicesOrderByDate.Count; i++)
+            {
+                var currentService = servicesOrderByDate[i];
+                var previousService = i > 0 ? servicesOrderByDate[i - 1] : null;
+
+                // Calcular diferencias
+                int blackDifference = previousService != null ?
+                    currentService.BlackCounter - previousService.BlackCounter : 0;
+
+                int colorDifference = previousService != null ?
+                    currentService.ColorCounter - previousService.ColorCounter : 0;
+
+                // Calcular extras
+                int extraBlack = Math.Max(0, blackDifference - (int)entity.PlanBW);
+                int extraColor = Math.Max(0, colorDifference - (int)entity.PlanColor);
+
+                copiersReports.Add(new CopierReportItem
+                {
+                    PrinterId = key,
+                    Month = currentService.Date.ToString("MMM yyyy"),
+                    Date = currentService.Date,
+                    BlackCounter = currentService.BlackCounter,
+                    ColorCounter = currentService.ColorCounter,
+                    PlanBw = (int)entity.PlanBW,
+                    PlanColor = (int)entity.PlanColor,
+                    BlackDifference = blackDifference,
+                    ColorDifference = colorDifference,
+                    ExtraBlack = extraBlack,
+                    ExtraColor = extraColor,
+                    TotalBlack = currentService.BlackCounter,
+                    TotalColor = currentService.ColorCounter,
+                    TotalCopies = currentService.BlackCounter + currentService.ColorCounter,
+                    IsMonthlyCounter = true,
+                    PreviousBlack = previousService?.BlackCounter,
+                    PreviousColor = previousService?.ColorCounter
+                });
+            }
+
+            var pdfBytes = new CopierReportGenerator(copiersReports, key, entity.Customer.CustomerName).GeneratePdf();
+
+            return File(pdfBytes, "application/pdf", $"{key}-ReporteMensual-{DateTime.Now:yyyyMMddHHmmss}.pdf");
         }
 
         public async Task<SelectList> GetBrands()

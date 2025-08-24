@@ -8,11 +8,13 @@ namespace CapoteSolution.Web.Reports
     {
         private readonly List<CopierReportItem> _data;
         private string _copierId;
+        private string _customerName;
 
-        public CopierReportGenerator(List<CopierReportItem> data, string copierId)
+        public CopierReportGenerator(List<CopierReportItem> data, string copierId, string customerName)
         {
             _data = data;
             _copierId = copierId;
+            _customerName = customerName;
         }
 
         public byte[] GeneratePdf()
@@ -28,49 +30,77 @@ namespace CapoteSolution.Web.Reports
 
                     page.Header()
                         .AlignCenter()
-                        .Text($"Reporte de Copias de Impresora {_copierId}")
+                        .Text($"Reporte de Copias - Impresora {_copierId} {_customerName}")
                         .Bold().FontSize(16);
 
                     page.Content()
                         .Column(col =>
                         {
-                            // Tabla de datos
+                            // Tabla de datos principal
                             col.Item().Table(table =>
                             {
                                 table.ColumnsDefinition(columns =>
-                                {                                   
+                                {
                                     columns.RelativeColumn(); // Mes
-                                    columns.RelativeColumn(); // PlanBW
-                                    columns.RelativeColumn(); // B/N
-                                    columns.RelativeColumn(); // PlanColor
-                                    columns.RelativeColumn(); // Color
+                                    columns.RelativeColumn(); // BlackCounter
+                                    columns.RelativeColumn(); // BlackDifference
+                                    columns.RelativeColumn(); // ExtraBlack
+                                    columns.RelativeColumn(); // ColorCounter
+                                    columns.RelativeColumn(); // ColorDifference
+                                    columns.RelativeColumn(); // ExtraColor
+                                    columns.RelativeColumn(); // TotalCopies
                                 });
 
                                 // Encabezados
                                 table.Header(header =>
-                                {                                    
+                                {
                                     header.Cell().Text("Mes").Bold();
-                                    header.Cell().Text("Plan B/N").Bold();
-                                    header.Cell().Text("Copias B/N").Bold();
-                                    header.Cell().Text("plan Color").Bold();
-                                    header.Cell().Text("Copias Color").Bold();
+                                    header.Cell().Text("Contador B/N").Bold();
+                                    header.Cell().Text("Diferencia B/N").Bold();
+                                    header.Cell().Text("Extra B/N").Bold();
+                                    header.Cell().Text("Contador Color").Bold();
+                                    header.Cell().Text("Diferencia Color").Bold();
+                                    header.Cell().Text("Extra Color").Bold();
+                                    header.Cell().Text("Total").Bold();
                                 });
 
                                 // Datos
                                 foreach (var item in _data)
-                                {                                    
-                                    table.Cell().Text(item.Month);
-                                    table.Cell().Text(item.PlanBW.ToString("N0"));
-                                    table.Cell().Text(item.BlackCopies.ToString("N0"));
-                                    table.Cell().Text(item.PlanColor.ToString("N0"));
-                                    table.Cell().Text(item.ColorCopies.ToString("N0"));
+                                {
+                                    table.Cell().Text(item.Month).FontSize(10);
+                                    table.Cell().Text(item.BlackCounter.ToString("N0")).FontSize(10);
+                                    table.Cell().Text(item.BlackDifference.ToString("N0")).FontSize(10);
+                                    table.Cell().Text(item.ExtraBlack.ToString("N0")).FontSize(10);
+                                    table.Cell().Text(item.ColorCounter.ToString("N0")).FontSize(10);
+                                    table.Cell().Text(item.ColorDifference.ToString("N0")).FontSize(10);
+                                    table.Cell().Text(item.ExtraColor.ToString("N0")).FontSize(10);
+                                    table.Cell().Text(item.TotalCopies.ToString("N0")).FontSize(10).SemiBold();
                                 }
                             });
 
-                            // Gráfico de barras (apiladas)
-                            col.Item().PaddingTop(20).Row(row =>
+                            // Resumen total al final
+                            col.Item().PaddingTop(15).Table(summaryTable =>
                             {
-                                row.RelativeItem().Component(new CopierBarChartComponent(_data));
+                                summaryTable.ColumnsDefinition(columns =>
+                                {
+                                    columns.RelativeColumn();
+                                    columns.RelativeColumn();
+                                });
+
+                                summaryTable.Cell().Text("Total Copias B/N:").SemiBold();
+                                summaryTable.Cell().Text(_data.Sum(x => x.BlackCounter).ToString("N0")).SemiBold();
+
+                                summaryTable.Cell().Text("Total Copias Color:").SemiBold();
+                                summaryTable.Cell().Text(_data.Sum(x => x.ColorCounter).ToString("N0")).SemiBold();
+
+                                summaryTable.Cell().Text("Total General:").SemiBold();
+                                summaryTable.Cell().Text(_data.Sum(x => x.TotalCopies).ToString("N0")).SemiBold();
+
+                                summaryTable.Cell().Text("Total Extra B/N:").SemiBold();
+                                summaryTable.Cell().Text(_data.Sum(x => x.ExtraBlack).ToString("N0")).SemiBold();
+
+                                summaryTable.Cell().Text("Total Extra Color:").SemiBold();
+                                summaryTable.Cell().Text(_data.Sum(x => x.ExtraColor).ToString("N0")).SemiBold();
                             });
                         });
                 });

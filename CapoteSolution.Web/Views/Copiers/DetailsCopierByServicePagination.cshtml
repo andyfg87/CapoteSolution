@@ -8,7 +8,7 @@
 
 <div class="card">
     <div class="card-header bg-primary text-white">
-        <h3>@ViewData["Title"] - @Model.Id</h3>
+        <h3>@ViewData["Title"] - @Model.Id @Model.CustomerName</h3>
     </div>
 </div>
 
@@ -64,11 +64,7 @@
                 <dd class="col-sm-8">@Model.MachineEmail</dd>
 
                 <dt class="col-sm-4">Modelo </dt>
-                <dd class="col-sm-8">@Model.MachineModelInfo</dd>
-               
-
-                @*<dt class="col-sm-4">Rendimimeto del Toner:</dt>
-                <dd class="col-sm-8">@Model.TonerYield</dd>*@
+                <dd class="col-sm-8">@Model.MachineModelInfo</dd>                  
 
             </dl>
         </div>
@@ -94,15 +90,7 @@
 
                 <dt class="col-sm-4">Precio Mensual</dt>
                 <dd class="col-sm-8">$ @Model.MonthlyPrice</dd>
-
-                @*<dt class="col-sm-5">Contador Alto Cambio de Toner</dt>
-                <dd class="col-sm-6">@Model.HighestTonerChangeCounter</dd>*@
-
-                <dt class="col-sm-5">Toners Cambiado</dt>
-                <dd class="col-sm-6">@Model.QtyOfHightestTonerChange</dd>
-
-                @*<dt class="col-sm-5">Contador Alto No Cambio de Toner</dt>
-                <dd class="col-sm-6">@Model.HighestNoChangeTonerCounter</dd>*@
+                
             </dl>
         </div>
     </div>
@@ -112,6 +100,9 @@
         </div>
         <div class="card-body">
             <dl class="row">
+                <dt class="col-sm-5">Toners Cambiado</dt>
+                <dd class="col-sm-6">@Model.QtyOfHightestTonerChange</dd>
+
                 <dt class="col-sm-5">Total Yield:</dt>
                 <dd class="col-sm-6">@Model.TotalYield()</dd>
 
